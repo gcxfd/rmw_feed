@@ -43,14 +43,17 @@ pub fn run() -> Result<()> {
   let (sender, recver) = mpsc::channel();
 
   let config = Config::new();
-  let addr = config::get!(
-    config,
-    v4 / udp,
-    UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
-  );
 
-  if cfg!(feature = "upnp") && config::get!(config, v4 / upnp, true) {
-    net.spawn(upnp::upnp_daemon("rmw", addr.port()));
+  if config::get!(config, net / v4, true) {
+    let addr = config::get!(
+      config,
+      v4 / udp,
+      UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
+    );
+
+    if cfg!(feature = "upnp") && config::get!(config, v4 / upnp, true) {
+      net.spawn(upnp::upnp_daemon("rmw", addr.port()));
+    }
   }
 
   spawn(async move {
