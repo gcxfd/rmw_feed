@@ -862,6 +862,8 @@ name = "run"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "futures",
+ "parking_lot",
 ]
 
 [[package]]
