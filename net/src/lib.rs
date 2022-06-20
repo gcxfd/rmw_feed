@@ -21,13 +21,14 @@ impl Net {
 
 impl Drop for Net {
   fn drop(&mut self) {
-    let li = self
-      .ing
-      .drain(..)
-      .into_iter()
-      .map(|i| i.cancel())
-      .collect::<Vec<_>>();
-    block_on(join_all(li));
+    block_on(join_all(
+      self
+        .ing
+        .drain(..)
+        .into_iter()
+        .map(|i| i.cancel())
+        .collect::<Vec<_>>(),
+    ));
   }
 }
 
@@ -56,7 +57,7 @@ pub fn run() -> Result<()> {
     }
   }
 
-  spawn(async move {
+  net.spawn(async move {
     sleep(Duration::from_secs(6)).await;
     sender.send(Api::Stop).unwrap();
   });
