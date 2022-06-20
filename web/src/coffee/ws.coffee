@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-import WasmInit,{iStop} from '~/wasm/api/pkg/wasm.js'
+import WasmInit,{iStop} from ':/wasm/api/wasm.js'
 
 
 export default =>
