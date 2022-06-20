@@ -11,10 +11,10 @@ export default =>
 #ws.onmessage = (msg)=>
 #  return
 #
-#send = (msg)=>
-#  console.log msg
-#  ws.send(msg)
-#  return
+  send = (msg)=>
+    console.log msg
+    ws.send(msg)
+    return
 #
 #ws.onerror = (err)=>
 #  console.error "❌",err.error
@@ -28,5 +28,5 @@ export default =>
     #send get('127.0.0.1:3232','/1/2/3')
     #close()
     await wasmInit
-    console.log "ws open", iStop()
+    send iStop()
     return
