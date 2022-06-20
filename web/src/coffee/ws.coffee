@@ -8,9 +8,10 @@ export default =>
 
   ws = new WebSocket("ws://127.0.0.1:4910")
 
-#ws.onmessage = (msg)=>
-#  return
-#
+  ws.onmessage = (msg)=>
+    console.log await msg.data.arrayBuffer()
+    return
+
   send = (msg)=>
     console.log msg
     ws.send(msg)
