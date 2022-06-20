@@ -4,11 +4,15 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["upnp"]
+default = ["upnp", "log"]
 upnp = ["dep:upnp"]
+log = ["dep:logger", "dep:log"]
 
 [dependencies]
 async-std = "1.12.0"
 config = { path = "../config" }
 const-str = "0.4.0"
 upnp = { path = "../upnp", optional = true }
+anyhow = "1.0.58"
+log = { version = "0.4.17", optional = true }
+logger = { path = "../logger", optional = true }
