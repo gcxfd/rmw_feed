@@ -1,0 +1,3 @@
+[submodule "lib/speedy"]
+	path = lib/speedy
+	url = git@github.com:rmw-lib/speedy.git

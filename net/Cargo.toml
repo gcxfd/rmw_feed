@@ -12,6 +12,7 @@ log = ["dep:logger", "dep:log"]
 config = { path = "../config" }
 run = { path = "../run" }
 upnp = { path = "../upnp", optional = true }
+speedy = { path = "../lib/speedy" }
 logger = { path = "../logger", optional = true }
 async-std = "1.12.0"
 const-str = "0.4.0"

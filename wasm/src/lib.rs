@@ -15,7 +15,7 @@ pub fn prepare() {
 
 macro_rules! rt {
   ($cls:ident$fn:tt) => {{
-    let run = move || -> Result<_> { Ok(Req::$cls($cls $fn).dump()?) };
+    let run = move || -> Result<_> { Ok(Api::$cls($cls $fn).dump()?) };
     match run() {
       Ok(val) => Ok(val),
       Err(err) => Err(JsValue::from_str(&err.to_string())),
@@ -26,7 +26,7 @@ macro_rules! rt {
 type Bytes = Result<Box<[u8]>, JsValue>;
 
 pub fn stop() -> Bytes {
-  rt!(Api::Stop)
+  rt!(Stop)
 }
 /*
 #[wasm_bindgen]

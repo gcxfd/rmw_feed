@@ -701,6 +701,7 @@ dependencies = [
  "logger",
  "parking_lot",
  "run",
+ "speedy",
  "upnp",
 ]
 
@@ -931,6 +932,22 @@ checksum = "66d72b759436ae32898a2af0a14218dbf55efde3feeb170eb623637db85ee1e0"
 dependencies = [
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "speedy"
+version = "0.8.3"
+dependencies = [
+ "speedy-derive",
+]
+
+[[package]]
+name = "speedy-derive"
+version = "0.8.3"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
