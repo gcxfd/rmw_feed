@@ -1,11 +1,10 @@
 #!/usr/bin/env coffee
 
+import WasmInit,{iStop} from '~/wasm/api/pkg/wasm.js'
 
-#import WasmInit,{get} from '../../wasm/pkg/wasm.js'
-#
-#await WasmInit()
 
 export default =>
+  wasmInit = WasmInit()
 
   ws = new WebSocket("ws://127.0.0.1:4910")
 
@@ -28,5 +27,6 @@ export default =>
   ws.onopen = =>
     #send get('127.0.0.1:3232','/1/2/3')
     #close()
-    console.log "ws open"
+    await wasmInit
+    console.log "ws open", iStop()
     return

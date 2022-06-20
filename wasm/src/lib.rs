@@ -25,7 +25,9 @@ macro_rules! rt {
 
 type Bytes = Result<Box<[u8]>, JsValue>;
 
-pub fn stop() -> Bytes {
+#[allow(non_snake_case)]
+#[wasm_bindgen]
+pub fn iStop() -> Bytes {
   rt!(Stop)
 }
 /*
