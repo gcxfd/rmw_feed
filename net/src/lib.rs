@@ -56,6 +56,7 @@ pub fn run() -> Result<()> {
   while let Ok(msg) = recver.recv() {
     match msg {
       Api::Stop => {
+        drop(net);
         break;
       }
     }
