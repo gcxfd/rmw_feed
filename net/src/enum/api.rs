@@ -4,21 +4,21 @@ use speedy::{Error, Readable, Writable};
 #[repr(u8)]
 #[speedy(tag_type=u8)]
 pub enum Api {
-  Stop,
+    Stop,
 }
 
-impl Req {
-  pub fn dump(&self) -> Result<Box<[u8]>, Error> {
-    self.write_to_box()
-  }
+impl Api {
+    pub fn dump(&self) -> Result<Box<[u8]>, Error> {
+        self.write_to_box()
+    }
 
-  pub fn load(bin: &[u8]) -> Result<Self, Error> {
-    Self::read_from_buffer(bin)
-  }
+    pub fn load(bin: &[u8]) -> Result<Self, Error> {
+        Self::read_from_buffer(bin)
+    }
 
-  /*
-  pub fn on(bin: &[u8], api: &Api) -> BoxResult {
-    Self::load(bin)?.on(api)
-  }
-  */
+    /*
+    pub fn on(bin: &[u8], api: &Api) -> BoxResult {
+      Self::load(bin)?.on(api)
+    }
+    */
 }

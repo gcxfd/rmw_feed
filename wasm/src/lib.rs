@@ -14,8 +14,8 @@ pub fn prepare() {
 }
 
 macro_rules! rt {
-  ($cls:ident$fn:tt) => {{
-    let run = move || -> Result<_> { Ok(Api::$cls($cls $fn).dump()?) };
+  ($val:ident) => {{
+    let run = move || -> Result<_> { Ok(Api::$val.dump()?) };
     match run() {
       Ok(val) => Ok(val),
       Err(err) => Err(JsValue::from_str(&err.to_string())),
