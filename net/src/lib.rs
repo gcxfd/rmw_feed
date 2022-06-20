@@ -1,22 +1,14 @@
 use anyhow::Result;
-use async_std::{
-  net::{TcpListener, TcpStream},
-  task::{block_on, spawn, JoinHandle},
-};
+use async_std::net::{TcpListener, TcpStream};
 use config::Config;
-use futures::{future::join_all, StreamExt, TryStreamExt};
+use futures::{StreamExt, TryStreamExt};
 use log::info;
-use parking_lot::Mutex;
+
 use run::Run;
 use std::{
-  collections::BTreeMap,
-  future::{ready, Future},
+  future::ready,
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
-  sync::{
-    atomic::{AtomicUsize, Ordering::SeqCst},
-    mpsc::{channel, Receiver},
-    Arc,
-  },
+  sync::mpsc::{channel, Receiver},
 };
 
 pub enum Api {
@@ -32,7 +24,7 @@ pub fn run() -> Result<()> {
   }
   let mut run = Run::default();
 
-  let (sender, recver) = channel();
+  let (_sender, recver) = channel();
 
   let config = Config::new();
 
