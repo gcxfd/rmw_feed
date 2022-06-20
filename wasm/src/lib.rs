@@ -1,5 +1,5 @@
 use anyhow::Result;
-use net::r#enum::api::Api;
+use api::Api;
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
