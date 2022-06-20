@@ -49,14 +49,13 @@ pub fn run() -> Result<()> {
   }
 
   spawn(async move {
-    sleep(Duration::from_secs(60000)).await;
+    sleep(Duration::from_secs(6)).await;
     sender.send(Api::Stop).unwrap();
   });
 
   while let Ok(msg) = recver.recv() {
     match msg {
       Api::Stop => {
-        drop(net);
         break;
       }
     }
