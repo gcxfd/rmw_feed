@@ -1,7 +1,7 @@
 use anyhow::Result;
 use async_std::net::{TcpListener, TcpStream};
 use config::Config;
-use futures::TryStreamExt;
+use futures::{StreamExt, TryStreamExt};
 use log::info;
 
 use run::Run;
@@ -84,7 +84,7 @@ async fn ws(stream: TcpStream) {
     .expect("Error during the websocket handshake occurred");
 
   info!("New WebSocket connection: {}", addr);
-  use futures::StreamExt;
+
   let (write, read) = ws_stream.split();
   // We should not forward messages other than text or binary.
   read
