@@ -6,11 +6,16 @@ use async_std::{
 use config::Config;
 use futures::{future::join_all, StreamExt, TryStreamExt};
 use log::info;
+use parking_lot::Mutex;
 use std::{
+  collections::BTreeMap,
   future::{ready, Future},
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
-  sync::mpsc::{channel, Receiver},
-  time::Duration,
+  sync::{
+    atomic::{AtomicUsize, Ordering::SeqCst},
+    mpsc::{channel, Receiver},
+    Arc,
+  },
 };
 
 pub enum Api {
@@ -18,26 +23,50 @@ pub enum Api {
 }
 
 #[derive(Debug, Default)]
-struct Net {
-  ing: Vec<JoinHandle<()>>,
+struct RunInner {
+  id: usize,
+  ing: BTreeMap<usize, JoinHandle<()>>,
 }
 
-impl Net {
+#[derive(Debug, Default, Clone)]
+struct Run {
+  inner: Arc<Mutex<RunInner>>,
+}
+
+impl Run {
   pub fn spawn<F: Future<Output = ()> + Send + 'static>(&mut self, future: F) {
-    self.ing.push(spawn(future));
+    let mut inner = self.inner.lock();
+    let id = inner.id.wrapping_add(1);
+    inner.id = id;
+    let ing = &mut inner.ing;
+    let run = self.inner.clone();
+    ing.insert(
+      id,
+      spawn(async move {
+        future.await;
+        run.lock().ing.remove(&id);
+      }),
+    );
   }
 }
 
-impl Drop for Net {
+impl Drop for Run {
   fn drop(&mut self) {
-    block_on(join_all(
-      self
-        .ing
-        .drain(..)
-        .into_iter()
-        .map(|i| i.cancel())
-        .collect::<Vec<_>>(),
-    ));
+    let mut inner = self.inner.lock();
+    let ing = &mut inner.ing;
+    loop {
+      let len = ing.len();
+      if len == 0 {
+        break;
+      }
+      let mut li = Vec::with_capacity(len);
+      for id in ing.iter().map(|(k, _)| *k).collect::<Vec<usize>>() {
+        if let Some(i) = ing.remove(&id) {
+          li.push(i.cancel())
+        }
+      }
+      block_on(join_all(li));
+    }
   }
 }
 
@@ -48,7 +77,7 @@ pub fn run() -> Result<()> {
       .level_for("rmw", log::LevelFilter::Trace)
       .apply()?;
   }
-  let mut net = Net::default();
+  let mut run = Run::default();
 
   let (sender, recver) = channel();
 
@@ -56,14 +85,14 @@ pub fn run() -> Result<()> {
 
   config::macro_get!(config);
 
-  if get!(net / v4, true) {
+  if get!(run / v4, true) {
     let addr = get!(
       v4 / udp,
       UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
     );
 
     if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
-      net.spawn(upnp::upnp_daemon("rmw", addr.port()));
+      run.spawn(upnp::upnp_daemon("rmw", addr.port()));
     }
   }
 
@@ -71,12 +100,16 @@ pub fn run() -> Result<()> {
   {
     let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
 
-    net.spawn(async move {
+    println!("ws://{}", ws_addr);
+
+    let mut ws_run = run.clone();
+
+    run.spawn(async move {
       let try_socket = TcpListener::bind(&ws_addr).await;
       let listener = try_socket.unwrap();
 
       while let Ok((stream, _)) = listener.accept().await {
-        net.spawn(ws(stream));
+        ws_run.spawn(ws(stream));
       }
     });
   }
