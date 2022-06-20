@@ -25,7 +25,6 @@ name = "config"
 version = "0.1.0"
 dependencies = [
  "dir",
- "lazy_static",
  "log",
  "rmw_str",
 ]
@@ -67,12 +66,6 @@ dependencies = [
  "libc",
  "wasi",
 ]
-
-[[package]]
-name = "lazy_static"
-version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
@@ -130,6 +123,9 @@ dependencies = [
 [[package]]
 name = "rmw"
 version = "0.1.0"
+dependencies = [
+ "config",
+]
 
 [[package]]
 name = "rmw_str"
