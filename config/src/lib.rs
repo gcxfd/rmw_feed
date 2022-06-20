@@ -41,3 +41,10 @@ impl Config {
     }
   }
 }
+
+#[macro_export]
+macro_rules! get {
+  ($config:expr, $file:expr, $init:expr) => {
+    $config.get(const_str::replace!(stringify!($file), " ", ""), || $init)
+  };
+}
