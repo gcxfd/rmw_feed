@@ -12,7 +12,12 @@ if ! hash watchexec 2>/dev/null; then
 cargo install watchexec-cli
 fi
 
+
+if [ $1 ];then
+project=$1
+else
 project=rmw
+fi
 
 #if [ ! -d target ] ; then
 cargo build -p $project || true
