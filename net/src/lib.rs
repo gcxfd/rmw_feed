@@ -2,6 +2,8 @@ use config::Config;
 use std::net::UdpSocket;
 
 pub fn run() {
+  let config = Config::default();
+  dbg!(config);
   let config = Config::new();
   let addr = config::get!(
     config,
