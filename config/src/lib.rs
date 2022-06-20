@@ -48,3 +48,9 @@ macro_rules! get {
     $config.get(const_str::replace!(stringify!($file), " ", ""), || $init)
   };
 }
+
+impl Default for Config {
+  fn default() -> Self {
+    Self::new()
+  }
+}
