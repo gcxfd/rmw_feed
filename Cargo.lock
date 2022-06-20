@@ -678,6 +678,7 @@ dependencies = [
  "log",
  "logger",
  "parking_lot",
+ "run",
  "upnp",
 ]
 
@@ -854,6 +855,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be1d20a8988b0933cea9bf1eb1e9101a5caee5913e174e37b34f5c6030da75cd"
 dependencies = [
  "anyhow",
+]
+
+[[package]]
+name = "run"
+version = "0.1.0"
+dependencies = [
+ "async-std",
 ]
 
 [[package]]

@@ -9,13 +9,14 @@ upnp = ["dep:upnp"]
 log = ["dep:logger", "dep:log"]
 
 [dependencies]
-async-std = "1.12.0"
 config = { path = "../config" }
-const-str = "0.4.0"
+run = { path = "../run" }
 upnp = { path = "../upnp", optional = true }
+logger = { path = "../logger", optional = true }
+async-std = "1.12.0"
+const-str = "0.4.0"
 anyhow = "1.0.58"
 log = { version = "0.4.17", optional = true }
-logger = { path = "../logger", optional = true }
 futures = "0.3.21"
 async-tungstenite = { version = "0.17.2", futures = ["async-std-runtime"] }
 parking_lot = "0.12.1"
