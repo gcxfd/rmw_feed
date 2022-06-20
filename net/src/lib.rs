@@ -1,5 +1,5 @@
 use anyhow::Result;
-use async_std::task::{sleep, spawn, JoinHandle};
+use async_std::task::{block_on, sleep, spawn, JoinHandle};
 use config::Config;
 use std::{future::Future, net::UdpSocket, sync::mpsc, time::Duration};
 
@@ -21,7 +21,7 @@ impl Net {
 impl Drop for Net {
   fn drop(&mut self) {
     while let Some(i) = self.ing.pop() {
-      i.cancel();
+      block_on(i.cancel());
     }
   }
 }
