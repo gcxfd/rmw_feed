@@ -10,11 +10,13 @@ pub enum Api {
 }
 
 pub fn run() -> Result<()> {
-  if cfg!(feature = "log") {
+  #[cfg(feature = "log")]
+  {
     logger::init()
       .level_for("rmw", log::LevelFilter::Trace)
       .apply()?;
   }
+
   let (sender, recver) = mpsc::channel();
 
   let config = Config::new();
