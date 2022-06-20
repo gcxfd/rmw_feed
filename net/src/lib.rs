@@ -1,6 +1,7 @@
 use anyhow::Result;
 use async_std::task::{block_on, sleep, spawn, JoinHandle};
 use config::Config;
+use futures::future::join_all;
 use std::{future::Future, net::UdpSocket, sync::mpsc, time::Duration};
 
 pub enum Api {
@@ -20,9 +21,13 @@ impl Net {
 
 impl Drop for Net {
   fn drop(&mut self) {
-    while let Some(i) = self.ing.pop() {
-      block_on(i.cancel());
-    }
+    let li = self
+      .ing
+      .drain(..)
+      .into_iter()
+      .map(|i| i.cancel())
+      .collect::<Vec<_>>();
+    block_on(join_all(li));
   }
 }
 

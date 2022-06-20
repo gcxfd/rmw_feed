@@ -16,3 +16,4 @@ upnp = { path = "../upnp", optional = true }
 anyhow = "1.0.58"
 log = { version = "0.4.17", optional = true }
 logger = { path = "../logger", optional = true }
+futures = "0.3.21"
