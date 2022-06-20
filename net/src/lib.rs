@@ -1,8 +1,17 @@
 use anyhow::Result;
-use async_std::task::{block_on, sleep, spawn, JoinHandle};
+use async_std::{
+  net::{TcpListener, TcpStream},
+  task::{block_on, spawn, JoinHandle},
+};
 use config::Config;
-use futures::future::join_all;
-use std::{future::Future, net::UdpSocket, sync::mpsc, time::Duration};
+use futures::{future::join_all, StreamExt, TryStreamExt};
+use log::info;
+use std::{
+  future::{ready, Future},
+  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
+  sync::mpsc::{channel, Receiver},
+  time::Duration,
+};
 
 pub enum Api {
   Stop,
@@ -41,7 +50,7 @@ pub fn run() -> Result<()> {
   }
   let mut net = Net::default();
 
-  let (sender, recver) = mpsc::channel();
+  let (sender, recver) = channel();
 
   let config = Config::new();
 
@@ -58,11 +67,25 @@ pub fn run() -> Result<()> {
     }
   }
 
-  net.spawn(async move {
-    sleep(Duration::from_secs(6)).await;
-    sender.send(Api::Stop).unwrap();
-  });
+  // web socket
+  {
+    let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
 
+    net.spawn(async move {
+      let try_socket = TcpListener::bind(&ws_addr).await;
+      let listener = try_socket.unwrap();
+
+      while let Ok((stream, _)) = listener.accept().await {
+        net.spawn(ws(stream));
+      }
+    });
+  }
+
+  recv(recver);
+  Ok(())
+}
+
+fn recv(recver: Receiver<Api>) {
   while let Ok(msg) = recver.recv() {
     match msg {
       Api::Stop => {
@@ -70,6 +93,25 @@ pub fn run() -> Result<()> {
       }
     }
   }
-  //rmw(addr)
-  Ok(())
+}
+
+async fn ws(stream: TcpStream) {
+  let addr = stream
+    .peer_addr()
+    .expect("connected streams should have a peer address");
+  info!("Peer address: {}", addr);
+
+  let ws_stream = async_tungstenite::accept_async(stream)
+    .await
+    .expect("Error during the websocket handshake occurred");
+
+  info!("New WebSocket connection: {}", addr);
+
+  let (write, read) = ws_stream.split();
+  // We should not forward messages other than text or binary.
+  read
+    .try_filter(|msg| ready(msg.is_text() || msg.is_binary()))
+    .forward(write)
+    .await
+    .expect("Failed to forward messages")
 }
