@@ -45,11 +45,7 @@ pub fn run() -> Result<()> {
 
   let config = Config::new();
 
-  macro_rules! get {
-    ($key:expr, $default:expr) => {
-      config::get!(config, $key, $default)
-    };
-  }
+  config::macro_get!(config);
 
   if get!(net / v4, true) {
     let addr = get!(

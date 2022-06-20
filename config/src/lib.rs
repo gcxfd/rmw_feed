@@ -49,6 +49,17 @@ macro_rules! get {
   };
 }
 
+#[macro_export]
+macro_rules! macro_get {
+  ($config:expr) => {
+    macro_rules! get {
+      ($key:expr, $default:expr) => {
+        config::get!($config, $key, $default)
+      };
+    }
+  };
+}
+
 impl Default for Config {
   fn default() -> Self {
     Self::new()
