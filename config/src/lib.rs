@@ -11,8 +11,8 @@ impl Config {
   pub fn new() -> Self {
     Self { root: dir::root() }
   }
-  pub fn get<T: Str>(&self, file: &str, init: fn() -> T) -> T {
-    let path = self.root.clone().join(file);
+  pub fn get<T: Str>(&self, file: impl AsRef<str>, init: fn() -> T) -> T {
+    let path = self.root.clone().join(file.as_ref());
     let _init = || {
       let r = init();
       let mut dir = path.clone();
