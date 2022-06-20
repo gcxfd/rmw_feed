@@ -1,4 +1,5 @@
 use anyhow::Result;
+use net::r#enum::api::Api;
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
@@ -25,7 +26,7 @@ macro_rules! rt {
 type Bytes = Result<Box<[u8]>, JsValue>;
 
 pub fn stop() -> Bytes {
-  rt!()
+  rt!(Api::Stop)
 }
 /*
 #[wasm_bindgen]
