@@ -15,7 +15,7 @@ wasm-bindgen = "0.2.80"
 wee_alloc = { version = "0.4.5", optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }
 anyhow = "1.0.57"
-rmwlib = { path = "../rmwlib" }
+net = { path = "../net" }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.30"

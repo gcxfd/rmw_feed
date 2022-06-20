@@ -8,6 +8,10 @@ if ! [ -x "$(command -v wasm-bindgen)" ]; then
 cargo install -f wasm-bindgen-cli
 fi
 
+if ! [ -x "$(command -v wasm-opt)" ]; then
+npm install -g wasm-opt
+fi
+
 cargo build --target wasm32-unknown-unknown --release
 
 NAME=wasm
