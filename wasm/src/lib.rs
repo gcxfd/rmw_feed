@@ -1,8 +1,7 @@
 use anyhow::Result;
 use wasm_bindgen::prelude::*;
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
+// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
@@ -25,13 +24,18 @@ macro_rules! rt {
 
 type Bytes = Result<Box<[u8]>, JsValue>;
 
+pub fn stop() -> Bytes {
+  rt!()
+}
+/*
 #[wasm_bindgen]
 pub fn get(addr: &str, path: Box<[u8]>) -> Bytes {
-  rt!(Ping {
-    addr: addr.parse()?,
-    path,
-  })
+rt!(Ping {
+addr: addr.parse()?,
+path,
+})
 }
+*/
 
 /*
 */

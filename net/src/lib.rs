@@ -1,3 +1,4 @@
+pub mod r#enum;
 use anyhow::Result;
 use async_std::net::{TcpListener, TcpStream};
 use config::Config;
@@ -10,10 +11,6 @@ use std::{
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
   sync::mpsc::{channel, Receiver},
 };
-
-pub enum Api {
-  Stop,
-}
 
 pub fn run() -> Result<()> {
   #[cfg(feature = "log")]
