@@ -1,5 +1,5 @@
 use async_std::task::{block_on, spawn, JoinHandle};
-use futures::{future::join_all, StreamExt};
+use futures::future::join_all;
 use parking_lot::Mutex;
 use std::{collections::BTreeMap, future::Future, sync::Arc};
 
