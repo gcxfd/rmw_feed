@@ -11,6 +11,7 @@ log = ["dep:logger", "dep:log"]
 [dependencies]
 config = { path = "../config" }
 run = { path = "../run" }
+api = { path = "../api" }
 upnp = { path = "../upnp", optional = true }
 speedy = { path = "../lib/speedy", features = ["box"] }
 logger = { path = "../logger", optional = true }

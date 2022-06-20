@@ -1,11 +1,11 @@
 pub mod r#enum;
 
 use anyhow::Result;
+use api::Api;
 use async_std::net::{TcpListener, TcpStream};
 use config::Config;
 use futures::{StreamExt, TryStreamExt};
 use log::info;
-use r#enum::api::Api;
 
 use run::Run;
 use std::{
