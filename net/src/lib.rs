@@ -45,6 +45,7 @@ impl Run {
       spawn(async move {
         future.await;
         run.lock().ing.remove(&id);
+        dbg!(("remove", id, run));
       }),
     );
   }
