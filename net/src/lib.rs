@@ -53,7 +53,7 @@ pub fn run() -> Result<()> {
       UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
     );
 
-    if cfg!(feature = "upnp") && config::get!(config, v4 / upnp, true) {
+    if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
       net.spawn(upnp::upnp_daemon("rmw", addr.port()));
     }
   }
