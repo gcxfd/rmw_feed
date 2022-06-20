@@ -1,5 +1,5 @@
 [workspace]
-members = ["rmw"]
+members = ["rmw", "config", "dir"]
 exclude = ['lib']
 
 [profile.release]
