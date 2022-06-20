@@ -45,9 +45,14 @@ pub fn run() -> Result<()> {
 
   let config = Config::new();
 
-  if config::get!(config, net / v4, true) {
-    let addr = config::get!(
-      config,
+  macro_rules! get {
+    ($key:expr, $default:expr) => {
+      config::get!(config, $key, $default)
+    };
+  }
+
+  if get!(net / v4, true) {
+    let addr = get!(
       v4 / udp,
       UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
     );
