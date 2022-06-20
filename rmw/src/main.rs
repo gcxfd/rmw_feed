@@ -2,5 +2,6 @@ use config::Config;
 
 fn main() {
   let config = Config::new();
-  println!("Hello, world!");
+  let upnp = config.get("upnp", || true);
+  dbg!(upnp);
 }
