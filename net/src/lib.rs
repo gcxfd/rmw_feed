@@ -1,12 +1,29 @@
 use anyhow::Result;
-use async_std::task::{sleep, spawn};
+use async_std::task::{sleep, spawn, JoinHandle};
 use config::Config;
-use std::{net::UdpSocket, sync::mpsc, time::Duration};
-
-struct Net {}
+use std::{future::Future, net::UdpSocket, sync::mpsc, time::Duration};
 
 pub enum Api {
   Stop,
+}
+
+#[derive(Debug, Default)]
+struct Net {
+  ing: Vec<JoinHandle<()>>,
+}
+
+impl Net {
+  pub fn spawn<F: Future<Output = ()> + Send + 'static>(&mut self, future: F) {
+    self.ing.push(spawn(future));
+  }
+}
+
+impl Drop for Net {
+  fn drop(&mut self) {
+    while let Some(i) = self.ing.pop() {
+      i.cancel();
+    }
+  }
 }
 
 pub fn run() -> Result<()> {
@@ -16,6 +33,7 @@ pub fn run() -> Result<()> {
       .level_for("rmw", log::LevelFilter::Trace)
       .apply()?;
   }
+  let mut net = Net::default();
 
   let (sender, recver) = mpsc::channel();
 
@@ -27,8 +45,7 @@ pub fn run() -> Result<()> {
   );
 
   if cfg!(feature = "upnp") && config::get!(config, v4 / upnp, true) {
-    dbg!(addr);
-    spawn(upnp::upnp_daemon("rmw", addr.port()));
+    net.spawn(upnp::upnp_daemon("rmw", addr.port()));
   }
 
   spawn(async move {
