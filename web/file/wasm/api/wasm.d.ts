@@ -5,9 +5,13 @@
 export class Ws {
   free(): void;
 /**
+*/
+  connect(): void;
+/**
+* @param {string} url
 * @returns {Ws}
 */
-  static new(): Ws;
+  static new(url: string): Ws;
 /**
 * @param {Function} next
 */
@@ -19,11 +23,14 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_ws_free: (a: number) => void;
-  readonly ws_new: () => number;
+  readonly ws_connect: (a: number) => void;
+  readonly ws_new: (a: number, b: number) => number;
   readonly ws_req: (a: number, b: number) => void;
-  readonly __wbindgen_export_0: WebAssembly.Table;
-  readonly __wbindgen_export_1: (a: number) => void;
-  readonly __wbindgen_export_2: () => number;
+  readonly __wbindgen_export_0: (a: number) => number;
+  readonly __wbindgen_export_1: (a: number, b: number, c: number) => number;
+  readonly __wbindgen_export_2: WebAssembly.Table;
+  readonly __wbindgen_export_3: (a: number) => void;
+  readonly __wbindgen_export_4: () => number;
   readonly __wbindgen_start: () => void;
 }
 

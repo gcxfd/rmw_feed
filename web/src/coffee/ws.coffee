@@ -3,7 +3,7 @@
 import WasmInit, {Ws} from ':/wasm/api/wasm.js'
 
 await WasmInit()
-ws = Ws.new()
+ws = Ws.new("ws://127.0.0.1:4910")
 
 ws.req(
   (val)=>
@@ -22,7 +22,7 @@ _conn = (callback)=>
     return WS
 
 
-  ws = new WebSocket("ws://127.0.0.1:4910")
+  ws = new WebSocket()
   ws.binaryType = "arraybuffer"
 
   ws.onmessage = ({data})=>

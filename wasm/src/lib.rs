@@ -2,8 +2,10 @@ use anyhow::Result;
 use api::Api;
 use js_sys::Function;
 use paste::paste;
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, mem::MaybeUninit};
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
@@ -17,19 +19,54 @@ pub fn prepare() {
 }
 
 #[wasm_bindgen]
+extern "C" {
+  #[wasm_bindgen(js_namespace = console)]
+  fn log(s: &str);
+}
+
+#[macro_export]
+macro_rules! log {
+  ($($t:tt)*) => {
+    #[allow(unused_unsafe)]
+    unsafe {log(&format_args!($($t)*).to_string()) }
+  }
+}
+
+#[wasm_bindgen]
 #[derive(Debug)]
 pub struct Ws {
   id: u32,
   next: BTreeMap<u32, Function>,
+  ws: WebSocket,
+  url: String,
 }
 
 #[wasm_bindgen]
 impl Ws {
-  pub fn new() -> Self {
-    Self {
+  pub fn connect(&mut self) {
+    let ws = WebSocket::new(&self.url).unwrap();
+    ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
+
+    {
+      let ws = ws.clone();
+      let onopen_callback = Closure::wrap(Box::new(move |_| {
+        log!("socket opened");
+      }) as Box<dyn FnMut(JsValue)>);
+      ws.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
+      onopen_callback.forget();
+    }
+    self.ws = ws;
+  }
+
+  pub fn new(url: String) -> Self {
+    let mut me = Self {
+      ws: unsafe { MaybeUninit::uninit().assume_init() },
+      url,
       id: 0,
       next: BTreeMap::new(),
-    }
+    };
+    me.connect();
+    me
   }
   pub fn req(&mut self, next: Function) {
     self.id = self.id.wrapping_add(1);
@@ -41,20 +78,20 @@ impl Ws {
 }
 
 /*
-macro_rules! rt {
-($val:ident) => {{
-let run = move || -> Result<_> { Ok(Api::$val.dump()?) };
-match run() {
-Ok(val) => Ok(val),
-Err(err) => Err(JsValue::from_str(&err.to_string())),
-}
-}};
-}
+   macro_rules! rt {
+   ($val:ident) => {{
+   let run = move || -> Result<_> { Ok(Api::$val.dump()?) };
+   match run() {
+   Ok(val) => Ok(val),
+   Err(err) => Err(JsValue::from_str(&err.to_string())),
+   }
+   }};
+   }
 
-type Bytes = Result<Box<[u8]>, JsValue>;
+   type Bytes = Result<Box<[u8]>, JsValue>;
 
-macro_rules! export {
-($cmd:ident) => {
+   macro_rules! export {
+   ($cmd:ident) => {
 #[wasm_bindgen]
 pub fn $cmd(next:&js_sys::Function) -> Bytes {
 paste!{
