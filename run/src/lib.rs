@@ -1,5 +1,4 @@
-use async_std::task::{block_on, spawn, JoinHandle};
-use futures::future::join_all;
+use async_std::task::{spawn, JoinHandle};
 use parking_lot::Mutex;
 use std::{collections::BTreeMap, future::Future, sync::Arc};
 
@@ -26,7 +25,6 @@ impl Run {
       spawn(async move {
         future.await;
         run.lock().ing.remove(&id);
-        //dbg!(("remove", id, run.lock().ing.len()));
       }),
     );
   }
@@ -41,13 +39,11 @@ impl Drop for Run {
       if len == 0 {
         break;
       }
-      let mut li = Vec::with_capacity(len);
       for id in ing.iter().map(|(k, _)| *k).collect::<Vec<usize>>() {
         if let Some(i) = ing.remove(&id) {
-          li.push(i.cancel())
+          spawn(i.cancel());
         }
       }
-      block_on(join_all(li));
     }
   }
 }

@@ -94,7 +94,7 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
   info!("New WebSocket connection: {}", addr);
 
   let (mut ws_sender, mut ws_receiver) = ws_stream.split();
-  let mut interval = async_std::stream::interval(Duration::from_secs(7));
+  let mut interval = async_std::stream::interval(Duration::from_secs(1));
   let mut msg_fut = ws_receiver.next();
   let mut tick_fut = interval.next();
 
@@ -107,6 +107,7 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
               match msg {
                 Message::Binary(msg) => {
                   if let Ok(cmd) = Api::load(&msg) {
+                    dbg!(&cmd);
                     err::log(sender.send(cmd).await);
                   }
                   err::log(ws_sender.send(Message::Binary([].into())).await);
@@ -125,6 +126,7 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
       }
       Either::Right((_, msg_fut_continue)) => {
         err::log(ws_sender.send(Message::Text("".to_owned())).await);
+        dbg!("---");
         msg_fut = msg_fut_continue; // Continue receiving the WebSocket message.
         tick_fut = interval.next(); // Wait for next tick.
       }
