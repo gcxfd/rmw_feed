@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "coffeescript": "^2.7.0",
+    "klaw": "^4.0.1"
+  }
+}

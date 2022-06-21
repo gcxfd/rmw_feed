@@ -1,0 +1,22 @@
+lockfileVersion: 5.3
+
+specifiers:
+  coffeescript: ^2.7.0
+  klaw: ^4.0.1
+
+devDependencies:
+  coffeescript: 2.7.0
+  klaw: 4.0.1
+
+packages:
+
+  /coffeescript/2.7.0:
+    resolution: {integrity: sha512-hzWp6TUE2d/jCcN67LrW1eh5b/rSDKQK6oD6VMLlggYVUUFexgTH9z3dNYihzX4RMhze5FTUsUmOXViJKFQR/A==}
+    engines: {node: '>=6'}
+    hasBin: true
+    dev: true
+
+  /klaw/4.0.1:
+    resolution: {integrity: sha512-pgsE40/SvC7st04AHiISNewaIMUbY5V/K8b21ekiPiFoYs/EYSdsGa+FJArB1d441uq4Q8zZyIxvAzkGNlBdRw==}
+    engines: {node: '>=14.14.0'}
+    dev: true
