@@ -20,7 +20,7 @@ paste = "1.0.7"
 js-sys = "0.3.58"
 
 [dependencies.web-sys]
-version = "0.3"
+version = "0.3.58"
 features = [
   "BinaryType",
   "Blob",
