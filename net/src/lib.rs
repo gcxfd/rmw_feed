@@ -81,6 +81,8 @@ async fn recv(recver: Receiver<Api>) {
   }
 }
 
+const TIMEOUT: usize = 7;
+
 async fn ws(stream: TcpStream, sender: Sender<Api>) {
   let addr = stream
     .peer_addr()
@@ -97,6 +99,9 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
   let mut interval = async_std::stream::interval(Duration::from_secs(1));
   let mut msg_fut = ws_receiver.next();
   let mut tick_fut = interval.next();
+
+  // 7秒没心跳就算关闭
+  let mut recv: usize = TIMEOUT;
 
   loop {
     match select(msg_fut, tick_fut).await {
@@ -123,10 +128,17 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
           }
           None => break, // WebSocket stream terminated.
         }
+        if recv < TIMEOUT {
+          recv += 1;
+        }
       }
       Either::Right((_, msg_fut_continue)) => {
+        if recv == 0 {
+          break;
+        } else {
+          recv -= 1;
+        }
         err::log(ws_sender.send(Message::Text("".to_owned())).await);
-        dbg!("---");
         msg_fut = msg_fut_continue; // Continue receiving the WebSocket message.
         tick_fut = interval.next(); // Wait for next tick.
       }
