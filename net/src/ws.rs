@@ -1,3 +1,4 @@
+use crate::api::api;
 use anyhow::Result;
 use api::Api;
 use async_std::{channel::Sender, net::TcpStream};
@@ -41,9 +42,18 @@ pub async fn ws(stream: TcpStream, sender: Sender<Api>) -> Result<()> {
                         err::log(sender.send(cmd).await);
                         break;
                       }
+                      _ => {
+                        err::log(
+                          ws_sender
+                            .send(Message::Binary(match api(cmd).await {
+                              Ok(r) => r,
+                              Err(r) => format!("{}", r).into(),
+                            }))
+                            .await,
+                        );
+                      }
                     }
                   }
-                  //err::log(ws_sender.send(Message::Binary([].into())).await);
                 }
                 Message::Close(_) => {
                   break;
