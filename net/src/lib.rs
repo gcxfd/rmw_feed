@@ -116,7 +116,6 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
                       Api::Stop => {
                         err::log(sender.send(cmd).await);
                       }
-                      _ => {}
                     }
                   }
                   err::log(ws_sender.send(Message::Binary([].into())).await);
