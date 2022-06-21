@@ -11,9 +11,10 @@ _conn = (callback)=>
 
 
   ws = new WebSocket("ws://127.0.0.1:4910")
+  ws.binaryType = "arraybuffer"
 
   ws.onmessage = ({data})=>
-    if data instanceof Blob
+    if data instanceof ArrayBuffer
       console.log data
     else
       console.log "text",data
