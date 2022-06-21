@@ -87,7 +87,14 @@ async fn ws(stream: TcpStream) {
   let (write, read) = ws_stream.split();
   // We should not forward messages other than text or binary.
   read
-    .try_filter(|msg| ready(msg.is_text() || msg.is_binary()))
+    .try_filter(|msg| {
+      ready(msg.is_binary())
+      //ready(msg.is_text() || msg.is_binary())
+    })
+    .map(|msg| {
+      dbg!(&msg);
+      msg
+    })
     .forward(write)
     .await
     .expect("Failed to forward messages")
