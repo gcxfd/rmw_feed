@@ -1,5 +1,6 @@
 use anyhow::Result;
 use api::Api;
+use paste::paste;
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
@@ -25,11 +26,21 @@ macro_rules! rt {
 
 type Bytes = Result<Box<[u8]>, JsValue>;
 
-#[wasm_bindgen]
-pub fn stop() -> Bytes {
-  rt!(Stop)
+macro_rules! export {
+  ($cmd:ident) => {
+    #[wasm_bindgen]
+    pub fn $cmd() -> Bytes {
+      paste!{
+        rt!([<$cmd:camel>])
+      }
+    }
+  };
+  ($($cmd:ident),+) => {
+    $(export!($cmd);)+
+  };
 }
 
+export!(stop, conf);
 /*
 #[wasm_bindgen]
 pub fn get(addr: &str, path: Box<[u8]>) -> Bytes {
@@ -41,7 +52,7 @@ path,
 */
 
 /*
-*/
+ */
 
 /*
 #[wasm_bindgen]
@@ -70,6 +81,6 @@ enumeration: Enum::C,
 };
 
 original.write_to_vec().unwrap()
-//let deserialized: Struct = Struct::read_from_buffer(&bytes).unwrap();
-}
-*/
+  //let deserialized: Struct = Struct::read_from_buffer(&bytes).unwrap();
+  }
+  */

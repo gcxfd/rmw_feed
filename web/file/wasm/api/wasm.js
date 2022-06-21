@@ -56,6 +56,28 @@ export function stop() {
     }
 }
 
+/**
+* @returns {Uint8Array}
+*/
+export function conf() {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        wasm.conf(retptr);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var r2 = getInt32Memory0()[retptr / 4 + 2];
+        var r3 = getInt32Memory0()[retptr / 4 + 3];
+        if (r3) {
+            throw takeFromExternrefTable0(r2);
+        }
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_export_2(r0, r1 * 1);
+        return v0;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
 async function load(module, imports) {
     if (typeof Response === 'function' && module instanceof Response) {
         if (typeof WebAssembly.instantiateStreaming === 'function') {

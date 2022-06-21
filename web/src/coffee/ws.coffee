@@ -57,5 +57,5 @@ export default =>
       _conn(resolve)
       return
   ]
-  #send api.stop()
+  send api.stop()
   return

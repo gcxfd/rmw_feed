@@ -45,10 +45,10 @@ pub async fn ws(stream: TcpStream, sender: Sender<Api>) -> Result<()> {
                       _ => {
                         err::log(
                           ws_sender
-                            .send(Message::Binary(match api(cmd).await {
-                              Ok(r) => r,
-                              Err(r) => format!("{}", r).into(),
-                            }))
+                            .send(match api(cmd).await {
+                              Ok(r) => Message::Binary(r),
+                              Err(r) => Message::Text(format!("{}", r).into()),
+                            })
                             .await,
                         );
                       }

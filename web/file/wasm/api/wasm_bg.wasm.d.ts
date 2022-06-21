@@ -2,6 +2,7 @@
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
 export function stop(a: number): void;
+export function conf(a: number): void;
 export const __wbindgen_export_0: WebAssembly.Table;
 export function __wbindgen_add_to_stack_pointer(a: number): number;
 export function __wbindgen_export_1(a: number): void;

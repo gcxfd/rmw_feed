@@ -4,12 +4,17 @@
 * @returns {Uint8Array}
 */
 export function stop(): Uint8Array;
+/**
+* @returns {Uint8Array}
+*/
+export function conf(): Uint8Array;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly stop: (a: number) => void;
+  readonly conf: (a: number) => void;
   readonly __wbindgen_export_0: WebAssembly.Table;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_export_1: (a: number) => void;
