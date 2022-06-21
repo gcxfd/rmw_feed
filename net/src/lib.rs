@@ -112,8 +112,12 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
               match msg {
                 Message::Binary(msg) => {
                   if let Ok(cmd) = Api::load(&msg) {
-                    dbg!(&cmd);
-                    err::log(sender.send(cmd).await);
+                    match cmd {
+                      Api::Stop => {
+                        err::log(sender.send(cmd).await);
+                      }
+                      _ => {}
+                    }
                   }
                   err::log(ws_sender.send(Message::Binary([].into())).await);
                 }
@@ -132,7 +136,6 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
       }
       Either::Right((_, msg_fut_continue)) => {
         if alive == 0 {
-          dbg!(("close", addr));
           break;
         }
         if alive == 1 {
