@@ -54,9 +54,7 @@ pub fn run() -> Result<()> {
 
       while let Ok((stream, _)) = listener.accept().await {
         let sender = sender.clone();
-        ws_run.spawn(async move {
-          ws(stream, sender);
-        });
+        ws_run.spawn(ws(stream, sender));
       }
     });
   }
@@ -93,10 +91,6 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
   // We should not forward messages other than text or binary.
   read
     .try_filter_map(|msg| async {
-      //if let Ok(cmd) = Api::load(&msg) {
-      //  dbg!(&cmd);
-      //}
-      //ready(msg.is_text() || msg.is_binary())
       Ok(match msg {
         Message::Binary(msg) => {
           if let Ok(cmd) = Api::load(&msg) {
