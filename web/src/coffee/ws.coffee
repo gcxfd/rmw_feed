@@ -12,8 +12,12 @@ _conn = (callback)=>
 
   ws = new WebSocket("ws://127.0.0.1:4910")
 
-  ws.onmessage = (msg)=>
-    console.log await msg.data
+  ws.onmessage = ({data})=>
+    if data instanceof Blob
+      console.log data
+    else
+      console.log "text",data
+
     return
 
     return
@@ -57,5 +61,5 @@ export default =>
       _conn(resolve)
       return
   ]
-  send api.stop()
+  send api.conf()
   return
