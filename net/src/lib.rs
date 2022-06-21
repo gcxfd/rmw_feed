@@ -6,22 +6,15 @@ mod ws;
 use anyhow::Result;
 use api::Api;
 use async_std::{
-  channel::{unbounded, Receiver, Sender},
-  net::{TcpListener, TcpStream},
+  channel::{unbounded, Receiver},
+  net::TcpListener,
   task::block_on,
 };
 use config::Config;
-use futures::{
-  future::{select, Either},
-  SinkExt, StreamExt,
-};
-use log::info;
+
 use run::Run;
-use std::{
-  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
-  time::Duration,
-};
-use tungstenite::Message;
+use std::net::{Ipv4Addr, SocketAddrV4, UdpSocket};
+
 use ws::ws;
 
 pub fn run() -> Result<()> {

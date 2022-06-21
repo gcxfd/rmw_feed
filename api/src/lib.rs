@@ -1,6 +1,6 @@
 use speedy::{Error, Readable, Writable};
 
-#[derive(PartialEq, Debug, Readable, Writable)]
+#[derive(PartialEq, Eq, Debug, Readable, Writable)]
 #[repr(u8)]
 #[speedy(tag_type=u8)]
 pub enum Api {
