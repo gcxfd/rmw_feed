@@ -25,11 +25,11 @@ macro_rules! rt {
 
 type Bytes = Result<Box<[u8]>, JsValue>;
 
-#[allow(non_snake_case)]
 #[wasm_bindgen]
 pub fn stop() -> Bytes {
   rt!(Stop)
 }
+
 /*
 #[wasm_bindgen]
 pub fn get(addr: &str, path: Box<[u8]>) -> Bytes {
