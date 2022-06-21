@@ -64,6 +64,7 @@ impl Ws {
       let url = url.clone();
       on!(error {
         move |err| {
+          self.ws = None;
           log!("{} {:?}",url,err);
           let _ = ws.close();
         }
