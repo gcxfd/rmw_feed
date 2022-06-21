@@ -11,4 +11,4 @@ file=${@:1}
 fi
 
 npx coffee -M -o $DIR/lib -c $DIR/src
-deno run -A $DIR/lib/$file.js
+exec deno run -A $DIR/lib/$file.js

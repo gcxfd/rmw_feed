@@ -135,6 +135,7 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
         alive = 2;
       }
       Either::Right((_, msg_fut_continue)) => {
+        dbg!(alive);
         if alive == 0 {
           break;
         }
