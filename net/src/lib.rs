@@ -89,14 +89,14 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
 
   let (write, read) = ws_stream.split();
   // We should not forward messages other than text or binary.
+
   read
     .try_filter_map(|msg| async {
       Ok(match msg {
         Message::Binary(msg) => {
           if let Ok(cmd) = Api::load(&msg) {
-            err::log(sender.send(cmd).await);
-            //Some(Message::Binary([].into()))
-            None
+            //sender.send(cmd).await;
+            Some(Message::Binary([].into()))
           } else {
             None
           }
