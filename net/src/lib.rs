@@ -1,6 +1,5 @@
 #![feature(async_closure)]
 
-pub mod r#enum;
 mod ws;
 
 use anyhow::Result;
