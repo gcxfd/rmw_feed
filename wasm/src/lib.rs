@@ -2,7 +2,7 @@ use anyhow::Result;
 use api::Api;
 use js_sys::Function;
 use paste::paste;
-use std::{collections::BTreeMap, mem::MaybeUninit};
+use std::{cell::RefCell, collections::BTreeMap, mem::MaybeUninit, rc::Rc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
@@ -34,15 +34,28 @@ macro_rules! log {
 
 #[wasm_bindgen]
 #[derive(Debug)]
-pub struct Ws {
+pub struct W {
   id: u32,
   next: BTreeMap<u32, Function>,
-  ws: Option<WebSocket>,
-  url: String,
+  ws: Ws,
 }
 
-#[wasm_bindgen]
+#[derive(Clone, Default, Debug)]
+struct Ws {
+  url: String,
+  ws: Rc<Option<WebSocket>>,
+}
+
 impl Ws {
+  pub fn new(url: String) -> Self {
+    let mut me = Self {
+      url,
+      ws: Rc::new(None),
+    };
+    me.connect();
+    me
+  }
+
   pub fn connect(&mut self) {
     let url = &self.url;
     let ws = WebSocket::new(url).unwrap();
@@ -62,9 +75,10 @@ impl Ws {
     {
       let ws = ws.clone();
       let url = url.clone();
+      let mut me = self.clone();
       on!(error {
         move |err| {
-          self.ws = None;
+          me.ws = Rc::new(None);
           log!("{} {:?}",url,err);
           let _ = ws.close();
         }
@@ -79,17 +93,18 @@ impl Ws {
       log!("socket opened");
     }});
 
-    self.ws = Some(ws);
+    self.ws = Some(ws).into();
   }
+}
 
+#[wasm_bindgen]
+impl W {
   pub fn new(url: String) -> Self {
     let mut me = Self {
-      ws: None,
-      url,
+      ws: Ws::new(url),
       id: 0,
       next: BTreeMap::new(),
     };
-    me.connect();
     me
   }
   pub fn req(&mut self, next: Function) {

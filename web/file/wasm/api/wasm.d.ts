@@ -2,16 +2,13 @@
 /* eslint-disable */
 /**
 */
-export class Ws {
+export class W {
   free(): void;
 /**
-*/
-  connect(): void;
-/**
 * @param {string} url
-* @returns {Ws}
+* @returns {W}
 */
-  static new(url: string): Ws;
+  static new(url: string): W;
 /**
 * @param {Function} next
 */
@@ -22,10 +19,9 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_ws_free: (a: number) => void;
-  readonly ws_connect: (a: number) => void;
-  readonly ws_new: (a: number, b: number) => number;
-  readonly ws_req: (a: number, b: number) => void;
+  readonly __wbg_w_free: (a: number) => void;
+  readonly w_new: (a: number, b: number) => number;
+  readonly w_req: (a: number, b: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;

@@ -192,49 +192,44 @@ function handleError(f, args) {
     }
 }
 
-const WsFinalization = new FinalizationRegistry(ptr => wasm.__wbg_ws_free(ptr));
+const WFinalization = new FinalizationRegistry(ptr => wasm.__wbg_w_free(ptr));
 /**
 */
-export class Ws {
+export class W {
 
     static __wrap(ptr) {
-        const obj = Object.create(Ws.prototype);
+        const obj = Object.create(W.prototype);
         obj.ptr = ptr;
-        WsFinalization.register(obj, obj.ptr, obj);
+        WFinalization.register(obj, obj.ptr, obj);
         return obj;
     }
 
     __destroy_into_raw() {
         const ptr = this.ptr;
         this.ptr = 0;
-        WsFinalization.unregister(this);
+        WFinalization.unregister(this);
         return ptr;
     }
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_ws_free(ptr);
-    }
-    /**
-    */
-    connect() {
-        wasm.ws_connect(this.ptr);
+        wasm.__wbg_w_free(ptr);
     }
     /**
     * @param {string} url
-    * @returns {Ws}
+    * @returns {W}
     */
     static new(url) {
         const ptr0 = passStringToWasm0(url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.ws_new(ptr0, len0);
-        return Ws.__wrap(ret);
+        const ret = wasm.w_new(ptr0, len0);
+        return W.__wrap(ret);
     }
     /**
     * @param {Function} next
     */
     req(next) {
-        wasm.ws_req(this.ptr, next);
+        wasm.w_req(this.ptr, next);
     }
 }
 
