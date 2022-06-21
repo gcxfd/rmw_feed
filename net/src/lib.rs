@@ -62,7 +62,9 @@ pub fn run() -> Result<()> {
 
       while let Ok((stream, _)) = listener.accept().await {
         let sender = sender.clone();
-        ws_run.spawn(ws(stream, sender));
+        ws_run.spawn(async move {
+          err::log(ws(stream, sender).await);
+        });
       }
     });
   }
@@ -83,15 +85,10 @@ async fn recv(recver: Receiver<Api>) {
 
 const TIMEOUT: usize = 7;
 
-async fn ws(stream: TcpStream, sender: Sender<Api>) {
-  let addr = stream
-    .peer_addr()
-    .expect("connected streams should have a peer address");
-  info!("Peer address: {}", addr);
+async fn ws(stream: TcpStream, sender: Sender<Api>) -> Result<()> {
+  let addr = stream.peer_addr()?;
 
-  let ws_stream = async_tungstenite::accept_async(stream)
-    .await
-    .expect("Error during the websocket handshake occurred");
+  let ws_stream = async_tungstenite::accept_async(stream).await?;
 
   info!("New WebSocket connection: {}", addr);
 
@@ -147,14 +144,5 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
     }
   }
 
-  // We should not forward messages other than text or binary.
-  /*
-  let msg = Msg { sender };
-  err::log(
-  read
-  .try_filter_map(async { Ok(msg.recv(m).await) })
-  .forward(write)
-  .await,
-  )
-  */
+  Ok(())
 }
