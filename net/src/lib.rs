@@ -96,12 +96,12 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
   info!("New WebSocket connection: {}", addr);
 
   let (mut ws_sender, mut ws_receiver) = ws_stream.split();
-  let mut interval = async_std::stream::interval(Duration::from_secs(1));
+  let mut interval = async_std::stream::interval(Duration::from_secs(TIMEOUT as _));
   let mut msg_fut = ws_receiver.next();
   let mut tick_fut = interval.next();
 
   // 7秒没心跳就算关闭
-  let mut recv: usize = TIMEOUT;
+  let mut alive: u8 = 2;
 
   loop {
     match select(msg_fut, tick_fut).await {
@@ -128,17 +128,17 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
           }
           None => break, // WebSocket stream terminated.
         }
-        if recv < TIMEOUT {
-          recv += 1;
-        }
+        alive = 2;
       }
       Either::Right((_, msg_fut_continue)) => {
-        if recv == 0 {
+        if alive == 0 {
+          dbg!(("close", addr));
           break;
-        } else {
-          recv -= 1;
         }
-        err::log(ws_sender.send(Message::Text("".to_owned())).await);
+        if alive == 1 {
+          err::log(ws_sender.send(Message::Ping(Vec::new())).await);
+        }
+        alive -= 1;
         msg_fut = msg_fut_continue; // Continue receiving the WebSocket message.
         tick_fut = interval.next(); // Wait for next tick.
       }
