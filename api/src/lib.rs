@@ -5,6 +5,7 @@ use speedy::{Error, Readable, Writable};
 #[speedy(tag_type=u8)]
 pub enum Api {
   Stop,
+  Conf,
 }
 
 impl Api {
