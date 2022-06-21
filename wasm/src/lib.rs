@@ -1,11 +1,11 @@
-use anyhow::Result;
-use api::Api;
+#![feature(get_mut_unchecked)]
+
 use js_sys::Function;
 use paste::paste;
-use std::{cell::RefCell, collections::BTreeMap, mem::MaybeUninit, rc::Rc};
+use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{ErrorEvent, MessageEvent, WebSocket};
+use web_sys::{ErrorEvent, WebSocket};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
@@ -36,28 +36,38 @@ macro_rules! log {
 #[derive(Debug)]
 pub struct W {
   id: u32,
-  next: BTreeMap<u32, Function>,
-  ws: Ws,
+  ws: Rc<RefCell<Ws>>,
 }
 
-#[derive(Clone, Default, Debug)]
+#[derive(Default, Debug)]
 struct Ws {
   url: String,
-  ws: Rc<Option<WebSocket>>,
+  ws: Option<WebSocket>,
+  next: BTreeMap<u32, Function>,
 }
 
 impl Ws {
   pub fn new(url: String) -> Self {
-    let mut me = Self {
+    Self {
+      next: BTreeMap::new(),
       url,
-      ws: Rc::new(None),
-    };
-    me.connect();
-    me
+      ws: None,
+    }
   }
 
-  pub fn connect(&mut self) {
-    let url = &self.url;
+  fn set(&mut self, ws: WebSocket) {
+    self.ws = Some(ws);
+  }
+
+  fn clear(&mut self) {
+    self.ws = None;
+  }
+}
+
+impl W {
+  fn connect(&self) {
+    let _ws = &self.ws;
+    let url = &_ws.borrow().url;
     let ws = WebSocket::new(url).unwrap();
     ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
@@ -75,10 +85,10 @@ impl Ws {
     {
       let ws = ws.clone();
       let url = url.clone();
-      let mut me = self.clone();
+      let me = _ws.clone();
       on!(error {
         move |err| {
-          me.ws = Rc::new(None);
+          me.borrow_mut().clear();
           log!("{} {:?}",url,err);
           let _ = ws.close();
         }
@@ -93,26 +103,29 @@ impl Ws {
       log!("socket opened");
     }});
 
-    self.ws = Some(ws).into();
+    self.ws.borrow_mut().set(ws);
   }
 }
 
 #[wasm_bindgen]
 impl W {
   pub fn new(url: String) -> Self {
-    let mut me = Self {
-      ws: Ws::new(url),
+    let me = Self {
+      ws: Rc::new(RefCell::new(Ws::new(url))),
       id: 0,
-      next: BTreeMap::new(),
     };
+    me.connect();
     me
   }
+
   pub fn req(&mut self, next: Function) {
     self.id = self.id.wrapping_add(1);
+    /*
     self.next.insert(self.id, next.clone());
     let this = JsValue::null();
     let val = JsValue::from(1);
     let _ = next.call1(&this, &val);
+    */
   }
 }
 
