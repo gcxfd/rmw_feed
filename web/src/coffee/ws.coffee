@@ -57,5 +57,5 @@ export default =>
     new Promise (resolve, reject)=>
       _conn(resolve)
   ]
-  #send api.stop()
+  send api.stop()
   return

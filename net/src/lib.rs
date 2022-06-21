@@ -1,18 +1,18 @@
 pub mod r#enum;
 
+use run::Run;
+
 use anyhow::Result;
 use api::Api;
-use async_std::net::{TcpListener, TcpStream};
+use async_std::{
+  channel::{unbounded, Receiver, Sender},
+  net::{TcpListener, TcpStream},
+  task::block_on,
+};
 use config::Config;
 use futures::{StreamExt, TryStreamExt};
 use log::info;
-
-use run::Run;
-use std::{
-  future::ready,
-  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
-  sync::mpsc::{channel, Receiver},
-};
+use std::net::{Ipv4Addr, SocketAddrV4, UdpSocket};
 
 pub fn run() -> Result<()> {
   #[cfg(feature = "log")]
@@ -23,7 +23,7 @@ pub fn run() -> Result<()> {
   }
   let mut run = Run::default();
 
-  let (_sender, recver) = channel();
+  let (sender, recver) = unbounded();
 
   let config = Config::new();
 
@@ -53,17 +53,20 @@ pub fn run() -> Result<()> {
       let listener = try_socket.unwrap();
 
       while let Ok((stream, _)) = listener.accept().await {
-        ws_run.spawn(ws(stream));
+        let sender = sender.clone();
+        ws_run.spawn(async move {
+          ws(stream, sender);
+        });
       }
     });
   }
 
-  recv(recver);
+  block_on(recv(recver));
   Ok(())
 }
 
-fn recv(recver: Receiver<Api>) {
-  while let Ok(msg) = recver.recv() {
+async fn recv(recver: Receiver<Api>) {
+  while let Ok(msg) = recver.recv().await {
     match msg {
       Api::Stop => {
         break;
@@ -72,7 +75,9 @@ fn recv(recver: Receiver<Api>) {
   }
 }
 
-async fn ws(stream: TcpStream) {
+async fn ws(stream: TcpStream, sender: Sender<Api>) {
+  use tungstenite::Message;
+
   let addr = stream
     .peer_addr()
     .expect("connected streams should have a peer address");
@@ -87,13 +92,23 @@ async fn ws(stream: TcpStream) {
   let (write, read) = ws_stream.split();
   // We should not forward messages other than text or binary.
   read
-    .try_filter(|msg| {
-      ready(msg.is_binary())
+    .try_filter_map(|msg| async {
+      //if let Ok(cmd) = Api::load(&msg) {
+      //  dbg!(&cmd);
+      //}
       //ready(msg.is_text() || msg.is_binary())
-    })
-    .map(|msg| {
-      dbg!(&msg);
-      msg
+      Ok(match msg {
+        Message::Binary(msg) => {
+          if let Ok(cmd) = Api::load(&msg) {
+            err::log(sender.send(cmd).await);
+            //Some(Message::Binary([].into()))
+            None
+          } else {
+            None
+          }
+        }
+        _ => None,
+      })
     })
     .forward(write)
     .await
