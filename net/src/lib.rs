@@ -1,6 +1,6 @@
-pub mod r#enum;
+#![feature(async_closure)]
 
-use run::Run;
+pub mod r#enum;
 
 use anyhow::Result;
 use api::Api;
@@ -10,9 +10,17 @@ use async_std::{
   task::block_on,
 };
 use config::Config;
-use futures::{StreamExt, TryStreamExt};
+use futures::{
+  future::{select, Either},
+  SinkExt, StreamExt,
+};
 use log::info;
-use std::net::{Ipv4Addr, SocketAddrV4, UdpSocket};
+use run::Run;
+use std::{
+  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
+  time::Duration,
+};
+use tungstenite::Message;
 
 pub fn run() -> Result<()> {
   #[cfg(feature = "log")]
@@ -74,8 +82,6 @@ async fn recv(recver: Receiver<Api>) {
 }
 
 async fn ws(stream: TcpStream, sender: Sender<Api>) {
-  use tungstenite::Message;
-
   let addr = stream
     .peer_addr()
     .expect("connected streams should have a peer address");
@@ -87,25 +93,52 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
 
   info!("New WebSocket connection: {}", addr);
 
-  let (write, read) = ws_stream.split();
-  // We should not forward messages other than text or binary.
+  let (mut ws_sender, mut ws_receiver) = ws_stream.split();
+  let mut interval = async_std::stream::interval(Duration::from_secs(7));
+  let mut msg_fut = ws_receiver.next();
+  let mut tick_fut = interval.next();
 
-  err::log(
-    read
-      .try_filter_map(|msg| async {
-        Ok(match msg {
-          Message::Binary(msg) => {
-            if let Ok(cmd) = Api::load(&msg) {
-              sender.send(cmd).await;
-              Some(Message::Binary([].into()))
-            } else {
-              None
+  loop {
+    match select(msg_fut, tick_fut).await {
+      Either::Left((msg, tick_fut_continue)) => {
+        match msg {
+          Some(msg) => {
+            if let Ok(msg) = msg {
+              match msg {
+                Message::Binary(msg) => {
+                  if let Ok(cmd) = Api::load(&msg) {
+                    err::log(sender.send(cmd).await);
+                  }
+                  err::log(ws_sender.send(Message::Binary([].into())).await);
+                }
+                Message::Close(_) => {
+                  break;
+                }
+                _ => {}
+              }
             }
+            tick_fut = tick_fut_continue; // Continue waiting for tick.
+            msg_fut = ws_receiver.next(); // Receive next WebSocket message.
           }
-          _ => None,
-        })
-      })
-      .forward(write)
-      .await,
+          None => break, // WebSocket stream terminated.
+        }
+      }
+      Either::Right((_, msg_fut_continue)) => {
+        err::log(ws_sender.send(Message::Text("".to_owned())).await);
+        msg_fut = msg_fut_continue; // Continue receiving the WebSocket message.
+        tick_fut = interval.next(); // Wait for next tick.
+      }
+    }
+  }
+
+  // We should not forward messages other than text or binary.
+  /*
+  let msg = Msg { sender };
+  err::log(
+  read
+  .try_filter_map(async { Ok(msg.recv(m).await) })
+  .forward(write)
+  .await,
   )
+  */
 }
