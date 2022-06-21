@@ -18,8 +18,6 @@ NAME=wasm
 
 rust_wasm=../target/wasm32-unknown-unknown/release/$NAME.wasm
 
-wasm-opt --enable-reference-types -O3 -o $rust_wasm $rust_wasm
-
 wasm-bindgen \
   $rust_wasm \
   --out-dir pkg \

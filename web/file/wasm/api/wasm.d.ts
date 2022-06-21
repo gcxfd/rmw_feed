@@ -26,11 +26,13 @@ export interface InitOutput {
   readonly ws_connect: (a: number) => void;
   readonly ws_new: (a: number, b: number) => number;
   readonly ws_req: (a: number, b: number) => void;
-  readonly __wbindgen_export_0: (a: number) => number;
-  readonly __wbindgen_export_1: (a: number, b: number, c: number) => number;
+  readonly __wbindgen_malloc: (a: number) => number;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly __wbindgen_export_3: (a: number) => void;
-  readonly __wbindgen_export_4: () => number;
+  readonly __wbindgen_export_3: WebAssembly.Table;
+  readonly closure2_externref_shim: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_exn_store: (a: number) => void;
+  readonly __externref_table_alloc: () => number;
   readonly __wbindgen_start: () => void;
 }
 

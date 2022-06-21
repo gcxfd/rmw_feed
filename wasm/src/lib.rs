@@ -48,10 +48,9 @@ impl Ws {
     ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
     {
-      let ws = ws.clone();
       let onopen_callback = Closure::wrap(Box::new(move |_| {
         log!("socket opened");
-      }) as Box<dyn FnMut(JsValue)>);
+      }) as Box<dyn Fn(JsValue)>);
       ws.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
       onopen_callback.forget();
     }
