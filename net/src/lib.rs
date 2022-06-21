@@ -121,6 +121,7 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
                   err::log(ws_sender.send(Message::Binary([].into())).await);
                 }
                 Message::Close(_) => {
+                  dbg!(msg);
                   break;
                 }
                 _ => {}
@@ -147,6 +148,7 @@ async fn ws(stream: TcpStream, sender: Sender<Api>) {
     }
   }
 
+  dbg!(("close ", &addr));
   // We should not forward messages other than text or binary.
   /*
   let msg = Msg { sender };
