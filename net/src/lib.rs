@@ -1,6 +1,7 @@
 #![feature(async_closure)]
 
 pub mod r#enum;
+mod ws;
 
 use anyhow::Result;
 use api::Api;
@@ -21,6 +22,7 @@ use std::{
   time::Duration,
 };
 use tungstenite::Message;
+use ws::ws;
 
 pub fn run() -> Result<()> {
   #[cfg(feature = "log")]
@@ -81,68 +83,4 @@ async fn recv(recver: Receiver<Api>) {
       }
     }
   }
-}
-
-const TIMEOUT: usize = 7;
-
-async fn ws(stream: TcpStream, sender: Sender<Api>) -> Result<()> {
-  let addr = stream.peer_addr()?;
-
-  let ws_stream = async_tungstenite::accept_async(stream).await?;
-
-  info!("New WebSocket connection: {}", addr);
-
-  let (mut ws_sender, mut ws_receiver) = ws_stream.split();
-  let mut interval = async_std::stream::interval(Duration::from_secs(TIMEOUT as _));
-  let mut msg_fut = ws_receiver.next();
-  let mut tick_fut = interval.next();
-
-  // 7秒没心跳就算关闭
-  let mut alive: u8 = 2;
-
-  loop {
-    match select(msg_fut, tick_fut).await {
-      Either::Left((msg, tick_fut_continue)) => {
-        match msg {
-          Some(msg) => {
-            if let Ok(msg) = msg {
-              match msg {
-                Message::Binary(msg) => {
-                  if let Ok(cmd) = Api::load(&msg) {
-                    match cmd {
-                      Api::Stop => {
-                        err::log(sender.send(cmd).await);
-                      }
-                    }
-                  }
-                  err::log(ws_sender.send(Message::Binary([].into())).await);
-                }
-                Message::Close(_) => {
-                  break;
-                }
-                _ => {}
-              }
-            }
-            tick_fut = tick_fut_continue; // Continue waiting for tick.
-            msg_fut = ws_receiver.next(); // Receive next WebSocket message.
-          }
-          None => break, // WebSocket stream terminated.
-        }
-        alive = 2;
-      }
-      Either::Right((_, msg_fut_continue)) => {
-        if alive == 0 {
-          break;
-        }
-        if alive == 1 {
-          err::log(ws_sender.send(Message::Ping(Vec::new())).await);
-        }
-        alive -= 1;
-        msg_fut = msg_fut_continue; // Continue receiving the WebSocket message.
-        tick_fut = interval.next(); // Wait for next tick.
-      }
-    }
-  }
-
-  Ok(())
 }
