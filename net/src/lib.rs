@@ -74,6 +74,7 @@ async fn recv(recver: Receiver<Api>) {
       Api::Stop => {
         break;
       }
+      _ => {}
     }
   }
 }
