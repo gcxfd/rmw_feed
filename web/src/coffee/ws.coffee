@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-import WasmInit,{iStop} from ':/wasm/api/wasm.js'
+import WasmInit, * as api from ':/wasm/api/wasm.js'
 
 
 export default =>
@@ -29,5 +29,5 @@ export default =>
     #send get('127.0.0.1:3232','/1/2/3')
     #close()
     await wasmInit
-    send iStop()
+    send api.stop()
     return

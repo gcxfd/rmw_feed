@@ -27,7 +27,7 @@ type Bytes = Result<Box<[u8]>, JsValue>;
 
 #[allow(non_snake_case)]
 #[wasm_bindgen]
-pub fn iStop() -> Bytes {
+pub fn stop() -> Bytes {
   rt!(Stop)
 }
 /*
