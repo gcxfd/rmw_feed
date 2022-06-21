@@ -1,7 +1,19 @@
 #!/usr/bin/env coffee
 
-import WasmInit, * as api from ':/wasm/api/wasm.js'
+import WasmInit, {Ws} from ':/wasm/api/wasm.js'
 
+await WasmInit()
+ws = Ws.new()
+
+ws.req(
+  (val)=>
+    console.log val
+    return
+)
+
+
+export default {}
+###
 WS = undefined
 LI = []
 
@@ -64,3 +76,4 @@ export default =>
   ]
   send api.conf()
   return
+###

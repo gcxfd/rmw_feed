@@ -4,7 +4,6 @@ import ws from '~/coffee/ws.coffee'
 import logo from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
 
-ws()
 
 我 = 3333
 x = 4

@@ -33,8 +33,10 @@ impl Ws {
   }
   pub fn req(&mut self, next: Function) {
     self.id = self.id.wrapping_add(1);
-    self.next.insert(self.id, next);
-    dbg!(self);
+    self.next.insert(self.id, next.clone());
+    let this = JsValue::null();
+    let val = JsValue::from(1);
+    let _ = next.call1(&this, &val);
   }
 }
 

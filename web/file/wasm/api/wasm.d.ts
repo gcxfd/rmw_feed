@@ -1,24 +1,29 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @returns {Uint8Array}
 */
-export function stop(): Uint8Array;
+export class Ws {
+  free(): void;
 /**
-* @returns {Uint8Array}
+* @returns {Ws}
 */
-export function conf(): Uint8Array;
+  static new(): Ws;
+/**
+* @param {Function} next
+*/
+  req(next: Function): void;
+}
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly stop: (a: number) => void;
-  readonly conf: (a: number) => void;
+  readonly __wbg_ws_free: (a: number) => void;
+  readonly ws_new: () => number;
+  readonly ws_req: (a: number, b: number) => void;
   readonly __wbindgen_export_0: WebAssembly.Table;
-  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_export_1: (a: number) => void;
-  readonly __wbindgen_export_2: (a: number, b: number) => void;
+  readonly __wbindgen_export_2: () => number;
   readonly __wbindgen_start: () => void;
 }
 
