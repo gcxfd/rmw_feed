@@ -5,14 +5,10 @@ import WasmInit, * as api from ':/wasm/api/wasm.js'
 WS = undefined
 LI = []
 
-_conn = =>
+_conn = (callback)=>
   if WS
     return WS
 
-  resolve = undefined
-  promise = new Promise (r)=>
-    resolve = r
-    return
 
   ws = new WebSocket("ws://127.0.0.1:4910")
 
@@ -42,11 +38,10 @@ _conn = =>
         break
       ws.send(msg)
     WS = ws
-    resolve()
+    callback?()
     return
 
-  promise
-
+  return
 
 send = (msg)=>
   if WS
@@ -58,7 +53,9 @@ send = (msg)=>
 export default =>
   await Promise.all [
     WasmInit()
-    _conn()
+    new Promise (resolve)=>
+      _conn(resolve)
+      return
   ]
   #send api.stop()
   return
