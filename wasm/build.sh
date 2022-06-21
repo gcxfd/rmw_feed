@@ -26,5 +26,4 @@ wasm-bindgen \
   --reference-types
 
 wasm-opt --enable-reference-types -O3 -o ./pkg/api_bg.wasm ./pkg/api_bg.wasm
-# wasm-opt --enable-reference-types -O3 -o ./pkg/$NAME_bg.wasm ./pkg/$NAME_bg.wasm
 rsync -av ./pkg/* ../web/file/wasm/api/

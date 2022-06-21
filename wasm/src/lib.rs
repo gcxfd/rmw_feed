@@ -37,29 +37,53 @@ macro_rules! log {
 pub struct Ws {
   id: u32,
   next: BTreeMap<u32, Function>,
-  ws: WebSocket,
+  ws: Option<WebSocket>,
   url: String,
 }
 
 #[wasm_bindgen]
 impl Ws {
   pub fn connect(&mut self) {
-    let ws = WebSocket::new(&self.url).unwrap();
+    let url = &self.url;
+    let ws = WebSocket::new(url).unwrap();
     ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
-    {
-      let onopen_callback = Closure::wrap(Box::new(move |_| {
-        log!("socket opened");
-      }) as Box<dyn Fn(JsValue)>);
-      ws.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
-      onopen_callback.forget();
+    macro_rules! on {
+      ($evt:ident $run:block) => {
+        on!($evt $run JsValue)
+      };
+      ($evt:ident $run:block $type:ident) => {{
+        let on = Closure::wrap(Box::new($run) as Box<dyn FnMut($type)>);
+        paste! {ws.[<set_on $evt>](Some(on.as_ref().unchecked_ref()))};
+        on.forget();
+      }};
     }
-    self.ws = ws;
+
+    {
+      let ws = ws.clone();
+      let url = url.clone();
+      on!(error {
+        move |err| {
+          log!("{} {:?}",url,err);
+          let _ = ws.close();
+        }
+      } ErrorEvent);
+    }
+
+    on!(close {move |_| {
+      log!("socket close");
+    }});
+
+    on!(open {move |_| {
+      log!("socket opened");
+    }});
+
+    self.ws = Some(ws);
   }
 
   pub fn new(url: String) -> Self {
     let mut me = Self {
-      ws: unsafe { MaybeUninit::uninit().assume_init() },
+      ws: None,
       url,
       id: 0,
       next: BTreeMap::new(),
