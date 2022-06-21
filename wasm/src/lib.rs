@@ -1,5 +1,6 @@
 #![feature(get_mut_unchecked)]
 
+use api::Api;
 use js_sys::Function;
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
@@ -43,7 +44,7 @@ pub struct W {
 struct Ws {
   url: String,
   ws: Option<WebSocket>,
-  next: BTreeMap<u32, Function>,
+  next: BTreeMap<u32, (Box<[u8]>, Function)>,
 }
 
 impl Ws {
@@ -61,6 +62,10 @@ impl Ws {
 
   fn clear(&mut self) {
     self.ws = None;
+  }
+
+  fn req(&mut self, id: u32, msg: Box<[u8]>, next: Function) {
+    self.next.insert(id, (msg, next));
   }
 }
 
@@ -96,19 +101,46 @@ impl W {
     }
 
     on!(close {move |_| {
-      log!("socket close");
     }});
 
+    /*
     on!(open {move |_| {
       log!("socket opened");
     }});
+    */
 
     self.ws.borrow_mut().set(ws);
+  }
+
+  fn req(&mut self, msg: Box<[u8]>, next: Function) {
+    let id = self.id.wrapping_add(1);
+    self.id = id;
+    self.ws.borrow_mut().req(id, msg, next);
+    /*
+    self.next.insert(self.id, next.clone());
+    let this = JsValue::null();
+    let val = JsValue::from(1);
+    let _ = next.call1(&this, &val);
+    */
+  }
+
+  pub fn api(&mut self, api: Api, next: Function) -> Result<(), JsValue> {
+    match api.dump() {
+      Ok(msg) => {
+        self.req(msg, next);
+        Ok(())
+      }
+      Err(err) => Err(JsValue::from_str(&err.to_string())),
+    }
   }
 }
 
 #[wasm_bindgen]
 impl W {
+  pub fn stop(&mut self, next: Function) -> Result<(), JsValue> {
+    self.api(Api::Stop, next)
+  }
+
   pub fn new(url: String) -> Self {
     let me = Self {
       ws: Rc::new(RefCell::new(Ws::new(url))),
@@ -116,16 +148,6 @@ impl W {
     };
     me.connect();
     me
-  }
-
-  pub fn req(&mut self, next: Function) {
-    self.id = self.id.wrapping_add(1);
-    /*
-    self.next.insert(self.id, next.clone());
-    let this = JsValue::null();
-    let val = JsValue::from(1);
-    let _ = next.call1(&this, &val);
-    */
   }
 }
 

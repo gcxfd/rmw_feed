@@ -177,6 +177,12 @@ function __wbg_adapter_14(arg0, arg1, arg2) {
     wasm.closure2_externref_shim(arg0, arg1, arg2);
 }
 
+function takeFromExternrefTable0(idx) {
+    const value = wasm.__wbindgen_export_2.get(idx);
+    wasm.__externref_table_dealloc(idx);
+    return value;
+}
+
 function addToExternrefTable0(obj) {
     const idx = wasm.__externref_table_alloc();
     wasm.__wbindgen_export_2.set(idx, obj);
@@ -216,6 +222,22 @@ export class W {
         wasm.__wbg_w_free(ptr);
     }
     /**
+    * @param {Function} next
+    */
+    stop(next) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.w_stop(retptr, this.ptr, next);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            if (r1) {
+                throw takeFromExternrefTable0(r0);
+            }
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
     * @param {string} url
     * @returns {W}
     */
@@ -224,12 +246,6 @@ export class W {
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.w_new(ptr0, len0);
         return W.__wrap(ret);
-    }
-    /**
-    * @param {Function} next
-    */
-    req(next) {
-        wasm.w_req(this.ptr, next);
     }
 }
 
@@ -267,15 +283,12 @@ async function load(module, imports) {
 function getImports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbg_log_682923c8ea4d4d53 = function(arg0, arg1) {
-        console.log(getStringFromWasm0(arg0, arg1));
-    };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         const ret = getStringFromWasm0(arg0, arg1);
         return ret;
     };
-    imports.wbg.__wbg_setonopen_87e4796bee3b823d = function(arg0, arg1) {
-        arg0.onopen = arg1;
+    imports.wbg.__wbg_log_682923c8ea4d4d53 = function(arg0, arg1) {
+        console.log(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbg_setonerror_52d0cdb1d128ff9d = function(arg0, arg1) {
         arg0.onerror = arg1;
@@ -303,11 +316,11 @@ function getImports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper16 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper15 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_14);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper18 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper17 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_14);
         return ret;
     };
