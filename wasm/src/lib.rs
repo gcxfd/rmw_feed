@@ -1,9 +1,10 @@
 #![feature(get_mut_unchecked)]
+#![feature(new_uninit)]
 
 mod reply_future;
 
 use crate::reply_future::ReplyFuture;
-use api::{Cmd, Reply, Q};
+use api::{Cmd, Reply, A, Q};
 use js_sys::Promise;
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
@@ -73,6 +74,14 @@ impl Ws {
     self.ws = None;
   }
 
+  fn wake(&mut self, msg: &[u8]) {
+    if let Ok(a) = A::load(msg) {
+      if let Some((_, future)) = self.next.remove(&a.id) {
+        future.wake(a.reply)
+      }
+    }
+  }
+
   fn req(&mut self, id: u32, cmd: Cmd) -> Promise {
     let future = ReplyFuture::new();
     self.next.insert(id, (cmd, future.clone()));
@@ -130,12 +139,17 @@ impl W {
     on!(close {move |_| {
     }});
 
-    on!(message {move |e:MessageEvent| {
-      if let Ok(bin) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
-
+    {
+      let ws = self.ws.clone();
+      on!(message {move |e:MessageEvent| {
+      if let Ok(buf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
+        let buf = js_sys::Uint8Array::new(&buf);
+        let mut bin =  unsafe { Box::<[u8]>::new_uninit_slice(buf.byte_length() as _).assume_init() };
+        buf.copy_to(&mut bin[..]);
+        ws.borrow_mut().wake(&bin);
       }
-    }} MessageEvent);
-
+      }} MessageEvent);
+    }
     /*
     on!(open {move |_| {
     log!("socket opened");
