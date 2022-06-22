@@ -91,7 +91,7 @@ async function init(input) {
         ;
     };
 
-    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {
+    if (typeof input === 'string' || (typeof Cmduest === 'function' && input instanceof Cmduest) || (typeof URL === 'function' && input instanceof URL)) {
         input = fetch(input);
     }
 

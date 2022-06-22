@@ -294,6 +294,10 @@ function getImports() {
     imports.wbg.__wbg_log_682923c8ea4d4d53 = function(arg0, arg1) {
         console.log(getStringFromWasm0(arg0, arg1));
     };
+    imports.wbg.__wbg_data_751f064cdd700ef0 = function(arg0) {
+        const ret = arg0.data;
+        return ret;
+    };
     imports.wbg.__wbg_setonerror_52d0cdb1d128ff9d = function(arg0, arg1) {
         arg0.onerror = arg1;
     };
@@ -316,6 +320,10 @@ function getImports() {
     imports.wbg.__wbg_send_dcd78e23aff3b58a = function() { return handleError(function (arg0, arg1, arg2) {
         arg0.send(getArrayU8FromWasm0(arg1, arg2));
     }, arguments) };
+    imports.wbg.__wbg_instanceof_ArrayBuffer_a91000e6b0653ed1 = function(arg0) {
+        const ret = arg0 instanceof ArrayBuffer;
+        return ret;
+    };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
         const ret = debugString(arg1);
         const ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -326,15 +334,15 @@ function getImports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper18 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_14);
-        return ret;
-    };
     imports.wbg.__wbindgen_closure_wrapper20 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_14);
         return ret;
     };
     imports.wbg.__wbindgen_closure_wrapper22 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_14);
+        return ret;
+    };
+    imports.wbg.__wbindgen_closure_wrapper24 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_14);
         return ret;
     };

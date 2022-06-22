@@ -8,7 +8,7 @@ export function err(): void;
 */
 export function hi(): Uint8Array;
 
-export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
+export type InitInput = CmduestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
@@ -21,7 +21,7 @@ export interface InitOutput {
 }
 
 /**
-* If `module_or_path` is {RequestInfo} or {URL}, makes a request and
+* If `module_or_path` is {CmduestInfo} or {URL}, makes a request and
 * for everything else, calls `WebAssembly.instantiate` directly.
 *
 * @param {InitInput | Promise<InitInput>} module_or_path
