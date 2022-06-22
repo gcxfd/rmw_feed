@@ -57,6 +57,9 @@ impl Ws {
   }
 
   fn set(&mut self, ws: WebSocket) {
+    for i in self.next {
+      dbg!(i);
+    }
     self.ws = Some(ws);
   }
 
