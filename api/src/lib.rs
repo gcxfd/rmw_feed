@@ -14,6 +14,18 @@ pub struct Q {
   pub cmd: Cmd,
 }
 
+#[derive(PartialEq, Eq, Debug, Readable, Writable)]
+pub enum Reply {
+  Err(String),
+  None,
+}
+
+#[derive(PartialEq, Eq, Debug, Readable, Writable)]
+pub struct A {
+  pub id: u32,
+  pub reply: Reply,
+}
+
 impl Q {
   pub fn dump(&self) -> Result<Box<[u8]>, Error> {
     self.write_to_box()
