@@ -4,6 +4,17 @@
 */
 export function prepare(): void;
 /**
+* @param {string} url
+* @param {Function} onopen
+* @param {Function} onclose
+* @returns {W}
+*/
+export function ws(url: string, onopen: Function, onclose: Function): W;
+/**
+* @param {W} w
+*/
+export function connect(w: W): void;
+/**
 */
 export class W {
   free(): void;
@@ -11,16 +22,6 @@ export class W {
 * @returns {Promise<any>}
 */
   stop(): Promise<any>;
-/**
-* @param {string} url
-* @param {Function} onopen
-* @param {Function} onclose
-* @returns {W}
-*/
-  static new(url: string, onopen: Function, onclose: Function): W;
-/**
-*/
-  connect(): void;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -28,9 +29,9 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_w_free: (a: number) => void;
+  readonly ws: (a: number, b: number, c: number, d: number) => number;
+  readonly connect: (a: number) => void;
   readonly w_stop: (a: number) => number;
-  readonly w_new: (a: number, b: number, c: number, d: number) => number;
-  readonly w_connect: (a: number) => void;
   readonly prepare: () => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;

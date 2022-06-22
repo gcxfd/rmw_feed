@@ -187,6 +187,33 @@ export function prepare() {
     wasm.prepare();
 }
 
+/**
+* @param {string} url
+* @param {Function} onopen
+* @param {Function} onclose
+* @returns {W}
+*/
+export function ws(url, onopen, onclose) {
+    const ptr0 = passStringToWasm0(url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.ws(ptr0, len0, onopen, onclose);
+    return W.__wrap(ret);
+}
+
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+    return instance.ptr;
+}
+/**
+* @param {W} w
+*/
+export function connect(w) {
+    _assertClass(w, W);
+    wasm.connect(w.ptr);
+}
+
 function addToExternrefTable0(obj) {
     const idx = wasm.__externref_table_alloc();
     wasm.__wbindgen_export_2.set(idx, obj);
@@ -240,23 +267,6 @@ export class W {
     stop() {
         const ret = wasm.w_stop(this.ptr);
         return ret;
-    }
-    /**
-    * @param {string} url
-    * @param {Function} onopen
-    * @param {Function} onclose
-    * @returns {W}
-    */
-    static new(url, onopen, onclose) {
-        const ptr0 = passStringToWasm0(url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.w_new(ptr0, len0, onopen, onclose);
-        return W.__wrap(ret);
-    }
-    /**
-    */
-    connect() {
-        wasm.w_connect(this.ptr);
     }
 }
 
@@ -438,7 +448,7 @@ function getImports() {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_18);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper267 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper268 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 71, __wbg_adapter_25);
         return ret;
     };

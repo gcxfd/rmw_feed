@@ -109,32 +109,28 @@ impl W {
 }
 
 #[wasm_bindgen]
-impl W {
-  pub fn stop(&mut self) -> Promise {
-    self.req(Cmd::Stop)
+pub fn ws(url: String, onopen: Function, onclose: Function) -> W {
+  let me = W {
+    ws: Rc::new(RefCell::new(Ws::new(url))),
+    id: 0,
+    onopen,
+    onclose,
+  };
+  connect(&me);
+  me
+}
+
+#[wasm_bindgen]
+pub fn connect(w: &W) {
+  let _ws = &w.ws;
+  if _ws.borrow().ws.is_some() {
+    return;
   }
+  let url = &_ws.borrow().url;
+  let ws = WebSocket::new(url).unwrap();
+  ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
-  pub fn new(url: String, onopen: Function, onclose: Function) -> Self {
-    let me = Self {
-      ws: Rc::new(RefCell::new(Ws::new(url))),
-      id: 0,
-      onopen,
-      onclose,
-    };
-    me.connect();
-    me
-  }
-
-  pub fn connect(&self) {
-    let _ws = &self.ws;
-    if _ws.borrow().ws.is_some() {
-      return;
-    }
-    let url = &_ws.borrow().url;
-    let ws = WebSocket::new(url).unwrap();
-    ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
-
-    macro_rules! on {
+  macro_rules! on {
       ($evt:ident $run:block) => {
         on!($evt $run JsValue)
       };
@@ -145,31 +141,31 @@ impl W {
       }};
     }
 
-    {
-      let ws = ws.clone();
-      let me = _ws.clone();
-      on!(error {
+  {
+    let ws = ws.clone();
+    let me = _ws.clone();
+    on!(error {
         move |err:ErrorEvent| {
           me.borrow_mut().clear();
           console::error_1(&err);
           let _ = ws.close();
         }
       } ErrorEvent);
-    }
+  }
 
-    {
-      let me = _ws.clone();
-      let on = self.onclose.clone();
-      on!(close {move |_| {
-        me.borrow_mut().clear();
-        let this = JsValue::null();
-        let _ = on.call0(&this);
-      }});
-    }
+  {
+    let me = _ws.clone();
+    let on = w.onclose.clone();
+    on!(close {move |_| {
+      me.borrow_mut().clear();
+      let this = JsValue::null();
+      let _ = on.call0(&this);
+    }});
+  }
 
-    {
-      let ws = _ws.clone();
-      on!(message {move |e:MessageEvent| {
+  {
+    let ws = _ws.clone();
+    on!(message {move |e:MessageEvent| {
         if let Ok(buf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
           let buf = js_sys::Uint8Array::new(&buf);
           let mut bin =  unsafe { Box::<[u8]>::new_uninit_slice(buf.byte_length() as _).assume_init() };
@@ -177,18 +173,24 @@ impl W {
           ws.borrow_mut().wake(&bin);
         }
       }} MessageEvent);
-    }
+  }
 
-    {
-      let ws = ws.clone();
-      let on = self.onopen.clone();
-      let _ws = _ws.clone();
-      on!(open {move |_| {
-        let this = JsValue::null();
-        let _ = on.call0(&this);
-        _ws.borrow_mut().set(ws.clone());
-      }});
-    }
+  {
+    let ws = ws.clone();
+    let on = w.onopen.clone();
+    let _ws = _ws.clone();
+    on!(open {move |_| {
+      let this = JsValue::null();
+      let _ = on.call0(&this);
+      _ws.borrow_mut().set(ws.clone());
+    }});
+  }
+}
+
+#[wasm_bindgen]
+impl W {
+  pub fn stop(&mut self) -> Promise {
+    self.req(Cmd::Stop)
   }
 }
 

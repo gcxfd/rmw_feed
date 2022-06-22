@@ -1,12 +1,12 @@
 #!/usr/bin/env coffee
 
-import WasmInit, {W} from ':/wasm/api/wasm.js'
+import WasmInit, {W,connect,ws} from ':/wasm/api/wasm.js'
 
 await WasmInit()
 
 RETRY = 0
 
-WS = W.new(
+export default WS = ws(
   "ws://127.0.0.1:4910"
   =>
     RETRY = 0
@@ -17,7 +17,7 @@ WS = W.new(
         if RETRY < 5
           ++RETRY
         console.log 'try closed!'
-        console.log WS.connect()
+        console.log connect(WS)
         console.log 'closed!'
         return
       RETRY*1000
