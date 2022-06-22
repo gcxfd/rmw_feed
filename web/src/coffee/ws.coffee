@@ -16,9 +16,7 @@ export default WS = ws(
       =>
         if RETRY < 5
           ++RETRY
-        console.log 'try closed!'
         console.log connect(WS)
-        console.log 'closed!'
         return
       RETRY*1000
     )
