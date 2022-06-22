@@ -1,18 +1,12 @@
 #!/usr/bin/env coffee
 
-import WasmInit, {Ws} from ':/wasm/api/wasm.js'
+import WasmInit, {W} from ':/wasm/api/wasm.js'
 
 await WasmInit()
-ws = Ws.new("ws://127.0.0.1:4910")
 
-ws.req(
-  (val)=>
-    console.log val
-    return
-)
+WS = W.new("ws://127.0.0.1:4910")
+console.log(WS.stop())
 
-
-export default {}
 ###
 WS = undefined
 LI = []

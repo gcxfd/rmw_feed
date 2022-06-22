@@ -136,27 +136,31 @@ impl W {
       } ErrorEvent);
     }
 
-    on!(close {move |_| {
-    }});
+    {
+      on!(close {|_| {
+        self.connect();
+      }});
+    }
 
     {
-      let ws = self.ws.clone();
+      let ws = _ws.clone();
       on!(message {move |e:MessageEvent| {
-      if let Ok(buf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
-        let buf = js_sys::Uint8Array::new(&buf);
-        let mut bin =  unsafe { Box::<[u8]>::new_uninit_slice(buf.byte_length() as _).assume_init() };
-        buf.copy_to(&mut bin[..]);
-        ws.borrow_mut().wake(&bin);
-      }
+        if let Ok(buf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
+          let buf = js_sys::Uint8Array::new(&buf);
+          let mut bin =  unsafe { Box::<[u8]>::new_uninit_slice(buf.byte_length() as _).assume_init() };
+          buf.copy_to(&mut bin[..]);
+          ws.borrow_mut().wake(&bin);
+        }
       }} MessageEvent);
     }
-    /*
-    on!(open {move |_| {
-    log!("socket opened");
-    }});
-    */
 
-    self.ws.borrow_mut().set(ws);
+    {
+      let ws = ws.clone();
+      let _ws = _ws.clone();
+      on!(open {move |_| {
+        _ws.borrow_mut().set(ws.clone());
+      }});
+    }
   }
 
   /*

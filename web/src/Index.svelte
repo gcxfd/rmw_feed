@@ -1,6 +1,6 @@
 <script lang="coffee">
 #import '~/styl/init.styl'
-import ws from '~/coffee/ws.coffee'
+import '~/coffee/ws.coffee'
 import logo from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
 

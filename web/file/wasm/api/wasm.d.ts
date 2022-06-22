@@ -2,6 +2,9 @@
 /* eslint-disable */
 /**
 */
+export function prepare(): void;
+/**
+*/
 export class W {
   free(): void;
 /**
@@ -22,15 +25,17 @@ export interface InitOutput {
   readonly __wbg_w_free: (a: number) => void;
   readonly w_stop: (a: number) => number;
   readonly w_new: (a: number, b: number) => number;
+  readonly prepare: () => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
   readonly __wbindgen_export_3: WebAssembly.Table;
   readonly closure2_externref_shim: (a: number, b: number, c: number) => void;
-  readonly closure57_externref_shim: (a: number, b: number, c: number) => void;
+  readonly closure73_externref_shim: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_free: (a: number, b: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
-  readonly closure76_externref_shim: (a: number, b: number, c: number, d: number) => void;
+  readonly closure92_externref_shim: (a: number, b: number, c: number, d: number) => void;
   readonly __wbindgen_start: () => void;
 }
 
