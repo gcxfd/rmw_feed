@@ -201,6 +201,7 @@ impl W {
       on!(open {move |_| {
         let this = JsValue::null();
         let _ = on.call0(&this);
+         _ws.borrow_mut().set(ws.clone());
       }});
     }
   }
