@@ -137,8 +137,11 @@ impl W {
     }
 
     {
-      on!(close {|_| {
-        self.connect();
+      let me = _ws.clone();
+      on!(close {move |_| {
+        log!("closed");
+        me.borrow_mut().clear();
+        //self.connect();
       }});
     }
 
