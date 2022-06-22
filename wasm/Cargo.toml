@@ -26,6 +26,7 @@ wasm-bindgen-futures = "0.4.31"
 version = "0.3.58"
 features = [
   "BinaryType",
+  "console",
   "Blob",
   "ErrorEvent",
   "FileReader",

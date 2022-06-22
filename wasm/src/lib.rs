@@ -161,12 +161,11 @@ impl W {
 
     {
       let ws = ws.clone();
-      let url = url.clone();
       let me = _ws.clone();
       on!(error {
         move |err:ErrorEvent| {
           me.borrow_mut().clear();
-          log!("{} {}",url,err.message());
+          web_sys::console::error_1(&err);
           let _ = ws.close();
         }
       } ErrorEvent);
