@@ -11,7 +11,7 @@ use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::future_to_promise;
-use web_sys::{ErrorEvent, MessageEvent, WebSocket};
+use web_sys::{console, ErrorEvent, MessageEvent, WebSocket};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
@@ -22,20 +22,6 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[wasm_bindgen]
 pub fn prepare() {
   std::panic::set_hook(Box::new(console_error_panic_hook::hook));
-}
-
-#[wasm_bindgen]
-extern "C" {
-  #[wasm_bindgen(js_namespace = console)]
-  fn log(s: &str);
-}
-
-#[macro_export]
-macro_rules! log {
-  ($($t:tt)*) => {
-    #[allow(unused_unsafe)]
-    unsafe {log(&format_args!($($t)*).to_string()) }
-  }
 }
 
 #[wasm_bindgen]
@@ -165,7 +151,7 @@ impl W {
       on!(error {
         move |err:ErrorEvent| {
           me.borrow_mut().clear();
-          web_sys::console::error_1(&err);
+          console::error_1(&err);
           let _ = ws.close();
         }
       } ErrorEvent);
