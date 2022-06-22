@@ -25,7 +25,7 @@ WS = W.new(
     return
 )
 
-#console.log(WS.stop())
+#console.log(await WS.stop())
 
 ###
 WS = undefined
