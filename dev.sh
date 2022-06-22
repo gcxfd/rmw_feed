@@ -12,6 +12,9 @@ if ! hash watchexec 2>/dev/null; then
 cargo install watchexec-cli
 fi
 
+if [ ! $cmd ];then
+cmd=run
+fi
 
 if [ $1 ];then
 project=$1
@@ -27,4 +30,4 @@ RUST_BACKTRACE=1 watchexec \
   --shell=none -w . \
   -c -r --exts rs,toml \
   --ignore target/ \
-  -- cargo +nightly run -p $project
+  -- cargo +nightly $cmd -p $project

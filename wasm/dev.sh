@@ -4,4 +4,4 @@ _DIR=$(dirname $(realpath "$0"))
 
 cd $_DIR/..
 
-./dev.sh wasm
+cmd=build ./dev.sh wasm

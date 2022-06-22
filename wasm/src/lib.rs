@@ -57,8 +57,10 @@ impl Ws {
   }
 
   fn set(&mut self, ws: WebSocket) {
-    for i in self.next {
-      dbg!(i);
+    for (id, (api, _)) in &self.next {
+      if let Ok(msg) = (Msg { id: *id, api: *api }).dump() {
+        let _ = ws.send_with_u8_array(&msg);
+      }
     }
     self.ws = Some(ws);
   }
