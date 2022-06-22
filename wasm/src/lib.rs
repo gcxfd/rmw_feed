@@ -116,8 +116,10 @@ impl W {
     on!(close {move |_| {
     }});
 
-    on!(message {move |msg| {
-      dbg!(msg);
+    on!(message {move |e:MessageEvent| {
+      if let Ok(bin) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
+
+      }
     }} MessageEvent);
 
     /*

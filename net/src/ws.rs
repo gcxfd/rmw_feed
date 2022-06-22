@@ -1,6 +1,6 @@
 use crate::api::api;
 use anyhow::Result;
-use api::Api;
+use api::{Api, Msg};
 use async_std::{channel::Sender, net::TcpStream};
 
 use futures::{
@@ -36,7 +36,8 @@ pub async fn ws(stream: TcpStream, sender: Sender<Api>) -> Result<()> {
             if let Ok(msg) = msg {
               match msg {
                 Message::Binary(msg) => {
-                  if let Ok(cmd) = Api::load(&msg) {
+                  if let Ok(msg) = Msg::load(&msg) {
+                    let cmd = msg.api;
                     match cmd {
                       Api::Stop => {
                         err::log(sender.send(cmd).await);
