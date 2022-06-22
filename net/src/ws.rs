@@ -1,6 +1,6 @@
 use crate::api::api;
 use anyhow::Result;
-use api::{Cmd, Q};
+use api::{Cmd, Reply, Q};
 use async_std::{channel::Sender, net::TcpStream};
 
 use futures::{
@@ -41,19 +41,28 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
 
                     macro_rules! send {
                       ($msg:expr) => {{
-                        ws_sender.send($msg).await
+                        if let Ok(r) = err::ok(
+                          api::A {
+                            id: msg.id,
+                            reply: $msg,
+                          }
+                          .dump(),
+                        ) {
+                          err::log(ws_sender.send(Message::Binary(r.to_vec())).await);
+                        }
                       }};
                     }
 
                     match cmd {
                       Cmd::Stop => {
+                        send!(Reply::None);
                         err::log(sender.send(cmd).await);
                         break;
                       }
-                      _ => err::log(send!(match api(cmd).await {
-                        Ok(r) => Message::Binary(r),
-                        Err(r) => Message::Text(format!("{}", r).into()),
-                      })),
+                      _ => send!(match api(cmd).await {
+                        Ok(reply) => reply,
+                        Err(err) => Reply::Err(format!("{}", err)),
+                      }),
                     }
                   }
                 }
