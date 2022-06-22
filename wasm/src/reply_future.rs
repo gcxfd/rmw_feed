@@ -40,7 +40,9 @@ impl ReplyFuture {
       );
       write_volatile(&mut state.done as _, true);
     }
-    state.waker.take().wake();
+    if let Some(waker) = state.waker.take() {
+      waker.wake()
+    }
   }
 }
 
