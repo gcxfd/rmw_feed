@@ -3,11 +3,12 @@
 mod reply_future;
 
 use api::{Cmd, Q};
-use js_sys::Function;
+use js_sys::{Function, Promise};
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::future_to_promise;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
@@ -71,7 +72,7 @@ impl Ws {
     self.ws = None;
   }
 
-  fn req(&mut self, id: u32, cmd: Cmd, next: Function) -> Result<(), JsValue> {
+  fn req(&mut self, id: u32, cmd: Cmd) -> Promise {
     self.next.insert(id, (cmd, next));
     if let Some(ws) = &self.ws {
       match (Q { id, cmd }).dump() {
@@ -80,7 +81,8 @@ impl Ws {
       }
     } else {
       Ok(())
-    }
+    };
+    future_to_promise(async { Ok(1.into()) })
   }
 }
 
@@ -140,17 +142,17 @@ impl W {
   let _ = next.call1(&this, &val);
   */
 
-  pub fn api(&mut self, api: Cmd, next: Function) -> Result<(), JsValue> {
+  pub fn api(&mut self, api: Cmd) -> Promise {
     let id = self.id.wrapping_add(1);
     self.id = id;
-    self.ws.borrow_mut().req(id, api, next)
+    self.ws.borrow_mut().req(id, api)
   }
 }
 
 #[wasm_bindgen]
 impl W {
-  pub fn stop(&mut self, next: Function) -> Result<(), JsValue> {
-    self.api(Cmd::Stop, next)
+  pub fn stop(&mut self) -> Promise {
+    self.api(Cmd::Stop)
   }
 
   pub fn new(url: String) -> Self {

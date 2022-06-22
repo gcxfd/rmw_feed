@@ -9,11 +9,11 @@ use std::{
   task::{Context, Poll},
 };
 
-struct ReplyFuture {
+pub struct ReplyFuture {
   state: Arc<State>,
 }
 
-struct State {
+pub struct State {
   done: bool,
   msg: ManuallyDrop<Reply>,
   waker: AtomicWaker,
@@ -33,14 +33,14 @@ impl ReplyFuture {
   pub fn wake(mut self, reply: Reply) {
     #[allow(unused_mut)]
     let mut state = unsafe { Arc::get_mut_unchecked(&mut self.state) };
-    unsafe {
-      write_volatile(
-        &mut state.msg as *mut ManuallyDrop<Reply>,
-        ManuallyDrop::new(reply),
-      );
-      write_volatile(&mut state.done as _, true);
-    }
     if let Some(waker) = state.waker.take() {
+      unsafe {
+        write_volatile(
+          &mut state.msg as *mut ManuallyDrop<Reply>,
+          ManuallyDrop::new(reply),
+        );
+        write_volatile(&mut state.done as _, true);
+      }
       waker.wake()
     }
   }
