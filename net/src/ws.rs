@@ -1,6 +1,6 @@
 use crate::api::api;
 use anyhow::Result;
-use api::{Api, Msg};
+use api::{Cmd, Req};
 use async_std::{channel::Sender, net::TcpStream};
 
 use futures::{
@@ -13,7 +13,7 @@ use std::time::Duration;
 use tungstenite::Message;
 const TIMEOUT: usize = 7;
 
-pub async fn ws(stream: TcpStream, sender: Sender<Api>) -> Result<()> {
+pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
   let addr = stream.peer_addr()?;
 
   let ws_stream = async_tungstenite::accept_async(stream).await?;
@@ -36,23 +36,24 @@ pub async fn ws(stream: TcpStream, sender: Sender<Api>) -> Result<()> {
             if let Ok(msg) = msg {
               match msg {
                 Message::Binary(msg) => {
-                  if let Ok(msg) = Msg::load(&msg) {
-                    let cmd = msg.api;
+                  if let Ok(msg) = Req::load(&msg) {
+                    let cmd = msg.cmd;
+
+                    macro_rules! send {
+                      ($msg:expr) => {{
+                        ws_sender.send($msg).await
+                      }};
+                    }
+
                     match cmd {
-                      Api::Stop => {
+                      Cmd::Stop => {
                         err::log(sender.send(cmd).await);
                         break;
                       }
-                      _ => {
-                        err::log(
-                          ws_sender
-                            .send(match api(cmd).await {
-                              Ok(r) => Message::Binary(r),
-                              Err(r) => Message::Text(format!("{}", r).into()),
-                            })
-                            .await,
-                        );
-                      }
+                      _ => err::log(send!(match api(cmd).await {
+                        Ok(r) => Message::Binary(r),
+                        Err(r) => Message::Text(format!("{}", r).into()),
+                      })),
                     }
                   }
                 }

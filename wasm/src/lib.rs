@@ -1,6 +1,6 @@
 #![feature(get_mut_unchecked)]
 
-use api::{Api, Msg};
+use api::{Cmd, Req};
 use js_sys::Function;
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
@@ -44,7 +44,7 @@ pub struct W {
 struct Ws {
   url: String,
   ws: Option<WebSocket>,
-  next: BTreeMap<u32, (Api, Function)>,
+  next: BTreeMap<u32, (Cmd, Function)>,
 }
 
 impl Ws {
@@ -58,7 +58,7 @@ impl Ws {
 
   fn set(&mut self, ws: WebSocket) {
     for (id, (api, _)) in &self.next {
-      if let Ok(msg) = (Msg { id: *id, api: *api }).dump() {
+      if let Ok(msg) = (Req { id: *id, api: *api }).dump() {
         let _ = ws.send_with_u8_array(&msg);
       }
     }
@@ -69,10 +69,10 @@ impl Ws {
     self.ws = None;
   }
 
-  fn req(&mut self, id: u32, api: Api, next: Function) -> Result<(), JsValue> {
+  fn req(&mut self, id: u32, api: Cmd, next: Function) -> Result<(), JsValue> {
     self.next.insert(id, (api, next));
     if let Some(ws) = &self.ws {
-      match (Msg { id, api }).dump() {
+      match (Req { id, api }).dump() {
         Ok(msg) => ws.send_with_u8_array(&msg),
         Err(err) => Err(JsValue::from_str(&err.to_string())),
       }
@@ -138,7 +138,7 @@ impl W {
   let _ = next.call1(&this, &val);
   */
 
-  pub fn api(&mut self, api: Api, next: Function) -> Result<(), JsValue> {
+  pub fn api(&mut self, api: Cmd, next: Function) -> Result<(), JsValue> {
     let id = self.id.wrapping_add(1);
     self.id = id;
     self.ws.borrow_mut().req(id, api, next)
@@ -148,7 +148,7 @@ impl W {
 #[wasm_bindgen]
 impl W {
   pub fn stop(&mut self, next: Function) -> Result<(), JsValue> {
-    self.api(Api::Stop, next)
+    self.api(Cmd::Stop, next)
   }
 
   pub fn new(url: String) -> Self {
@@ -164,7 +164,7 @@ impl W {
 /*
    macro_rules! rt {
    ($val:ident) => {{
-   let run = move || -> Result<_> { Ok(Api::$val.dump()?) };
+   let run = move || -> Result<_> { Ok(Cmd::$val.dump()?) };
    match run() {
    Ok(val) => Ok(val),
    Err(err) => Err(JsValue::from_str(&err.to_string())),

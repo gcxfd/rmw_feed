@@ -1,5 +1,5 @@
 use anyhow::Result;
-use api::Api;
+use api::Cmd;
 use async_std::{
   channel::{unbounded, Receiver},
   net::TcpListener,
@@ -63,10 +63,10 @@ pub fn run() -> Result<()> {
   Ok(())
 }
 
-async fn recv(recver: Receiver<Api>) {
+async fn recv(recver: Receiver<Cmd>) {
   while let Ok(msg) = recver.recv().await {
     match msg {
-      Api::Stop => {
+      Cmd::Stop => {
         break;
       }
       _ => {}
