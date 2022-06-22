@@ -1,9 +1,10 @@
 <script lang="coffee">
 #import '~/styl/init.styl'
-import '~/coffee/ws.coffee'
+import ws from '~/coffee/ws.coffee'
 import logo from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
 
+window.ws = ws
 
 我 = 3333
 x = 4
