@@ -5,7 +5,7 @@ mod reply_future;
 
 use crate::reply_future::ReplyFuture;
 use api::{Cmd, Reply, A, Q};
-use js_sys::Promise;
+use js_sys::{Function, Promise};
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 use wasm_bindgen::prelude::*;
@@ -42,6 +42,7 @@ macro_rules! log {
 #[derive(Debug)]
 pub struct W {
   id: u32,
+  onclose: Function,
   ws: Rc<RefCell<Ws>>,
 }
 
@@ -106,8 +107,42 @@ impl Ws {
 }
 
 impl W {
-  fn connect(&self) {
+  /*
+  self.next.insert(self.id, next.clone());
+  let this = JsValue::null();
+  let val = JsValue::from(1);
+  let _ = next.call1(&this, &val);
+  */
+
+  pub fn api(&mut self, api: Cmd) -> Promise {
+    let id = self.id.wrapping_add(1);
+    self.id = id;
+    self.ws.borrow_mut().req(id, api)
+  }
+}
+
+#[wasm_bindgen]
+impl W {
+  pub fn stop(&mut self) -> Promise {
+    self.api(Cmd::Stop)
+  }
+
+  pub fn new(url: String, onclose: Function) -> Self {
+    let me = Self {
+      ws: Rc::new(RefCell::new(Ws::new(url))),
+      id: 0,
+      onclose,
+    };
+    me.connect();
+    me
+  }
+
+  pub fn connect(&self) {
     let _ws = &self.ws;
+    log!("connect");
+    if _ws.borrow().ws.is_some() {
+      return;
+    }
     let url = &_ws.borrow().url;
     let ws = WebSocket::new(url).unwrap();
     ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
@@ -138,10 +173,11 @@ impl W {
 
     {
       let me = _ws.clone();
+      let onclose = self.onclose.clone();
       on!(close {move |_| {
-        log!("closed");
         me.borrow_mut().clear();
-        //self.connect();
+        let this = JsValue::null();
+        let _ = onclose.call0(&this);
       }});
     }
 
@@ -164,35 +200,6 @@ impl W {
         _ws.borrow_mut().set(ws.clone());
       }});
     }
-  }
-
-  /*
-  self.next.insert(self.id, next.clone());
-  let this = JsValue::null();
-  let val = JsValue::from(1);
-  let _ = next.call1(&this, &val);
-  */
-
-  pub fn api(&mut self, api: Cmd) -> Promise {
-    let id = self.id.wrapping_add(1);
-    self.id = id;
-    self.ws.borrow_mut().req(id, api)
-  }
-}
-
-#[wasm_bindgen]
-impl W {
-  pub fn stop(&mut self) -> Promise {
-    self.api(Cmd::Stop)
-  }
-
-  pub fn new(url: String) -> Self {
-    let me = Self {
-      ws: Rc::new(RefCell::new(Ws::new(url))),
-      id: 0,
-    };
-    me.connect();
-    me
   }
 }
 

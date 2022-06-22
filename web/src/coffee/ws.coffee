@@ -4,8 +4,21 @@ import WasmInit, {W} from ':/wasm/api/wasm.js'
 
 await WasmInit()
 
-WS = W.new("ws://127.0.0.1:4910")
-console.log(WS.stop())
+WS = W.new(
+  "ws://127.0.0.1:4910"
+  =>
+    setTimeout(
+      =>
+        console.log 'try closed!'
+        console.log WS.connect()
+        console.log 'closed!'
+        return
+      1000
+    )
+    return
+)
+
+#console.log(WS.stop())
 
 ###
 WS = undefined
