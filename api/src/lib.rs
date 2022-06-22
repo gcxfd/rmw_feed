@@ -26,18 +26,21 @@ pub struct A {
   pub reply: Reply,
 }
 
-impl Q {
-  pub fn dump(&self) -> Result<Box<[u8]>, Error> {
-    self.write_to_box()
-  }
+macro_rules! dump_load {
+  ($cls:ident) => {
+    impl $cls {
+      pub fn dump(&self) -> Result<Box<[u8]>, Error> {
+        self.write_to_box()
+      }
 
-  pub fn load(bin: &[u8]) -> Result<Self, Error> {
-    Self::read_from_buffer(bin)
+      pub fn load(bin: &[u8]) -> Result<Self, Error> {
+        Self::read_from_buffer(bin)
+      }
+    }
+  };
+  ($($cls:ident),+) => {
+    $(dump_load!($cls));+
   }
-
-  /*
-  pub fn on(bin: &[u8], api: &Api) -> BoxResult {
-  Self::load(bin)?.on(api)
-  }
-  */
 }
+
+dump_load!(Q, A);
