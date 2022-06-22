@@ -1,6 +1,6 @@
 use speedy::{Error, Readable, Writable};
 
-#[derive(PartialEq, Eq, Debug, Readable, Writable)]
+#[derive(PartialEq, Eq, Debug, Readable, Writable, Clone, Copy)]
 #[repr(u8)]
 #[speedy(tag_type=u8)]
 pub enum Api {
@@ -8,7 +8,13 @@ pub enum Api {
   Conf,
 }
 
-impl Api {
+#[derive(PartialEq, Eq, Debug, Readable, Writable)]
+pub struct Msg {
+  pub id: u32,
+  pub api: Api,
+}
+
+impl Msg {
   pub fn dump(&self) -> Result<Box<[u8]>, Error> {
     self.write_to_box()
   }

@@ -1,12 +1,12 @@
 #![feature(get_mut_unchecked)]
 
-use api::Api;
+use api::{Api, Msg};
 use js_sys::Function;
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{ErrorEvent, WebSocket};
+use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
@@ -44,7 +44,7 @@ pub struct W {
 struct Ws {
   url: String,
   ws: Option<WebSocket>,
-  next: BTreeMap<u32, (Box<[u8]>, Function)>,
+  next: BTreeMap<u32, (Api, Function)>,
 }
 
 impl Ws {
@@ -64,8 +64,16 @@ impl Ws {
     self.ws = None;
   }
 
-  fn req(&mut self, id: u32, msg: Box<[u8]>, next: Function) {
-    self.next.insert(id, (msg, next));
+  fn req(&mut self, id: u32, api: Api, next: Function) -> Result<(), JsValue> {
+    self.next.insert(id, (api, next));
+    if let Some(ws) = &self.ws {
+      match (Msg { id, api }).dump() {
+        Ok(msg) => ws.send_with_u8_array(&msg),
+        Err(err) => Err(JsValue::from_str(&err.to_string())),
+      }
+    } else {
+      Ok(())
+    }
   }
 }
 
@@ -103,35 +111,30 @@ impl W {
     on!(close {move |_| {
     }});
 
+    on!(message {move |msg| {
+      dbg!(msg);
+    }} MessageEvent);
+
     /*
     on!(open {move |_| {
-      log!("socket opened");
+    log!("socket opened");
     }});
     */
 
     self.ws.borrow_mut().set(ws);
   }
 
-  fn req(&mut self, msg: Box<[u8]>, next: Function) {
-    let id = self.id.wrapping_add(1);
-    self.id = id;
-    self.ws.borrow_mut().req(id, msg, next);
-    /*
-    self.next.insert(self.id, next.clone());
-    let this = JsValue::null();
-    let val = JsValue::from(1);
-    let _ = next.call1(&this, &val);
-    */
-  }
+  /*
+  self.next.insert(self.id, next.clone());
+  let this = JsValue::null();
+  let val = JsValue::from(1);
+  let _ = next.call1(&this, &val);
+  */
 
   pub fn api(&mut self, api: Api, next: Function) -> Result<(), JsValue> {
-    match api.dump() {
-      Ok(msg) => {
-        self.req(msg, next);
-        Ok(())
-      }
-      Err(err) => Err(JsValue::from_str(&err.to_string())),
-    }
+    let id = self.id.wrapping_add(1);
+    self.id = id;
+    self.ws.borrow_mut().req(id, api, next)
   }
 }
 
