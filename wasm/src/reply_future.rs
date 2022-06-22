@@ -9,10 +9,12 @@ use std::{
   task::{Context, Poll},
 };
 
+#[derive(Debug, Clone)]
 pub struct ReplyFuture {
   state: Arc<State>,
 }
 
+#[derive(Debug)]
 pub struct State {
   done: bool,
   msg: ManuallyDrop<Reply>,

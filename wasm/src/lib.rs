@@ -2,8 +2,9 @@
 
 mod reply_future;
 
-use api::{Cmd, Q};
-use js_sys::{Function, Promise};
+use crate::reply_future::ReplyFuture;
+use api::{Cmd, Reply, Q};
+use js_sys::Promise;
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 use wasm_bindgen::prelude::*;
@@ -47,7 +48,7 @@ pub struct W {
 struct Ws {
   url: String,
   ws: Option<WebSocket>,
-  next: BTreeMap<u32, (Cmd, Function)>,
+  next: BTreeMap<u32, (Cmd, ReplyFuture)>,
 }
 
 impl Ws {
@@ -73,16 +74,25 @@ impl Ws {
   }
 
   fn req(&mut self, id: u32, cmd: Cmd) -> Promise {
-    self.next.insert(id, (cmd, next));
+    let future = ReplyFuture::new();
+    self.next.insert(id, (cmd, future.clone()));
     if let Some(ws) = &self.ws {
       match (Q { id, cmd }).dump() {
-        Ok(msg) => ws.send_with_u8_array(&msg),
-        Err(err) => Err(JsValue::from_str(&err.to_string())),
-      }
-    } else {
-      Ok(())
+        Ok(msg) => match ws.send_with_u8_array(&msg) {
+          Ok(_) => {}
+          Err(err) => return future_to_promise(async move { Err(err) }),
+        },
+        Err(err) => {
+          return future_to_promise(async move { Err(JsValue::from_str(&err.to_string())) })
+        }
+      };
     };
-    future_to_promise(async { Ok(1.into()) })
+    future_to_promise(async move {
+      match future.await {
+        Reply::None => Ok(JsValue::undefined()),
+        Reply::Err(err) => Err(err.into()),
+      }
+    })
   }
 }
 
