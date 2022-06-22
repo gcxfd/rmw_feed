@@ -39,7 +39,7 @@ macro_rules! dump_load {
     }
   };
   ($($cls:ident),+) => {
-    $(dump_load!($cls));+
+    $(dump_load!($cls);)+
   }
 }
 
