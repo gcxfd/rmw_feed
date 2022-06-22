@@ -178,7 +178,7 @@ function __wbg_adapter_18(arg0, arg1, arg2) {
 }
 
 function __wbg_adapter_25(arg0, arg1, arg2) {
-    wasm.closure74_externref_shim(arg0, arg1, arg2);
+    wasm.closure75_externref_shim(arg0, arg1, arg2);
 }
 
 /**
@@ -206,7 +206,7 @@ function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
 function __wbg_adapter_64(arg0, arg1, arg2, arg3) {
-    wasm.closure92_externref_shim(arg0, arg1, arg2, arg3);
+    wasm.closure93_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const WFinalization = new FinalizationRegistry(ptr => wasm.__wbg_w_free(ptr));
@@ -241,13 +241,14 @@ export class W {
     }
     /**
     * @param {string} url
+    * @param {Function} onopen
     * @param {Function} onclose
     * @returns {W}
     */
-    static new(url, onclose) {
+    static new(url, onopen, onclose) {
         const ptr0 = passStringToWasm0(url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.w_new(ptr0, len0, onclose);
+        const ret = wasm.w_new(ptr0, len0, onopen, onclose);
         return W.__wrap(ret);
     }
     /**
@@ -437,8 +438,8 @@ function getImports() {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_18);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper244 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 75, __wbg_adapter_25);
+    imports.wbg.__wbindgen_closure_wrapper245 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 76, __wbg_adapter_25);
         return ret;
     };
     imports.wbg.__wbindgen_init_externref_table = function() {
