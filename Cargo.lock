@@ -1190,6 +1190,7 @@ dependencies = [
  "anyhow",
  "api",
  "console_error_panic_hook",
+ "futures",
  "js-sys",
  "paste",
  "wasm-bindgen",

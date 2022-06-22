@@ -1,5 +1,7 @@
 #![feature(get_mut_unchecked)]
 
+mod reply_future;
+
 use api::{Cmd, Q};
 use js_sys::Function;
 use paste::paste;
