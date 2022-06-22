@@ -164,9 +164,9 @@ impl W {
       let url = url.clone();
       let me = _ws.clone();
       on!(error {
-        move |err| {
+        move |err:ErrorEvent| {
           me.borrow_mut().clear();
-          log!("{} {:?}",url,err);
+          log!("{} {}",url,err.message());
           let _ = ws.close();
         }
       } ErrorEvent);
