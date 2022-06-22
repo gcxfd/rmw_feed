@@ -40,6 +40,7 @@ impl ReplyFuture {
       );
       write_volatile(&mut state.done as _, true);
     }
+    state.waker.take().wake();
   }
 }
 
