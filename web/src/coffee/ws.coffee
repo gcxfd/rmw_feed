@@ -4,16 +4,23 @@ import WasmInit, {W} from ':/wasm/api/wasm.js'
 
 await WasmInit()
 
+RETRY = 0
+
 WS = W.new(
   "ws://127.0.0.1:4910"
   =>
+    RETRY = 0
+    return
+  =>
     setTimeout(
       =>
+        if RETRY < 5
+          ++RETRY
         console.log 'try closed!'
         console.log WS.connect()
         console.log 'closed!'
         return
-      1000
+      RETRY*1000
     )
     return
 )

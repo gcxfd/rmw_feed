@@ -43,6 +43,7 @@ macro_rules! log {
 pub struct W {
   id: u32,
   onclose: Function,
+  onopen: Function,
   ws: Rc<RefCell<Ws>>,
 }
 
@@ -127,10 +128,11 @@ impl W {
     self.api(Cmd::Stop)
   }
 
-  pub fn new(url: String, onclose: Function) -> Self {
+  pub fn new(url: String, onopen: Function, onclose: Function) -> Self {
     let me = Self {
       ws: Rc::new(RefCell::new(Ws::new(url))),
       id: 0,
+      onopen,
       onclose,
     };
     me.connect();
@@ -173,11 +175,11 @@ impl W {
 
     {
       let me = _ws.clone();
-      let onclose = self.onclose.clone();
+      let on = self.onclose.clone();
       on!(close {move |_| {
         me.borrow_mut().clear();
         let this = JsValue::null();
-        let _ = onclose.call0(&this);
+        let _ = on.call0(&this);
       }});
     }
 
@@ -195,8 +197,11 @@ impl W {
 
     {
       let ws = ws.clone();
+      let on = self.onopen.clone();
       let _ws = _ws.clone();
       on!(open {move |_| {
+        let this = JsValue::null();
+        let _ = on.call0(&this);
         _ws.borrow_mut().set(ws.clone());
       }});
     }
