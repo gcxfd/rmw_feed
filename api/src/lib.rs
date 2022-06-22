@@ -25,7 +25,7 @@ impl Req {
 
   /*
   pub fn on(bin: &[u8], api: &Api) -> BoxResult {
-    Self::load(bin)?.on(api)
+  Self::load(bin)?.on(api)
   }
   */
 }

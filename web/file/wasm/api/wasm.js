@@ -391,7 +391,7 @@ async function init(input) {
     }
     const imports = getImports();
 
-    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {
+    if (typeof input === 'string' || (typeof Quest === 'function' && input instanceof Quest) || (typeof URL === 'function' && input instanceof URL)) {
         input = fetch(input);
     }
 

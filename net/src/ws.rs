@@ -1,6 +1,6 @@
 use crate::api::api;
 use anyhow::Result;
-use api::{Cmd, Req};
+use api::{Cmd, Q};
 use async_std::{channel::Sender, net::TcpStream};
 
 use futures::{
@@ -36,7 +36,7 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
             if let Ok(msg) = msg {
               match msg {
                 Message::Binary(msg) => {
-                  if let Ok(msg) = Req::load(&msg) {
+                  if let Ok(msg) = Q::load(&msg) {
                     let cmd = msg.cmd;
 
                     macro_rules! send {
