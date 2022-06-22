@@ -15,7 +15,7 @@ export class W {
   static new(url: string): W;
 }
 
-export type InitInput = QuestInfo | URL | Response | BufferSource | WebAssembly.Module;
+export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
@@ -44,7 +44,7 @@ export interface InitOutput {
 export function initSync(bytes: BufferSource): InitOutput;
 
 /**
-* If `module_or_path` is {QuestInfo} or {URL}, makes a request and
+* If `module_or_path` is {RequestInfo} or {URL}, makes a request and
 * for everything else, calls `WebAssembly.instantiate` directly.
 *
 * @param {InitInput | Promise<InitInput>} module_or_path

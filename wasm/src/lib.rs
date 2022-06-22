@@ -1,6 +1,6 @@
 #![feature(get_mut_unchecked)]
 
-use api::{Cmd, Req};
+use api::{Cmd, Q};
 use js_sys::Function;
 use paste::paste;
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
@@ -58,7 +58,7 @@ impl Ws {
 
   fn set(&mut self, ws: WebSocket) {
     for (id, (cmd, _)) in &self.next {
-      if let Ok(msg) = (Req { id: *id, cmd: *cmd }).dump() {
+      if let Ok(msg) = (Q { id: *id, cmd: *cmd }).dump() {
         let _ = ws.send_with_u8_array(&msg);
       }
     }
@@ -72,7 +72,7 @@ impl Ws {
   fn req(&mut self, id: u32, cmd: Cmd, next: Function) -> Result<(), JsValue> {
     self.next.insert(id, (cmd, next));
     if let Some(ws) = &self.ws {
-      match (Req { id, cmd }).dump() {
+      match (Q { id, cmd }).dump() {
         Ok(msg) => ws.send_with_u8_array(&msg),
         Err(err) => Err(JsValue::from_str(&err.to_string())),
       }

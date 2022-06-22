@@ -9,12 +9,12 @@ pub enum Cmd {
 }
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable)]
-pub struct Req {
+pub struct Q {
   pub id: u32,
   pub cmd: Cmd,
 }
 
-impl Req {
+impl Q {
   pub fn dump(&self) -> Result<Box<[u8]>, Error> {
     self.write_to_box()
   }
