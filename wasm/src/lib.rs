@@ -101,7 +101,7 @@ impl W {
   let _ = next.call1(&this, &val);
   */
 
-  pub fn api(&mut self, api: Cmd) -> Promise {
+  pub fn req(&mut self, api: Cmd) -> Promise {
     let id = self.id.wrapping_add(1);
     self.id = id;
     self.ws.borrow_mut().req(id, api)
@@ -111,7 +111,7 @@ impl W {
 #[wasm_bindgen]
 impl W {
   pub fn stop(&mut self) -> Promise {
-    self.api(Cmd::Stop)
+    self.req(Cmd::Stop)
   }
 
   pub fn new(url: String, onopen: Function, onclose: Function) -> Self {
@@ -186,7 +186,7 @@ impl W {
       on!(open {move |_| {
         let this = JsValue::null();
         let _ = on.call0(&this);
-         _ws.borrow_mut().set(ws.clone());
+        _ws.borrow_mut().set(ws.clone());
       }});
     }
   }
