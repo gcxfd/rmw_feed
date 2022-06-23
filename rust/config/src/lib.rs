@@ -1,4 +1,3 @@
-use log::error;
 use speedy::{LittleEndian, Readable, Writable};
 
 pub trait Kv {
