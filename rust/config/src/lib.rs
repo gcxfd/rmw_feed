@@ -44,7 +44,6 @@ impl<KV: Kv> Config<KV> {
 #[macro_export]
 macro_rules! get {
   ($config:expr, $file:expr, $init:expr) => {{
-    use speedy::{LittleEndian, Readable, Writable};
     $config.get(const_str::replace!(stringify!($file), " ", ""), || $init)
   }};
 }
