@@ -17,6 +17,7 @@ api = { path = "../api" }
 kv = { path = "../kv" }
 upnp = { path = "../upnp", optional = true }
 speedy = { path = "../lib/speedy", features = ["box"] }
+b80 = { path = "../lib/b80" }
 logger = { path = "../logger", optional = true }
 async-std = { version = "1.12.0", features = ["unstable"] }
 const-str = "0.4.1"
