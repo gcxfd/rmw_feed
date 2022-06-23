@@ -1,3 +1,3 @@
 use rkv::column_family;
 
-column_family!(config);
+column_family!(conf);
