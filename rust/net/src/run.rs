@@ -24,7 +24,8 @@ pub fn run() -> Result<()> {
   let (sender, recver) = unbounded();
 
   let kv = kv::open(dir::root().join("kv"));
-  let config = Config::new();
+  let db = kv.db.clone();
+  let config = Config::new(|key, create| kv::get_or_create(&db, key, create));
 
   config::macro_get!(config);
 

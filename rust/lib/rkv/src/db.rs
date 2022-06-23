@@ -6,27 +6,27 @@ use rocksdb::{
 };
 use std::{collections::BTreeSet, path::PathBuf};
 
+#[derive(Debug)]
 pub struct Kv<Cf: cf::Cf<N>, const N: usize> {
   pub db: OptimisticTransactionDB,
   pub cf: Cf,
 }
 
-impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
-  pub fn get_or_create<Ref: AsRef<[u8]>>(
-    &self,
-    key: impl AsRef<[u8]>,
-    create: impl Fn() -> Ref,
-  ) -> DBPinnableSlice<'_> {
-    let db = &self.db;
-    let key = key.as_ref();
-    loop {
-      if let Ok(Some(val)) = err::ok!(db.get_pinned(key)) {
-        return val;
-      }
-      err::log!(db.put(key, create()));
+pub fn get_or_create<Ref: AsRef<[u8]>>(
+  db: &OptimisticTransactionDB,
+  key: impl AsRef<[u8]>,
+  create: impl Fn() -> Ref,
+) -> DBPinnableSlice<'_> {
+  let key = key.as_ref();
+  loop {
+    if let Ok(Some(val)) = err::ok!(db.get_pinned(key)) {
+      return val;
     }
+    err::log!(db.put(key, create()));
   }
+}
 
+impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   #[allow(invalid_value)]
   pub fn new(path: impl Into<PathBuf>) -> Self {
     let mut db = Kv {
