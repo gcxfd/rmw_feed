@@ -7,7 +7,10 @@ use async_std::{
 };
 use config::Config;
 use run::Run;
-use std::net::{Ipv4Addr, SocketAddrV4, UdpSocket};
+use std::{
+  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
+  sync::Arc,
+};
 
 use crate::ws::ws;
 
@@ -22,8 +25,8 @@ pub fn run() -> Result<()> {
 
   let (sender, recver) = unbounded();
 
-  let kv = kv::open(dir::root().join("kv"));
-  let config = Config::new(kv);
+  let kv = Arc::new(kv::open(dir::root().join("kv")));
+  let config = Config::new(kv.clone());
 
   config::macro_get!(config);
 
@@ -43,7 +46,7 @@ pub fn run() -> Result<()> {
     let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
 
     println!("ws://{}", ws_addr);
-
+    dbg!(kv);
     let mut ws_run = run.clone();
 
     run.spawn(async move {
