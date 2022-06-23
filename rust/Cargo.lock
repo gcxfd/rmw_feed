@@ -720,18 +720,6 @@ dependencies = [
 [[package]]
 name = "kv"
 version = "0.1.0"
-dependencies = [
- "anyhow",
- "err",
- "librocksdb-sys",
- "num_cpus",
- "once_cell",
- "ordered-varint",
- "parking_lot",
- "paste",
- "rocksdb",
- "smallvec",
-]
 
 [[package]]
 name = "kv-log-macro"
@@ -1086,6 +1074,22 @@ name = "regex-syntax"
 version = "0.6.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49b3de9ec5dc0a3417da371aab17d729997c15010e7fd24ff707773a33bddb64"
+
+[[package]]
+name = "rkv"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "err",
+ "librocksdb-sys",
+ "num_cpus",
+ "once_cell",
+ "ordered-varint",
+ "parking_lot",
+ "paste",
+ "rocksdb",
+ "smallvec",
+]
 
 [[package]]
 name = "rmw"
