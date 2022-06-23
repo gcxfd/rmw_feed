@@ -20,9 +20,9 @@ impl rocksdb::AsColumnFamilyRef for ColumnFamily {
 unsafe impl Send for ColumnFamily {}
 unsafe impl Sync for ColumnFamily {}
 
-pub trait Cf {
+pub trait Cf<Iter: Iterator<Item = String>> {
   fn new(db: &rocksdb::OptimisticTransactionDB) -> Self;
-  fn iter() -> impl Iterator<Item = String>;
+  fn iter() -> Iter;
 }
 
 #[macro_export]
@@ -37,8 +37,8 @@ macro_rules! column_family {
     }
 
 
-    impl Cf for Cf {
-      fn iter() -> impl Iterator<Item=String> {
+    impl<Iter: Iterator<Item = String>> rkv::Cf<Iter> for Cf {
+      fn iter() -> Iter {
         [$(stringify!($name)),*].into_iter()
       }
       fn new(db:&rocksdb::OptimisticTransactionDB) -> Cf {

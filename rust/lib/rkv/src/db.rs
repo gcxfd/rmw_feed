@@ -6,12 +6,12 @@ use rocksdb::{
 };
 use std::{collections::BTreeSet, path::PathBuf};
 
-pub struct Kv<Cf: cf::Cf> {
+pub struct Kv<Iter: Iterator<Item = String>, Cf: cf::Cf<Iter>> {
   pub db: OptimisticTransactionDB,
   pub cf: Cf,
 }
 
-impl<Cf: cf::Cf> Kv<Cf> {
+impl<Iter: Iterator<Item = String>, Cf: cf::Cf<Iter>> Kv<Iter, Cf> {
   pub fn get_or_create<Ref: AsRef<[u8]>>(
     &self,
     key: impl AsRef<[u8]>,

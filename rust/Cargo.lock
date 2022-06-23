@@ -907,12 +907,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7709cef83f0c1f58f666e746a08b21e0085f7440fa6a29cc194d68aac97a4225"
 
 [[package]]
-name = "ordered-varint"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66282efaf214671fdff89a58ec666f465af966fa0f795c02e98d009296623b9a"
-
-[[package]]
 name = "parking"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1086,13 +1080,10 @@ dependencies = [
  "anyhow",
  "err",
  "librocksdb-sys",
+ "log",
  "num_cpus",
- "once_cell",
- "ordered-varint",
- "parking_lot",
  "paste",
  "rocksdb",
- "smallvec",
 ]
 
 [[package]]
