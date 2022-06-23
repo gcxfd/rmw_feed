@@ -1,43 +1,45 @@
 use log::error;
-use rmw_str::Str;
-use std::{fs, path::PathBuf};
+use speedy::{LittleEndian, Readable, Writable};
 
-#[derive(Debug)]
-pub struct Config {
-  root: PathBuf,
+pub trait Kv {
+  type Ref: AsRef<[u8]>;
+  fn get(&self, key: &[u8]) -> Option<Self::Ref>;
+  fn set(key: &[u8], val: &[u8]) -> ();
 }
 
-impl Config {
-  pub fn new() -> Self {
-    Self { root: dir::root() }
+pub struct Config<KV: Kv> {
+  pub kv: KV,
+}
+
+impl<KV: Kv> Config<KV> {
+  pub fn new(kv: KV) -> Self {
+    Self { kv }
   }
-  pub fn get<T: Str>(&self, file: impl AsRef<str>, init: fn() -> T) -> T {
-    let path = self.root.clone().join(file.as_ref());
+  pub fn get<'a, T: Readable<'a, LittleEndian> + Writable<LittleEndian>>(
+    &self,
+    key: impl AsRef<[u8]>,
+    init: fn() -> T,
+  ) -> T {
+    let kv = &self.kv;
+    let key = key.as_ref();
     let _init = || {
       let r = init();
-      let mut dir = path.clone();
-      dir.pop();
-      fs::create_dir_all(dir).unwrap();
-      fs::write(&path, &r.encode()).unwrap();
+      kv.set(key, &r.write_to_box());
       r
     };
 
-    match fs::read(&path) {
-      Ok(buf) => {
-        match T::decode(&buf) {
-          Ok(r) => {
-            //if buf != txt {
-            //  fs::write(&path, &buf).unwrap();
-            //}
-            r
-          }
-          Err(err) => {
-            error!("{}", err);
-            _init()
-          }
+    match kv.get(key) {
+      Some(buf) => {
+        if let Ok(r) = err::ok!(T::read_from_buffer(&buf)) {
+          //if buf != txt {
+          //  fs::write(&path, &buf).unwrap();
+          //}
+          r
+        } else {
+          _init()
         }
       }
-      Err(_) => _init(),
+      None => _init(),
     }
   }
 }
@@ -58,10 +60,4 @@ macro_rules! macro_get {
       };
     }
   };
-}
-
-impl Default for Config {
-  fn default() -> Self {
-    Self::new()
-  }
 }

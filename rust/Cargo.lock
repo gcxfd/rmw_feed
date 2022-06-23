@@ -350,9 +350,9 @@ dependencies = [
 name = "config"
 version = "0.1.0"
 dependencies = [
- "dir",
+ "err",
  "log",
- "rmw_str",
+ "speedy",
 ]
 
 [[package]]
@@ -1094,15 +1094,6 @@ name = "rmw"
 version = "0.1.0"
 dependencies = [
  "net",
-]
-
-[[package]]
-name = "rmw_str"
-version = "0.0.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be1d20a8988b0933cea9bf1eb1e9101a5caee5913e174e37b34f5c6030da75cd"
-dependencies = [
- "anyhow",
 ]
 
 [[package]]

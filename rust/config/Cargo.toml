@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-dir = { path = "../dir" }
 log = "0.4.17"
-rmw_str = "0.0.7"
+speedy = { path = "../lib/speedy" }
+err = { path = "../err" }
