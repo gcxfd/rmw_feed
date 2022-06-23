@@ -12,7 +12,7 @@ use paste::paste;
 use rocksdb::{Direction, IteratorMode};
 use smallvec::SmallVec;
 
-column_family!(pk_addr, addr_pk, addr_sk, alive_addr);
+//column_family!(pk_addr, addr_pk, addr_sk, alive_addr);
 
 macro_rules! tx_cf {
   ($self:ident)=>{
@@ -38,7 +38,7 @@ macro_rules! tx_cf {
     define!(put, get, delete, get_pinned);
   }
 }
-
+/*
 #[derive(Debug)]
 pub struct PkAddr<Addr: FromBytes<Addr>> {
   pub pk: Box<[u8]>,
@@ -144,3 +144,4 @@ impl Kv {
     Ok(r)
   }
 }
+*/

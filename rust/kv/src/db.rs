@@ -20,10 +20,10 @@ impl Kv {
     let db = &self.db;
     let key = key.as_ref();
     loop {
-      if let Ok(Some(val)) = err::ok(db.get_pinned(key)) {
+      if let Ok(Some(val)) = err::ok!(db.get_pinned(key)) {
         return val;
       }
-      err::log(db.put(key, create()));
+      err::log!(db.put(key, create()));
     }
   }
 
