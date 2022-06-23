@@ -6,12 +6,12 @@ use rocksdb::{
 };
 use std::{collections::BTreeSet, path::PathBuf};
 
-pub struct Kv<Iter: Iterator<Item = String>, Cf: cf::Cf<Iter>> {
+pub struct Kv<Cf: cf::Cf<N>, const N: usize> {
   pub db: OptimisticTransactionDB,
   pub cf: Cf,
 }
 
-impl<Iter: Iterator<Item = String>, Cf: cf::Cf<Iter>> Kv<Iter, Cf> {
+impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   pub fn get_or_create<Ref: AsRef<[u8]>>(
     &self,
     key: impl AsRef<[u8]>,
@@ -30,7 +30,7 @@ impl<Iter: Iterator<Item = String>, Cf: cf::Cf<Iter>> Kv<Iter, Cf> {
   #[allow(invalid_value)]
   pub fn new(path: impl Into<PathBuf>) -> Self {
     let mut db = Kv {
-      db: open(path).unwrap(),
+      db: open(path, Cf::li()).unwrap(),
       cf: unsafe { std::mem::MaybeUninit::uninit().assume_init() },
     };
     let ptr: *const OptimisticTransactionDB = &db.db;
@@ -41,7 +41,7 @@ impl<Iter: Iterator<Item = String>, Cf: cf::Cf<Iter>> Kv<Iter, Cf> {
 
 pub fn open(
   path: impl Into<PathBuf>,
-  cf_li: impl Iterator<Item = String>,
+  cf_li: impl IntoIterator<Item = String>,
 ) -> Result<OptimisticTransactionDB> {
   let cpu = num_cpus::get() as _;
   let mut opt = Options::default();
@@ -99,13 +99,13 @@ pub fn open(
   let path = path.into();
 
   // https://blog.petitviolet.net/post/2021-03-25/use-rocksdb-from-rust
-  let cf_li = DB::list_cf(&opt, &path).unwrap_or_default();
+  let li = DB::list_cf(&opt, &path).unwrap_or_default();
   let mut db: OptimisticTransactionDB<SingleThreaded> =
-    OptimisticTransactionDB::open_cf(&opt, &path, &cf_li)?;
-  let cf_set = BTreeSet::from_iter(cf_li);
+    OptimisticTransactionDB::open_cf(&opt, &path, &li)?;
+  let cf_set = BTreeSet::from_iter(li);
 
   for i in cf_li {
-    if cf_set.get(i).is_none() {
+    if cf_set.get(&i).is_none() {
       db.create_cf(i, &opt)?;
     }
   }

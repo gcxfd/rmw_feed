@@ -1,3 +1,4 @@
+#![feature(associated_type_defaults)]
 #![feature(macro_metavar_expr)]
 
 pub mod cf;

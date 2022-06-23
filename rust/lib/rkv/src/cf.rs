@@ -1,5 +1,4 @@
 //use paste::paste;
-use std::iter::IntoIterator;
 
 #[macro_export]
 macro_rules! count {
@@ -20,9 +19,9 @@ impl rocksdb::AsColumnFamilyRef for ColumnFamily {
 unsafe impl Send for ColumnFamily {}
 unsafe impl Sync for ColumnFamily {}
 
-pub trait Cf<Iter: Iterator<Item = String>> {
+pub trait Cf<const N: usize> {
   fn new(db: &rocksdb::OptimisticTransactionDB) -> Self;
-  fn iter() -> Iter;
+  fn li() -> [String; N];
 }
 
 #[macro_export]
@@ -36,9 +35,8 @@ macro_rules! column_family {
       $( pub $name:ColumnFamily ),*
     }
 
-
-    impl<Iter: Iterator<Item = String>> rkv::Cf<Iter> for Cf {
-      fn iter() -> Iter {
+    impl rkv::Cf for Cf<count!($($name),+)> {
+      fn li() -> Iter {
         [$(stringify!($name)),*].into_iter()
       }
       fn new(db:&rocksdb::OptimisticTransactionDB) -> Cf {
