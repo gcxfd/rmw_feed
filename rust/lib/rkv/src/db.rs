@@ -12,6 +12,19 @@ pub struct Kv<Cf: cf::Cf<N>, const N: usize> {
   pub cf: Cf,
 }
 
+impl<Cf: cf::Cf<N>, const N: usize> util::kv::Kv for Kv<Cf, N> {
+  fn get(&self, key: &[u8]) -> Option<Box<[u8]>> {
+    if let Ok(Some(val)) = err::ok!(self.db.get(key)) {
+      return Some(val.into());
+    }
+    None
+  }
+
+  fn set(&self, key: &[u8], val: &[u8]) {
+    err::log!(self.db.put(key, val));
+  }
+}
+
 pub fn get_or_create<Ref: AsRef<[u8]>>(
   db: &OptimisticTransactionDB,
   key: impl AsRef<[u8]>,
@@ -26,7 +39,7 @@ pub fn get_or_create<Ref: AsRef<[u8]>>(
   }
 }
 
-impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
+impl<'a, Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   #[allow(invalid_value)]
   pub fn new(path: impl Into<PathBuf>) -> Self {
     let mut db = Kv {

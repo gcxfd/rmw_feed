@@ -1,3 +1,4 @@
+#![feature(generic_associated_types)]
 #![feature(associated_type_defaults)]
 #![feature(macro_metavar_expr)]
 
