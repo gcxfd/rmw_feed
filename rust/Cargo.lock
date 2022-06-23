@@ -353,6 +353,7 @@ dependencies = [
  "err",
  "log",
  "speedy",
+ "util",
 ]
 
 [[package]]

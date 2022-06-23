@@ -1,10 +1,5 @@
 use speedy::{LittleEndian, Readable, Writable};
-
-pub trait Kv {
-  type Ref: AsRef<[u8]>;
-  fn get(&self, key: &[u8]) -> Option<Self::Ref>;
-  fn set(&self, key: &[u8], val: &[u8]) -> ();
-}
+use util::kv::Kv;
 
 pub struct Config<KV: Kv> {
   pub kv: KV,
@@ -48,9 +43,10 @@ impl<KV: Kv> Config<KV> {
 
 #[macro_export]
 macro_rules! get {
-  ($config:expr, $file:expr, $init:expr) => {
+  ($config:expr, $file:expr, $init:expr) => {{
+    use speedy::{LittleEndian, Readable, Writable};
     $config.get(const_str::replace!(stringify!($file), " ", ""), || $init)
-  };
+  }};
 }
 
 #[macro_export]

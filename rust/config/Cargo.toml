@@ -7,3 +7,4 @@ edition = "2021"
 log = "0.4.17"
 speedy = { path = "../lib/speedy" }
 err = { path = "../err" }
+util = { path = "../lib/util" }
