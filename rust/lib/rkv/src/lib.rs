@@ -2,18 +2,13 @@
 
 pub mod cf;
 pub mod db;
-
-use addrbytes::FromBytes;
-use anyhow::Result;
-pub use db::Kv;
-use id::Id;
-use once_cell::unsync::Lazy;
-use paste::paste;
-use rocksdb::{Direction, IteratorMode};
-use smallvec::SmallVec;
-
+pub use cf::ColumnFamily;
 //column_family!(pk_addr, addr_pk, addr_sk, alive_addr);
 
+/*
+use paste::paste;
+use rocksdb::{Direction, IteratorMode};
+use anyhow::Result;
 macro_rules! tx_cf {
   ($self:ident)=>{
     let cf = &$self.cf;
@@ -38,7 +33,6 @@ macro_rules! tx_cf {
     define!(put, get, delete, get_pinned);
   }
 }
-/*
 #[derive(Debug)]
 pub struct PkAddr<Addr: FromBytes<Addr>> {
   pub pk: Box<[u8]>,

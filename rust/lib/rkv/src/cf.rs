@@ -1,4 +1,5 @@
 //use paste::paste;
+use std::iter::IntoIterator;
 
 #[macro_export]
 macro_rules! count {
@@ -19,26 +20,34 @@ impl rocksdb::AsColumnFamilyRef for ColumnFamily {
 unsafe impl Send for ColumnFamily {}
 unsafe impl Sync for ColumnFamily {}
 
+pub trait Cf {
+  fn new(db: &rocksdb::OptimisticTransactionDB) -> Self;
+  fn iter() -> impl Iterator<Item = String>;
+}
+
 #[macro_export]
 macro_rules! column_family {
 
   ($($name:ident),*) => {
-    pub const CF_LI:[&str;count!($($name),+)] = [$($name),*];
-    $(
-      #[allow(non_upper_case_globals)]
-      pub const $name: &str = stringify!($name);
-    )*
 
-      pub struct Cf {
-        $( pub $name:cf::ColumnFamily ),*
+    use rkv::ColumnFamily;
+
+    pub struct Cf {
+      $( pub $name:ColumnFamily ),*
+    }
+
+
+    impl Cf for Cf {
+      fn iter() -> impl Iterator<Item=String> {
+        [$(stringify!($name)),*].into_iter()
       }
-
-    pub fn cf_all(db:&rocksdb::OptimisticTransactionDB) -> Cf {
-      use rocksdb::AsColumnFamilyRef;
-      Cf {
-        $(
-          $name:cf::ColumnFamily(db.cf_handle($name).unwrap().inner())
-        ),*
+      fn new(db:&rocksdb::OptimisticTransactionDB) -> Cf {
+        use rocksdb::AsColumnFamilyRef;
+        Cf {
+          $(
+            $name:ColumnFamily(db.cf_handle($name).unwrap().inner())
+          ),*
+        }
       }
     }
   }
