@@ -15,7 +15,7 @@ use std::{
 use crate::ws::ws;
 
 pub fn run() -> Result<()> {
-  let s = b80::encode(b"2");
+  let s = b80::encode([5, 1, 23]);
 
   dbg!(&s);
 

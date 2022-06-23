@@ -22,7 +22,8 @@ pub const DECODE: [u8; 256] = [
   255, 255, 255, 255, 255, 255, 255, 255, 255,
 ];
 
-pub fn encode(buf: &[u8]) -> String {
+pub fn encode(buf: impl AsRef<[u8]>) -> String {
+  let buf = buf.as_ref();
   let r = base_encode::encode(buf, 80);
   let mut s = String::with_capacity(r.len());
   r.iter().for_each(|i| s.push(CHAR[*i as usize]));
