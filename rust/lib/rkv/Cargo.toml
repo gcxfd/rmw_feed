@@ -5,7 +5,7 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-librocksdb-sys = { path = "lib/rust-rocksdb/librocksdb-sys" }
+librocksdb-sys = { path = "../rust-rocksdb/librocksdb-sys" }
 rocksdb = { path = "../rust-rocksdb", features = [
   "zstd",
   "lz4"
