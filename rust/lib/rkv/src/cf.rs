@@ -35,8 +35,9 @@ macro_rules! column_family {
       $( pub $name:ColumnFamily ),*
     }
 
-    impl rkv::Cf for Cf<count!($($name),+)> {
-      fn li() -> Iter {
+    const N = count!($($name),+);
+    impl rkv::Cf<N> for Cf {
+      fn li() -> [String;N] {
         [$(stringify!($name)),*].into_iter()
       }
       fn new(db:&rocksdb::OptimisticTransactionDB) -> Cf {
