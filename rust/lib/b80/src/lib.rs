@@ -29,7 +29,8 @@ pub fn encode(buf: &[u8]) -> String {
   s
 }
 
-pub fn decode(encoded: &str) -> Vec<u8> {
+pub fn decode(encoded: impl AsRef<str>) -> Vec<u8> {
+  let encoded = encoded.as_ref();
   let mut buf = Vec::with_capacity(encoded.len());
   for i in encoded.chars() {
     let i = DECODE[i as usize];
