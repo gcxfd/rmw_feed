@@ -1,13 +1,5 @@
 //use paste::paste;
 
-#[macro_export]
-macro_rules! count {
-  ($name:ident) => { 1 };
-  ($first:ident, $($rest:ident),*) => {
-    1 + count!($($rest),*)
-  }
-}
-
 pub struct ColumnFamily(pub *mut librocksdb_sys::rocksdb_column_family_handle_t);
 
 impl rocksdb::AsColumnFamilyRef for ColumnFamily {
@@ -35,7 +27,7 @@ macro_rules! column_family {
       $( pub $name:ColumnFamily ),*
     }
 
-    const N = count!($($name),+);
+    const N = util::count!($($name),+);
     impl rkv::Cf<N> for Cf {
       fn li() -> [String;N] {
         [$(stringify!($name)),*].into_iter()
