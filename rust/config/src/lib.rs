@@ -3,7 +3,7 @@ use speedy::{LittleEndian, Readable, Writable};
 pub trait Kv {
   type Ref: AsRef<[u8]>;
   fn get(&self, key: &[u8]) -> Option<Self::Ref>;
-  fn set(key: &[u8], val: &[u8]) -> ();
+  fn set(&self, key: &[u8], val: &[u8]) -> ();
 }
 
 pub struct Config<KV: Kv> {
@@ -23,13 +23,15 @@ impl<KV: Kv> Config<KV> {
     let key = key.as_ref();
     let _init = || {
       let r = init();
-      kv.set(key, &r.write_to_box());
+      if let Ok(bin) = err::ok!(r.write_to_box()) {
+        kv.set(key, &bin);
+      }
       r
     };
 
     match kv.get(key) {
       Some(buf) => {
-        if let Ok(r) = err::ok!(T::read_from_buffer(&buf)) {
+        if let Ok(r) = err::ok!(T::read_from_buffer(buf.as_ref())) {
           //if buf != txt {
           //  fs::write(&path, &buf).unwrap();
           //}
