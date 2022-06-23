@@ -11,7 +11,7 @@ pub struct Kv<Cf: cf::Cf> {
   pub cf: Cf,
 }
 
-impl<Cf:cf::Cf> for Kv<Cf> {
+impl<Cf: cf::Cf> Kv<Cf> {
   pub fn get_or_create<Ref: AsRef<[u8]>>(
     &self,
     key: impl AsRef<[u8]>,
@@ -39,7 +39,10 @@ impl<Cf:cf::Cf> for Kv<Cf> {
   }
 }
 
-pub fn open(path: impl Into<PathBuf>, cf_li:impl Iterator<Item=String> ) -> Result<OptimisticTransactionDB> {
+pub fn open(
+  path: impl Into<PathBuf>,
+  cf_li: impl Iterator<Item = String>,
+) -> Result<OptimisticTransactionDB> {
   let cpu = num_cpus::get() as _;
   let mut opt = Options::default();
 
@@ -55,17 +58,17 @@ pub fn open(path: impl Into<PathBuf>, cf_li:impl Iterator<Item=String> ) -> Resu
   opt.set_compression_type(DBCompressionType::Lz4);
   opt.set_bottommost_compression_type(DBCompressionType::Zstd);
   /*
-     RocksDB documenation says that 16KB is a typical dictionary size.
-     We've empirically tuned the dicionary size to twice of that 'typical' size.
-     Having train data size x100 from dictionary size is a recommendation from RocksDB.
-     See: https://rocksdb.org/blog/2021/05/31/dictionary-compression.html?utm_source=dbplatz
+  RocksDB documenation says that 16KB is a typical dictionary size.
+  We've empirically tuned the dicionary size to twice of that 'typical' size.
+  Having train data size x100 from dictionary size is a recommendation from RocksDB.
+  See: https://rocksdb.org/blog/2021/05/31/dictionary-compression.html?utm_source=dbplatz
 
-     We use default parameters of RocksDB here:
-     window_bits is -14 and is unused (Zlib-specific parameter),
-     compression_level is 32767 meaning the default compression level for ZSTD,
-     compression_strategy is 0 and is unused (Zlib-specific parameter).
-     See: https://github.com/facebook/rocksdb/blob/main/include/rocksdb/advanced_options.h#L176:
-     */
+  We use default parameters of RocksDB here:
+  window_bits is -14 and is unused (Zlib-specific parameter),
+  compression_level is 32767 meaning the default compression level for ZSTD,
+  compression_strategy is 0 and is unused (Zlib-specific parameter).
+  See: https://github.com/facebook/rocksdb/blob/main/include/rocksdb/advanced_options.h#L176:
+  */
   let dict_size = 32768;
   let max_train_bytes = dict_size * 128;
   opt.set_bottommost_compression_options(-14, 32767, 0, dict_size, true);
