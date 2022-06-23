@@ -12,7 +12,8 @@ members = [
   "err",
   "kv",
   "lib/rkv",
-  "lib/util"
+  "lib/util",
+  "lib/base80"
 ]
 
 [profile.release]
