@@ -46,7 +46,6 @@ pub fn run() -> Result<()> {
     let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
 
     println!("ws://{}", ws_addr);
-    dbg!(kv);
     let mut ws_run = run.clone();
 
     run.spawn(async move {
