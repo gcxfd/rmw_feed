@@ -6,7 +6,6 @@ use async_std::{
   task::block_on,
 };
 use config::Config;
-
 use run::Run;
 use std::net::{Ipv4Addr, SocketAddrV4, UdpSocket};
 
@@ -24,8 +23,7 @@ pub fn run() -> Result<()> {
   let (sender, recver) = unbounded();
 
   let kv = kv::open(dir::root().join("kv"));
-  let db = &kv.db;
-  let config = Config::new(|key, create| kv::get_or_create(db, key, create));
+  let config = Config::new(kv);
 
   config::macro_get!(config);
 

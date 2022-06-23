@@ -12,8 +12,7 @@ pub fn root() -> PathBuf {
         dir
       }
     };
-    rmw.push(".config");
-    rmw.push("rmw");
+    rmw.push(".rmw");
     rmw
   }
 }
