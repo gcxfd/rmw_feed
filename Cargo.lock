@@ -397,6 +397,9 @@ dependencies = [
 [[package]]
 name = "err"
 version = "0.1.0"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "event-listener"

@@ -47,14 +47,15 @@ pub fn run() -> Result<()> {
     let mut ws_run = run.clone();
 
     run.spawn(async move {
-      let try_socket = TcpListener::bind(&ws_addr).await;
-      let listener = try_socket.unwrap();
-
-      while let Ok((stream, _)) = listener.accept().await {
-        let sender = sender.clone();
-        ws_run.spawn(async move {
-          err::log(ws(stream, sender).await);
-        });
+      if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {
+        while let Ok((stream, _)) = listener.accept().await {
+          let sender = sender.clone();
+          ws_run.spawn(async move {
+            err::log!(ws(stream, sender).await);
+          });
+        }
+      } else {
+        err::log!(sender.send(Cmd::Stop).await);
       }
     });
   }

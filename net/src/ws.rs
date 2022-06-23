@@ -41,14 +41,13 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
 
                     macro_rules! send {
                       ($msg:expr) => {{
-                        if let Ok(r) = err::ok(
-                          api::A {
-                            id: msg.id,
-                            reply: $msg,
-                          }
-                          .dump(),
-                        ) {
-                          err::log(ws_sender.send(Message::Binary(r.to_vec())).await);
+                        if let Ok(r) = err::ok!(api::A {
+                          id: msg.id,
+                          reply: $msg,
+                        }
+                        .dump())
+                        {
+                          err::log!(ws_sender.send(Message::Binary(r.to_vec())).await);
                         }
                       }};
                     }
@@ -56,7 +55,7 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
                     match cmd {
                       Cmd::Stop => {
                         send!(Reply::None);
-                        err::log(sender.send(cmd).await);
+                        err::log!(sender.send(cmd).await);
                         break;
                       }
                       _ => send!(match api(cmd).await {
@@ -84,7 +83,7 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
           break;
         }
         if alive == 1 {
-          err::log(ws_sender.send(Message::Ping(Vec::new())).await);
+          err::log!(ws_sender.send(Message::Ping(Vec::new())).await);
         }
         alive -= 1;
         msg_fut = msg_fut_continue; // Continue receiving the WebSocket message.
