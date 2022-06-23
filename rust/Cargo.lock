@@ -851,6 +851,7 @@ dependencies = [
  "const-str",
  "err",
  "futures",
+ "kv",
  "log",
  "logger",
  "parking_lot",

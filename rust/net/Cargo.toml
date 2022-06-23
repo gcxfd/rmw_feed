@@ -13,6 +13,7 @@ config = { path = "../config" }
 run = { path = "../run" }
 err = { path = "../err" }
 api = { path = "../api" }
+kv = { path = "../kv" }
 upnp = { path = "../upnp", optional = true }
 speedy = { path = "../lib/speedy", features = ["box"] }
 logger = { path = "../logger", optional = true }
