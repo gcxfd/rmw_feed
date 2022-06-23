@@ -4,7 +4,7 @@
 pub mod cf;
 pub mod db;
 pub use cf::{Cf, ColumnFamily};
-pub use db::open;
+pub use db::Kv;
 //column_family!(pk_addr, addr_pk, addr_sk, alive_addr);
 
 /*

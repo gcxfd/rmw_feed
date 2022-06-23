@@ -39,7 +39,7 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   }
 }
 
-pub fn open(
+fn open(
   path: impl Into<PathBuf>,
   cf_li: impl IntoIterator<Item = String>,
 ) -> Result<OptimisticTransactionDB> {
