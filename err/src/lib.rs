@@ -1,9 +1,16 @@
 #[macro_export]
+macro_rules! out {
+  ($err:expr) => {
+    log::error!("❌ {}", $err);
+  };
+}
+
+#[macro_export]
 macro_rules! ok {
   ($result:expr) => {{
     match $result {
       Err(err) => {
-        log::error!("❌ {}", err);
+        err::out!(err);
         Err(err)
       }
       Ok(val) => Ok(val),
@@ -15,7 +22,7 @@ macro_rules! ok {
 macro_rules! log {
   ($result:expr) => {{
     if let Err(err) = $result {
-      log::error!("❌ {}", err);
+      err::out!(err);
     }
   }};
 }
