@@ -1,7 +1,8 @@
 use speedy::{LittleEndian, Readable, Writable};
 
 pub trait Kv {
-  fn get(&self, key: &[u8]) -> Option<Box<[u8]>>;
+  type Ref: AsRef<[u8]>;
+  fn get(&self, key: &[u8]) -> Option<Self::Ref>;
   fn set(&self, key: &[u8], val: &[u8]) -> ();
 }
 
@@ -30,7 +31,8 @@ impl<KV: Kv> Config<KV> {
 
     match kv.get(key) {
       Some(buf) => {
-        if let Ok(r) = err::ok!(T::read_from_buffer(&buf)) {
+        let bin = buf.as_ref();
+        if let Ok(r) = err::ok!(T::read_from_buffer_copying_data(bin)) {
           //if buf != txt {
           //  fs::write(&path, &buf).unwrap();
           //}
