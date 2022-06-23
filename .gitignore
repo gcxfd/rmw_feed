@@ -1,4 +1,4 @@
-lib/rust-rocksdb
+rust/lib/rust-rocksdb
 
 node_modules/
 target/
