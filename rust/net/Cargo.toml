@@ -11,6 +11,7 @@ log = ["dep:logger", "dep:log"]
 [dependencies]
 config = { path = "../config" }
 run = { path = "../run" }
+dir = { path = "../dir" }
 err = { path = "../err" }
 api = { path = "../api" }
 kv = { path = "../kv" }

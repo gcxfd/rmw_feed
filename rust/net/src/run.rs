@@ -23,6 +23,7 @@ pub fn run() -> Result<()> {
 
   let (sender, recver) = unbounded();
 
+  let kv = kv::open(dir::root().join("kv"));
   let config = Config::new();
 
   config::macro_get!(config);

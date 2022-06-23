@@ -851,6 +851,7 @@ dependencies = [
  "async-tungstenite",
  "config",
  "const-str",
+ "dir",
  "err",
  "futures",
  "kv",
