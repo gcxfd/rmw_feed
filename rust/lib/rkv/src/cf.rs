@@ -27,10 +27,10 @@ macro_rules! column_family {
       $( pub $name:ColumnFamily ),*
     }
 
-    const N = util::count!($($name),+);
+    const N:usize = util::count!($($name),+);
     impl rkv::Cf<N> for Cf {
       fn li() -> [String;N] {
-        [$(stringify!($name)),*].into_iter()
+        [$(stringify!($name).into()),*]
       }
       fn new(db:&rocksdb::OptimisticTransactionDB) -> Cf {
         use rocksdb::AsColumnFamilyRef;
