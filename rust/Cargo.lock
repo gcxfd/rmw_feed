@@ -188,6 +188,7 @@ name = "b80"
 version = "0.1.0"
 dependencies = [
  "base-encode",
+ "rand",
 ]
 
 [[package]]

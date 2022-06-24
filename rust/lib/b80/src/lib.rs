@@ -42,3 +42,15 @@ pub fn decode(encoded: impl AsRef<str>) -> Vec<u8> {
   }
   base_encode::decode(&buf, 80).unwrap()
 }
+
+#[cfg(test)]
+mod tests {
+  use crate::{decode, encode};
+  #[test]
+  fn b80() {
+    for _ in 0..100 {
+      let bin: [u8; 32] = rand::random();
+      assert_eq!(decode(encode(bin)), bin);
+    }
+  }
+}
