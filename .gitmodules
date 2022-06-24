@@ -1,3 +1,6 @@
 [submodule "lib/speedy"]
 	path = lib/speedy
 	url = git@github.com:rmw-lib/speedy.git
+[submodule "rust/lib/captcha"]
+	path = rust/lib/captcha
+	url = git@github.com:rmw-lib/captcha.git
