@@ -1,4 +1,4 @@
-use speedy::{Error, Readable, Writable};
+use speedy::{Readable, Writable};
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable, Clone, Copy)]
 #[repr(u8)]
