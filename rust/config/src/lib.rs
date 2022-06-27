@@ -19,7 +19,7 @@ impl<KV: Kv> Config<KV> {
     let key = key.as_ref();
     let _init = || {
       let r = init();
-      if let Ok(bin) = err::ok!(r.write_to_box()) {
+      if let Ok(bin) = err::ok!(r.dump()) {
         kv.set(key, &bin);
       }
       r
@@ -28,7 +28,7 @@ impl<KV: Kv> Config<KV> {
     match kv.get(key) {
       Some(buf) => {
         let bin = buf.as_ref();
-        if let Ok(r) = err::ok!(T::read_from_buffer_copying_data(bin)) {
+        if let Ok(r) = err::ok!(T::load(bin)) {
           //if buf != txt {
           //  fs::write(&path, &buf).unwrap();
           //}
