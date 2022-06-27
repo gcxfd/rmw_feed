@@ -226,23 +226,23 @@ pub trait Writable<C: Context> {
 
     #[cfg(feature = "box")]
     #[inline]
-    fn write_to_box(&self) -> Result<Box<[u8]>, C::Error>
+    fn dump(&self) -> Result<Box<[u8]>, C::Error>
     where
         Self: DefaultContext<Context = C>,
         C: Default,
     {
-        self.write_to_box_with_ctx(Default::default())
+        self.dump_with_ctx(Default::default())
     }
 
     #[cfg(feature = "box")]
     #[inline]
-    fn write_to_box_with_ctx(&self, mut context: C) -> Result<Box<[u8]>, C::Error> {
-        self.write_to_box_with_ctx_mut(&mut context)
+    fn dump_with_ctx(&self, mut context: C) -> Result<Box<[u8]>, C::Error> {
+        self.dump_with_ctx_mut(&mut context)
     }
 
     #[cfg(feature = "box")]
     #[inline]
-    fn write_to_box_with_ctx_mut(&self, context: &mut C) -> Result<Box<[u8]>, C::Error> {
+    fn dump_with_ctx_mut(&self, context: &mut C) -> Result<Box<[u8]>, C::Error> {
         let capacity = self.bytes_needed()?;
         let mut buf = unsafe { Box::<[u8]>::new_uninit_slice(capacity).assume_init() };
         let mut writer = BufferCollector {

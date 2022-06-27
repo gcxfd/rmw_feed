@@ -411,12 +411,12 @@ pub trait Readable<'a, C: Context>: Sized {
     ///
     /// This performs zero-copy deserialization when possible.
     #[inline]
-    fn read_from_buffer(buffer: &'a [u8]) -> Result<Self, C::Error>
+    fn load(buffer: &'a [u8]) -> Result<Self, C::Error>
     where
         Self: DefaultContext<Context = C>,
         C: Default,
     {
-        Self::read_from_buffer_with_ctx(Default::default(), buffer)
+        Self::load_with_ctx(Default::default(), buffer)
     }
 
     /// Deserializes from a given buffer while also returning the amount of bytes consumed.
@@ -435,12 +435,12 @@ pub trait Readable<'a, C: Context>: Sized {
     ///
     /// This never performs zero-copy deserialization.
     #[inline]
-    fn read_from_buffer_copying_data(buffer: &[u8]) -> Result<Self, C::Error>
+    fn load_copying_data(buffer: &[u8]) -> Result<Self, C::Error>
     where
         Self: DefaultContext<Context = C>,
         C: Default,
     {
-        Self::read_from_buffer_copying_data_with_ctx(Default::default(), buffer)
+        Self::load_copying_data_with_ctx(Default::default(), buffer)
     }
 
     /// Deserializes from a given buffer while also returning the amount of bytes consumed.
@@ -498,7 +498,7 @@ pub trait Readable<'a, C: Context>: Sized {
     }
 
     #[inline]
-    fn read_from_buffer_with_ctx(context: C, buffer: &'a [u8]) -> Result<Self, C::Error> {
+    fn load_with_ctx(context: C, buffer: &'a [u8]) -> Result<Self, C::Error> {
         Self::read_with_length_from_buffer_with_ctx(context, buffer).0
     }
 
@@ -523,7 +523,7 @@ pub trait Readable<'a, C: Context>: Sized {
     }
 
     #[inline]
-    fn read_from_buffer_copying_data_with_ctx(context: C, buffer: &[u8]) -> Result<Self, C::Error> {
+    fn load_copying_data_with_ctx(context: C, buffer: &[u8]) -> Result<Self, C::Error> {
         Self::read_with_length_from_buffer_copying_data_with_ctx(context, buffer).0
     }
 

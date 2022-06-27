@@ -80,7 +80,7 @@ macro_rules! symmetric_tests {
             fn round_trip_le_borrowed_aligned() {
                 let original: $type = $value;
                 let serialized = original.write_to_vec_with_ctx( Endianness::LittleEndian ).unwrap();
-                let deserialized: Result< $type, _ > = Readable::read_from_buffer_with_ctx( Endianness::LittleEndian, &serialized );
+                let deserialized: Result< $type, _ > = Readable::load_with_ctx( Endianness::LittleEndian, &serialized );
                 assert_eq!( original, deserialized.unwrap() );
             }
 
@@ -88,7 +88,7 @@ macro_rules! symmetric_tests {
             fn round_trip_le_borrowed_unaligned() {
                 let original: (u8, $type) = (1, $value);
                 let serialized = original.write_to_vec_with_ctx( Endianness::LittleEndian ).unwrap();
-                let deserialized: (u8, $type) = Readable::read_from_buffer_with_ctx( Endianness::LittleEndian, &serialized ).unwrap();
+                let deserialized: (u8, $type) = Readable::load_with_ctx( Endianness::LittleEndian, &serialized ).unwrap();
                 assert_eq!( original.0, deserialized.0 );
                 assert_eq!( original.1, deserialized.1 );
             }
@@ -97,7 +97,7 @@ macro_rules! symmetric_tests {
             fn round_trip_be_borrowed_aligned() {
                 let original: $type = $value;
                 let serialized = original.write_to_vec_with_ctx( Endianness::BigEndian ).unwrap();
-                let deserialized: $type = Readable::read_from_buffer_with_ctx( Endianness::BigEndian, &serialized ).unwrap();
+                let deserialized: $type = Readable::load_with_ctx( Endianness::BigEndian, &serialized ).unwrap();
                 assert_eq!( original, deserialized );
             }
 
@@ -105,7 +105,7 @@ macro_rules! symmetric_tests {
             fn round_trip_be_borrowed_unaligned() {
                 let original: (u8, $type) = (1, $value);
                 let serialized = original.write_to_vec_with_ctx( Endianness::BigEndian ).unwrap();
-                let deserialized: (u8, $type) = Readable::read_from_buffer_with_ctx( Endianness::BigEndian, &serialized ).unwrap();
+                let deserialized: (u8, $type) = Readable::load_with_ctx( Endianness::BigEndian, &serialized ).unwrap();
                 assert_eq!( original.0, deserialized.0 );
                 assert_eq!( original.1, deserialized.1 );
             }
@@ -127,7 +127,7 @@ macro_rules! symmetric_tests {
             fn round_trip_le_borrowed_aligned() {
                 let original: $type = $value;
                 let serialized = original.write_to_vec_with_ctx( Endianness::LittleEndian ).unwrap();
-                let deserialized: Result< $type, _ > = Readable::read_from_buffer_with_ctx( Endianness::LittleEndian, &serialized );
+                let deserialized: Result< $type, _ > = Readable::load_with_ctx( Endianness::LittleEndian, &serialized );
                 if Endianness::LittleEndian.conversion_necessary() {
                     match speedy::private::get_error_kind( &deserialized.unwrap_err() ) {
                         speedy::private::ErrorKind::EndiannessMismatch => {},
@@ -142,7 +142,7 @@ macro_rules! symmetric_tests {
             fn round_trip_le_borrowed_unaligned() {
                 let original: (u8, $type) = (1, $value);
                 let serialized = original.write_to_vec_with_ctx( Endianness::LittleEndian ).unwrap();
-                let deserialized: Result< (u8, $type), _ > = Readable::read_from_buffer_with_ctx( Endianness::LittleEndian, &serialized );
+                let deserialized: Result< (u8, $type), _ > = Readable::load_with_ctx( Endianness::LittleEndian, &serialized );
                 if Endianness::LittleEndian.conversion_necessary() {
                     match speedy::private::get_error_kind( &deserialized.unwrap_err() ) {
                         speedy::private::ErrorKind::EndiannessMismatch => {},
@@ -159,7 +159,7 @@ macro_rules! symmetric_tests {
             fn round_trip_be_borrowed_aligned() {
                 let original: $type = $value;
                 let serialized = original.write_to_vec_with_ctx( Endianness::BigEndian ).unwrap();
-                let deserialized: Result< $type, _ > = Readable::read_from_buffer_with_ctx( Endianness::BigEndian, &serialized );
+                let deserialized: Result< $type, _ > = Readable::load_with_ctx( Endianness::BigEndian, &serialized );
                 if Endianness::BigEndian.conversion_necessary() {
                     match speedy::private::get_error_kind( &deserialized.unwrap_err() ) {
                         speedy::private::ErrorKind::EndiannessMismatch => {},
@@ -174,7 +174,7 @@ macro_rules! symmetric_tests {
             fn round_trip_be_borrowed_unaligned() {
                 let original: (u8, $type) = (1, $value);
                 let serialized = original.write_to_vec_with_ctx( Endianness::BigEndian ).unwrap();
-                let deserialized: Result< (u8, $type), _ > = Readable::read_from_buffer_with_ctx( Endianness::BigEndian, &serialized );
+                let deserialized: Result< (u8, $type), _ > = Readable::load_with_ctx( Endianness::BigEndian, &serialized );
                 if Endianness::BigEndian.conversion_necessary() {
                     match speedy::private::get_error_kind( &deserialized.unwrap_err() ) {
                         speedy::private::ErrorKind::EndiannessMismatch => {},
@@ -204,7 +204,7 @@ macro_rules! symmetric_tests {
             fn round_trip_le_owned() {
                 let original: $type = $value;
                 let serialized = original.write_to_vec_with_ctx( Endianness::LittleEndian ).unwrap();
-                let deserialized: $type = Readable::read_from_buffer_copying_data_with_ctx( Endianness::LittleEndian, &serialized ).unwrap();
+                let deserialized: $type = Readable::load_copying_data_with_ctx( Endianness::LittleEndian, &serialized ).unwrap();
                 assert_eq!( original, deserialized );
             }
 
@@ -212,7 +212,7 @@ macro_rules! symmetric_tests {
             fn round_trip_be_owned() {
                 let original: $type = $value;
                 let serialized = original.write_to_vec_with_ctx( Endianness::BigEndian ).unwrap();
-                let deserialized: $type = Readable::read_from_buffer_copying_data_with_ctx( Endianness::BigEndian, &serialized ).unwrap();
+                let deserialized: $type = Readable::load_copying_data_with_ctx( Endianness::BigEndian, &serialized ).unwrap();
                 assert_eq!( original, deserialized );
             }
 
@@ -2167,7 +2167,7 @@ fn test_regex() {
     let buffer = regex.write_to_vec().unwrap();
     assert_eq!(buffer, &[6, 0, 0, 0, b'[', b'a', b'-', b'z', b']', b'+']);
 
-    let deserialized = regex::Regex::read_from_buffer(&buffer).unwrap();
+    let deserialized = regex::Regex::load(&buffer).unwrap();
     assert_eq!(regex.as_str(), deserialized.as_str());
 }
 
@@ -2186,7 +2186,7 @@ fn test_derived_struct_with_default_on_eof() {
     use speedy::{Endianness, Readable};
 
     let deserialized: DerivedStructWithDefaultOnEof =
-        Readable::read_from_buffer_with_ctx(Endianness::LittleEndian, &[0xAA]).unwrap();
+        Readable::load_with_ctx(Endianness::LittleEndian, &[0xAA]).unwrap();
     assert_eq!(
         deserialized,
         DerivedStructWithDefaultOnEof {
@@ -2197,7 +2197,7 @@ fn test_derived_struct_with_default_on_eof() {
     );
 
     let deserialized: DerivedStructWithDefaultOnEof =
-        Readable::read_from_buffer_with_ctx(Endianness::LittleEndian, &[0xAA, 0xBB]).unwrap();
+        Readable::load_with_ctx(Endianness::LittleEndian, &[0xAA, 0xBB]).unwrap();
     assert_eq!(
         deserialized,
         DerivedStructWithDefaultOnEof {
@@ -2208,7 +2208,7 @@ fn test_derived_struct_with_default_on_eof() {
     );
 
     let deserialized: DerivedStructWithDefaultOnEof =
-        Readable::read_from_buffer_with_ctx(Endianness::LittleEndian, &[0xAA, 0xBB, 0xCC]).unwrap();
+        Readable::load_with_ctx(Endianness::LittleEndian, &[0xAA, 0xBB, 0xCC]).unwrap();
     assert_eq!(
         deserialized,
         DerivedStructWithDefaultOnEof {
@@ -2219,14 +2219,14 @@ fn test_derived_struct_with_default_on_eof() {
     );
 
     let deserialized: DerivedStructWithVecWithDefaultOnEof =
-        Readable::read_from_buffer_with_ctx(Endianness::LittleEndian, &[]).unwrap();
+        Readable::load_with_ctx(Endianness::LittleEndian, &[]).unwrap();
     assert_eq!(
         deserialized,
         DerivedStructWithVecWithDefaultOnEof { data: vec![] }
     );
 
     let deserialized: DerivedStructWithVecWithCountWithDefaultOnEof =
-        Readable::read_from_buffer_with_ctx(Endianness::LittleEndian, &[2, 0xAA, 0xBB]).unwrap();
+        Readable::load_with_ctx(Endianness::LittleEndian, &[2, 0xAA, 0xBB]).unwrap();
     assert_eq!(
         deserialized,
         DerivedStructWithVecWithCountWithDefaultOnEof {
@@ -2236,7 +2236,7 @@ fn test_derived_struct_with_default_on_eof() {
     );
 
     let deserialized: DerivedStructWithVecWithCountWithDefaultOnEof =
-        Readable::read_from_buffer_with_ctx(Endianness::LittleEndian, &[2, 0xAA]).unwrap();
+        Readable::load_with_ctx(Endianness::LittleEndian, &[2, 0xAA]).unwrap();
     assert_eq!(
         deserialized,
         DerivedStructWithVecWithCountWithDefaultOnEof {
@@ -2265,7 +2265,7 @@ fn test_length_mismatch_with_length_attribute() {
 
 #[test]
 fn test_zero_non_zero() {
-    let error = NonZeroU32::read_from_buffer(&[0, 0, 0, 0]).unwrap_err();
+    let error = NonZeroU32::load(&[0, 0, 0, 0]).unwrap_err();
     match speedy::private::get_error_kind(&error) {
         speedy::private::ErrorKind::ZeroNonZero => {}
         error => panic!("Unexpected error: {:?}", error),
@@ -2274,7 +2274,7 @@ fn test_zero_non_zero() {
 
 #[test]
 fn test_vec_with_length_type_u7_read_out_of_range_length() {
-    let error = DerivedStructWithVecWithLengthTypeU7::read_from_buffer(&[0x80]).unwrap_err();
+    let error = DerivedStructWithVecWithLengthTypeU7::load(&[0x80]).unwrap_err();
     match speedy::private::get_error_kind(&error) {
         speedy::private::ErrorKind::OutOfRangeLength => {}
         error => panic!("Unexpected error: {:?}", error),
@@ -2283,14 +2283,14 @@ fn test_vec_with_length_type_u7_read_out_of_range_length() {
 
 #[test]
 fn test_prefix_constant_mismatch() {
-    let error = DerivedStructWithConstantPrefixString::read_from_buffer(&[0x41, 0x42]).unwrap_err();
+    let error = DerivedStructWithConstantPrefixString::load(&[0x41, 0x42]).unwrap_err();
     match speedy::private::get_error_kind(&error) {
         speedy::private::ErrorKind::InputBufferIsTooSmall { .. } => {}
         error => panic!("Unexpected error: {:?}", error),
     }
 
     let error =
-        DerivedStructWithConstantPrefixString::read_from_buffer(&[0x41, 0x42, 0x00]).unwrap_err();
+        DerivedStructWithConstantPrefixString::load(&[0x41, 0x42, 0x00]).unwrap_err();
     match speedy::private::get_error_kind(&error) {
         speedy::private::ErrorKind::ExpectedConstant { .. } => {}
         error => panic!("Unexpected error: {:?}", error),
