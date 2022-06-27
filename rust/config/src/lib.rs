@@ -28,7 +28,7 @@ impl<KV: Kv> Config<KV> {
     match kv.get(key) {
       Some(buf) => {
         let bin = buf.as_ref();
-        if let Ok(r) = err::ok!(T::load(bin)) {
+        if let Ok(r) = err::ok!(T::copy_load(bin)) {
           //if buf != txt {
           //  fs::write(&path, &buf).unwrap();
           //}

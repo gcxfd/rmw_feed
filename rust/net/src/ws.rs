@@ -2,6 +2,7 @@ use crate::api::api;
 use anyhow::Result;
 use api::{Cmd, Reply, Q};
 use async_std::{channel::Sender, net::TcpStream};
+use speedy::{Readable, Writable};
 
 use futures::{
   future::{select, Either},
