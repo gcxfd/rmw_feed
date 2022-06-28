@@ -4,7 +4,7 @@ use async_std::{
   net::UdpSocket,
   task::{sleep, spawn, JoinHandle},
 };
-use paste::paste;
+
 use smallvec::{smallvec, SmallVec};
 use std::{
   collections::BTreeSet,

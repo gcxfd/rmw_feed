@@ -1,11 +1,7 @@
-use crate::{cmd::cmd, var::MTU, ws::ws};
+use crate::{cmd::cmd, ws::ws};
 use anyhow::Result;
 use api::Cmd;
-use async_std::{
-  channel::unbounded,
-  net::TcpListener,
-  task::{block_on, sleep},
-};
+use async_std::{channel::unbounded, net::TcpListener, task::block_on};
 use config::Config;
 use log::info;
 use run::Run;
@@ -14,7 +10,6 @@ use std::{
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
   sync::Arc,
   thread::spawn,
-  time::Duration,
 };
 
 pub fn run() -> Result<()> {
@@ -31,7 +26,7 @@ pub fn run() -> Result<()> {
   let (sender, recver) = unbounded();
 
   let kv = Arc::new(kv::open(dir::root().join("kv")));
-  let config = Config::new(kv.clone());
+  let config = Config::new(kv);
 
   config::macro_get!(config);
 
