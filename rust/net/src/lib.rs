@@ -3,6 +3,7 @@
 
 mod api;
 mod cmd;
+mod id;
 mod run;
 mod udp;
 mod var;
