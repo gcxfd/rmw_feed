@@ -39,12 +39,12 @@ pub fn run() -> Result<()> {
       UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
     );
 
-    info!("udp://{}", &addr);
-    let udp = UdpSocket::bind(addr)?;
-
     if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
       run.spawn(upnp::upnp_daemon("rmw", addr.port()));
     }
+
+    info!("udp://{}", &addr);
+    let udp = UdpSocket::bind(addr)?;
   }
 
   // web socket
