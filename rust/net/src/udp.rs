@@ -2,7 +2,10 @@ use crate::{ider::Ider, var::MTU};
 use std::net::{SocketAddr, UdpSocket};
 
 pub fn udp(addr: SocketAddr, token: [u8; 32]) {
-  let mut ider = Ider::new();
+  let ider = Ider::new();
+
+  dbg!(ider.get());
+  dbg!(ider.get());
 
   loop {
     if let Ok(udp) = err::ok!(UdpSocket::bind(addr)) {
