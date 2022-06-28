@@ -12,7 +12,7 @@ unsafe impl Sync for Ider {}
 impl Ider {
   pub fn new() -> Self {
     let mut id: u32 = rand::random();
-    if id % 2 != 0 {
+    if id % 2 > 0 {
       id = id.wrapping_add(1);
     }
 
