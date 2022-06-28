@@ -35,7 +35,11 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [
                 loop {
                   if let Ok(send) = UdpSocket::bind($bind).await {
                     for addr in &$li {
-                      err::log!(send.send_to(&[], addr).await);
+                      err::log!(
+                        send
+                          .send_to(&[&0u32.to_le_bytes()[..], &token[..]].concat(), addr)
+                          .await
+                      );
                     }
                   }
                   sleep(Duration::from_secs(1)).await
