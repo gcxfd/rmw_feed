@@ -1,4 +1,4 @@
-use crate::{var::MTU, ws::ws};
+use crate::{recv::recv, var::MTU, ws::ws};
 use anyhow::Result;
 use api::Cmd;
 use async_std::{
@@ -81,15 +81,4 @@ pub fn run() -> Result<()> {
 
   block_on(recv(recver));
   Ok(())
-}
-
-async fn recv(recver: Receiver<Cmd>) {
-  while let Ok(msg) = recver.recv().await {
-    match msg {
-      Cmd::Stop => {
-        break;
-      }
-      _ => {}
-    }
-  }
 }
