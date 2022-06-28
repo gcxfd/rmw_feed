@@ -2,11 +2,11 @@
 #![feature(new_uninit)]
 
 mod reply_future;
-
 use crate::reply_future::ReplyFuture;
 use api::{Cmd, Reply, A, Q};
 use js_sys::{Function, Promise};
 use paste::paste;
+use speedy::{readable::Readable, writable::Writable};
 use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
