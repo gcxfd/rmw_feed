@@ -57,7 +57,7 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
                       Cmd::Stop => {
                         send!(Reply::None);
                         err::log!(sender.send(cmd).await);
-                        break;
+                        return Ok(());
                       }
                       _ => send!(match api(cmd).await {
                         Ok(reply) => reply,
