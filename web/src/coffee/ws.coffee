@@ -4,12 +4,12 @@ import WasmInit, {W,connect,ws} from ':/wasm/api/wasm.js'
 
 await WasmInit()
 
-RETRY = 0
+RETRY = 1
 
 export default WS = ws(
   "ws://127.0.0.1:4910"
   =>
-    RETRY = 0
+    RETRY = 1
     return
   =>
     setTimeout(
@@ -18,7 +18,7 @@ export default WS = ws(
           ++RETRY
         connect(WS)
         return
-      RETRY*100
+      RETRY*50
     )
     return
 )
