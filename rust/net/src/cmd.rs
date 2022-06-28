@@ -42,12 +42,13 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [
                       );
                     }
                   }
+                  sleep(Duration::from_millis(9)).await;
                   $li.drain_filter(|addr| err::ok!(std::net::UdpSocket::bind(*addr)).is_ok());
 
                   if $li.is_empty() {
                     break;
                   }
-                  sleep(Duration::from_secs(1)).await
+                  sleep(Duration::from_secs(31)).await
                 }
               }));
             }
@@ -66,10 +67,5 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [
       }
       _ => {}
     }
-  }
-
-  loop {
-    log::info!("stoped");
-    sleep(Duration::from_secs(300)).await
   }
 }
