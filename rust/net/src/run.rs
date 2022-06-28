@@ -6,6 +6,7 @@ use async_std::{
   task::block_on,
 };
 use config::Config;
+use log::info;
 use run::Run;
 use std::{
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
@@ -15,14 +16,6 @@ use std::{
 use crate::ws::ws;
 
 pub fn run() -> Result<()> {
-  let s = b80::encode([
-    255, 254, 253, 5, 1, 23, 250, 255, 254, 253, 5, 1, 23, 250, 1, 255, 254, 253, 5, 1, 23, 250,
-    255, 254, 253, 5, 1, 23, 250, 1, 255, 254, 253, 5, 1, 23, 250, 255, 254, 253, 5, 1, 23, 250, 1,
-    255, 254, 253, 5, 1, 23, 250, 255, 254, 253, 5, 1, 23, 250, 1,
-  ]);
-
-  dbg!(&s);
-
   //dbg!(b80::decode(s));
 
   #[cfg(feature = "log")]
@@ -46,6 +39,9 @@ pub fn run() -> Result<()> {
       UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
     );
 
+    info!("udp://{}", &addr);
+    let udp = UdpSocket::bind(addr)?;
+
     if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
       run.spawn(upnp::upnp_daemon("rmw", addr.port()));
     }
@@ -55,7 +51,7 @@ pub fn run() -> Result<()> {
   {
     let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
 
-    println!("ws://{}", ws_addr);
+    info!("ws://{}", ws_addr);
     let mut ws_run = run.clone();
 
     run.spawn(async move {
