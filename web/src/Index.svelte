@@ -24,10 +24,12 @@ console.log {我}
 click = =>
   ++x
   return
+
 </script>
 
 <template lang="pug">
 main
+  #map
   img(alt="logo" src="{ logo }")
   button(on:click="{ click }")
     +if('x%2') if x%2
@@ -37,6 +39,10 @@ main
 </template>
 
 <style lang="stylus">
+#map
+  width 100%
+  height 300px
+
 button
   width 8rem
   font-size 32px
