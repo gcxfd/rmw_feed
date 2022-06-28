@@ -6,70 +6,72 @@ use config::Config;
 use log::info;
 use run::Run;
 use std::{
-  collections::BTreeSet,
-  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
-  sync::Arc,
-  thread::spawn,
+    collections::BTreeSet,
+    net::{Ipv4Addr, SocketAddrV4, UdpSocket},
+    sync::Arc,
+    thread::spawn,
 };
 
 pub fn run() -> Result<()> {
-  //dbg!(b80::decode(s));
+    //dbg!(b80::decode(s));
 
-  #[cfg(feature = "log")]
-  {
-    logger::init()
-      .level_for("rmw", log::LevelFilter::Trace)
-      .apply()?;
-  }
-  let mut run = Run::default();
+    #[cfg(feature = "log")]
+    {
+        logger::init()
+            .level_for("rmw", log::LevelFilter::Trace)
+            .apply()?;
+    }
+    let mut run = Run::default();
 
-  let (sender, recver) = unbounded();
+    let (sender, recver) = unbounded();
 
-  let kv = Arc::new(kv::open(dir::root().join("kv")));
-  let config = Config::new(kv);
+    let kv = Arc::new(kv::open(dir::root().join("kv")));
+    let config = Config::new(kv);
 
-  config::macro_get!(config);
+    config::macro_get!(config);
 
-  let mut addr_set = BTreeSet::new();
+    let mut addr_set = BTreeSet::new();
 
-  if get!(run / v4, true) {
-    let addr = get!(
-      v4 / udp,
-      UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
-    );
+    let token = get!(token, rand::random::<[u8; 32]>());
 
-    addr_set.insert(addr);
+    if get!(run / v4, true) {
+        let addr = get!(
+            v4 / udp,
+            UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
+        );
 
-    if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
-      run.spawn(upnp::upnp_daemon("rmw", addr.port()));
+        addr_set.insert(addr);
+
+        if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
+            run.spawn(upnp::upnp_daemon("rmw", addr.port()));
+        }
+
+        info!("udp://{}", &addr);
+
+        spawn(move || crate::udp::udp(addr, token));
     }
 
-    info!("udp://{}", &addr);
+    // web socket
+    {
+        let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
 
-    spawn(move || crate::udp::udp(addr));
-  }
+        info!("ws://{}", ws_addr);
+        let mut ws_run = run.clone();
 
-  // web socket
-  {
-    let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
+        run.spawn(async move {
+            if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {
+                while let Ok((stream, _)) = listener.accept().await {
+                    let sender = sender.clone();
+                    ws_run.spawn(async move {
+                        err::log!(ws(stream, sender).await);
+                    });
+                }
+            } else {
+                err::log!(sender.send(Cmd::Stop).await);
+            }
+        });
+    }
 
-    info!("ws://{}", ws_addr);
-    let mut ws_run = run.clone();
-
-    run.spawn(async move {
-      if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {
-        while let Ok((stream, _)) = listener.accept().await {
-          let sender = sender.clone();
-          ws_run.spawn(async move {
-            err::log!(ws(stream, sender).await);
-          });
-        }
-      } else {
-        err::log!(sender.send(Cmd::Stop).await);
-      }
-    });
-  }
-
-  block_on(cmd(recver, addr_set));
-  Ok(())
+    block_on(cmd(recver, addr_set, token));
+    Ok(())
 }

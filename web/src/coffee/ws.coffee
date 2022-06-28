@@ -23,7 +23,7 @@ export default WS = ws(
     return
 )
 
-#console.log(await WS.stop())
+console.log(await WS.stop())
 
 ###
 WS = undefined

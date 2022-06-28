@@ -875,6 +875,7 @@ dependencies = [
  "logger",
  "parking_lot",
  "paste",
+ "rand",
  "run",
  "smallvec",
  "speedy",

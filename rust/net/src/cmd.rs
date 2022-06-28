@@ -4,7 +4,7 @@ use async_std::{
   net::UdpSocket,
   task::{sleep, spawn, JoinHandle},
 };
-
+use futures::future::join_all;
 use smallvec::{smallvec, SmallVec};
 use std::{
   collections::BTreeSet,
@@ -12,49 +12,47 @@ use std::{
   time::Duration,
 };
 
-pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>) {
+pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
   let (mut v4, mut v6): (Vec<_>, Vec<_>) = addr_set.into_iter().partition(|addr| match addr {
     SocketAddr::V4(_) => true,
     _ => false,
   });
 
-  let mut task_li: SmallVec<[JoinHandle<()>; 2]> = smallvec![];
-
-  macro_rules! heartbeat {
-    ($li:ident, $ip:ident, $bind:expr) => {
-      if !$li.is_empty() {
-        for addr in &mut $li {
-          if addr.ip() == $ip::UNSPECIFIED {
-            addr.set_ip($ip::LOCALHOST.into());
-          }
-        }
-        task_li.push(spawn(async move {
-          loop {
-            if let Ok(send) = UdpSocket::bind($bind).await {
-              for addr in &$li {
-                err::log!(send.send_to(&[], addr).await);
-              }
-            }
-            sleep(Duration::from_secs(1)).await
-          }
-        }));
-      }
-    };
-  }
-
-  heartbeat!(v4, Ipv4Addr, SocketAddrV4::new(Ipv4Addr::LOCALHOST, 0));
-  heartbeat!(
-    v6,
-    Ipv6Addr,
-    SocketAddrV6::new(Ipv6Addr::LOCALHOST, 0, 0, 0)
-  );
-
   while let Ok(msg) = recver.recv().await {
     match msg {
       Cmd::Stop => {
-        for i in task_li {
-          i.cancel().await;
+        let mut task_li: SmallVec<[JoinHandle<()>; 2]> = smallvec![];
+
+        macro_rules! stop {
+          ($li:ident, $ip:ident, $bind:expr) => {
+            if !$li.is_empty() {
+              for addr in &mut $li {
+                if addr.ip() == $ip::UNSPECIFIED {
+                  addr.set_ip($ip::LOCALHOST.into());
+                }
+              }
+              task_li.push(spawn(async move {
+                loop {
+                  if let Ok(send) = UdpSocket::bind($bind).await {
+                    for addr in &$li {
+                      err::log!(send.send_to(&[], addr).await);
+                    }
+                  }
+                  sleep(Duration::from_secs(1)).await
+                }
+              }));
+            }
+          };
         }
+
+        stop!(v4, Ipv4Addr, SocketAddrV4::new(Ipv4Addr::LOCALHOST, 0));
+        stop!(
+          v6,
+          Ipv6Addr,
+          SocketAddrV6::new(Ipv6Addr::LOCALHOST, 0, 0, 0)
+        );
+
+        join_all(task_li).await;
         break;
       }
       _ => {}
