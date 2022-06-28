@@ -122,11 +122,11 @@ pub fn ws(url: String, onopen: Function, onclose: Function) -> W {
 
 #[wasm_bindgen]
 pub fn connect(w: &W) {
-  let _ws = &w.ws;
-  if _ws.borrow().ws.is_some() {
+  let websocket = &w.ws;
+  if websocket.borrow().ws.is_some() {
     return;
   }
-  let url = &_ws.borrow().url;
+  let url = &websocket.borrow().url;
   let ws = WebSocket::new(url).unwrap();
   ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
@@ -143,7 +143,7 @@ pub fn connect(w: &W) {
 
   {
     let ws = ws.clone();
-    let me = _ws.clone();
+    let me = websocket.clone();
     on!(error {
         move |err:ErrorEvent| {
           me.borrow_mut().clear();
@@ -154,7 +154,7 @@ pub fn connect(w: &W) {
   }
 
   {
-    let me = _ws.clone();
+    let me = websocket.clone();
     let on = w.onclose.clone();
     on!(close {move |_| {
       me.borrow_mut().clear();
@@ -164,7 +164,7 @@ pub fn connect(w: &W) {
   }
 
   {
-    let ws = _ws.clone();
+    let ws = websocket.clone();
     on!(message {move |e:MessageEvent| {
         if let Ok(buf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
           let buf = js_sys::Uint8Array::new(&buf);
@@ -178,11 +178,11 @@ pub fn connect(w: &W) {
   {
     let ws = ws.clone();
     let on = w.onopen.clone();
-    let _ws = _ws.clone();
+    let websocket = websocket.clone();
     on!(open {move |_| {
       let this = JsValue::null();
       let _ = on.call0(&this);
-      _ws.borrow_mut().set(ws.clone());
+      websocket.borrow_mut().set(ws.clone());
     }});
   }
 }

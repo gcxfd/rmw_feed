@@ -17,7 +17,7 @@ impl<KV: Kv> Config<KV> {
   ) -> T {
     let kv = &self.kv;
     let key = key.as_ref();
-    let _init = || {
+    let do_init = || {
       let r = init();
       if let Ok(bin) = err::ok!(r.dump()) {
         kv.set(key, &bin);
@@ -34,10 +34,10 @@ impl<KV: Kv> Config<KV> {
           //}
           r
         } else {
-          _init()
+          do_init()
         }
       }
-      None => _init(),
+      None => do_init(),
     }
   }
 }

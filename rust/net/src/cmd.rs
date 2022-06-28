@@ -60,4 +60,9 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>) {
       _ => {}
     }
   }
+
+  loop {
+    log::info!("stoped");
+    sleep(Duration::from_secs(300)).await
+  }
 }
