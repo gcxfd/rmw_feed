@@ -2,9 +2,10 @@ use api::Cmd;
 use async_std::{
   channel::Receiver,
   net::UdpSocket,
-  task::{sleep, spawn},
+  task::{sleep, spawn, JoinHandle},
 };
 use paste::paste;
+use smallvec::{smallvec, SmallVec};
 use std::{
   collections::BTreeSet,
   net::{Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6},
@@ -17,6 +18,8 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>) {
     _ => false,
   });
 
+  let mut task_li: SmallVec<[JoinHandle<()>; 2]> = smallvec![];
+
   macro_rules! heartbeat {
     ($li:ident, $ip:ident, $bind:expr) => {
       if !$li.is_empty() {
@@ -25,18 +28,16 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>) {
             addr.set_ip($ip::LOCALHOST.into());
           }
         }
-        spawn(async move {
+        task_li.push(spawn(async move {
           loop {
             if let Ok(send) = UdpSocket::bind($bind).await {
               for addr in &$li {
-                dbg!(addr.port());
-                dbg!(addr.ip());
-                //err::log!(send.send_to(&[], addr).await);
+                err::log!(send.send_to(&[], addr).await);
               }
             }
             sleep(Duration::from_secs(1)).await
           }
-        });
+        }));
       }
     };
   }

@@ -8,7 +8,7 @@ pub fn udp(addr: SocketAddr) {
       let mut buf = [0; MTU];
       if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf)) {
         if n <= MTU {
-          dbg!(n, src, &buf[..n]);
+          dbg!((n, src, &buf[..n]));
         }
       }
     }
