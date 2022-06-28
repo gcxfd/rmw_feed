@@ -1,4 +1,5 @@
 #![feature(async_closure)]
+#![feature(drain_filter)]
 
 mod api;
 mod cmd;

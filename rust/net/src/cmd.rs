@@ -13,15 +13,15 @@ use std::{
 };
 
 pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
-  let (mut v4, mut v6): (Vec<_>, Vec<_>) = addr_set.into_iter().partition(|addr| match addr {
-    SocketAddr::V4(_) => true,
-    _ => false,
-  });
-
   while let Ok(msg) = recver.recv().await {
     match msg {
       Cmd::Stop => {
         let mut task_li: SmallVec<[JoinHandle<()>; 2]> = smallvec![];
+        let (mut v4, mut v6): (Vec<_>, Vec<_>) =
+          addr_set.into_iter().partition(|addr| match addr {
+            SocketAddr::V4(_) => true,
+            _ => false,
+          });
 
         macro_rules! stop {
           ($li:ident, $ip:ident, $bind:expr) => {
@@ -41,6 +41,11 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [
                           .await
                       );
                     }
+                  }
+                  $li.drain_filter(|addr| err::ok!(std::net::UdpSocket::bind(*addr)).is_ok());
+
+                  if $li.is_empty() {
+                    break;
                   }
                   sleep(Duration::from_secs(1)).await
                 }
