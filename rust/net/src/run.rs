@@ -1,4 +1,4 @@
-use crate::{cmd::cmd, recv::recv, var::MTU, ws::ws};
+use crate::{cmd::cmd, var::MTU, ws::ws};
 use anyhow::Result;
 use api::Cmd;
 use async_std::{
@@ -10,8 +10,10 @@ use config::Config;
 use log::info;
 use run::Run;
 use std::{
+  collections::BTreeSet,
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
   sync::Arc,
+  thread::spawn,
   time::Duration,
 };
 
@@ -33,11 +35,15 @@ pub fn run() -> Result<()> {
 
   config::macro_get!(config);
 
+  let mut addr_set = BTreeSet::new();
+
   if get!(run / v4, true) {
     let addr = get!(
       v4 / udp,
       UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
     );
+
+    addr_set.insert(addr);
 
     if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
       run.spawn(upnp::upnp_daemon("rmw", addr.port()));
@@ -45,22 +51,7 @@ pub fn run() -> Result<()> {
 
     info!("udp://{}", &addr);
 
-    let sender = sender.clone();
-    run.spawn(async move {
-      loop {
-        if let Ok(udp) = err::ok!(async_std::net::UdpSocket::bind(addr).await) {
-          let mut buf = [0; MTU];
-          loop {
-            if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf).await) {
-              if n <= MTU {
-                recv(&buf[..n], src, &sender)
-              }
-            }
-          }
-        }
-        sleep(Duration::from_secs(1)).await;
-      }
-    });
+    spawn(move || crate::udp::udp(addr));
   }
 
   // web socket
@@ -84,6 +75,6 @@ pub fn run() -> Result<()> {
     });
   }
 
-  block_on(cmd(recver));
+  block_on(cmd(recver, addr_set));
   Ok(())
 }
