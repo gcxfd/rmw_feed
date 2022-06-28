@@ -1,4 +1,4 @@
-use crate::var::MTU;
+use crate::{ider::Ider, var::MTU};
 use std::net::{SocketAddr, UdpSocket};
 
 pub fn udp(addr: SocketAddr, token: [u8; 32]) {
