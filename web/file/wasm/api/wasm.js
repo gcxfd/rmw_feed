@@ -178,7 +178,7 @@ function __wbg_adapter_18(arg0, arg1, arg2) {
 }
 
 function __wbg_adapter_25(arg0, arg1, arg2) {
-    wasm.closure70_externref_shim(arg0, arg1, arg2);
+    wasm.closure56_externref_shim(arg0, arg1, arg2);
 }
 
 /**
@@ -235,7 +235,7 @@ function getArrayU8FromWasm0(ptr, len) {
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
 function __wbg_adapter_64(arg0, arg1, arg2, arg3) {
-    wasm.closure88_externref_shim(arg0, arg1, arg2, arg3);
+    wasm.closure74_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const WFinalization = new FinalizationRegistry(ptr => wasm.__wbg_w_free(ptr));
@@ -448,8 +448,8 @@ function getImports() {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_18);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper268 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 71, __wbg_adapter_25);
+    imports.wbg.__wbindgen_closure_wrapper252 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 57, __wbg_adapter_25);
         return ret;
     };
     imports.wbg.__wbindgen_init_externref_table = function() {

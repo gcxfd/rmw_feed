@@ -1407,6 +1407,7 @@ dependencies = [
  "futures",
  "js-sys",
  "paste",
+ "speedy",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-bindgen-test",

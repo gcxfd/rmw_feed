@@ -38,11 +38,11 @@ export interface InitOutput {
   readonly __wbindgen_export_2: WebAssembly.Table;
   readonly __wbindgen_export_3: WebAssembly.Table;
   readonly closure2_externref_shim: (a: number, b: number, c: number) => void;
-  readonly closure70_externref_shim: (a: number, b: number, c: number) => void;
+  readonly closure56_externref_shim: (a: number, b: number, c: number) => void;
   readonly __wbindgen_free: (a: number, b: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
-  readonly closure88_externref_shim: (a: number, b: number, c: number, d: number) => void;
+  readonly closure74_externref_shim: (a: number, b: number, c: number, d: number) => void;
   readonly __wbindgen_start: () => void;
 }
 
