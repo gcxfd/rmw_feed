@@ -52,9 +52,9 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>) {
   while let Ok(msg) = recver.recv().await {
     match msg {
       Cmd::Stop => {
-        /*
-
-        */
+        for i in task_li {
+          i.cancel().await;
+        }
         break;
       }
       _ => {}
