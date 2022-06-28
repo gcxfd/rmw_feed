@@ -48,7 +48,6 @@ pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [
                   if $li.is_empty() {
                     break;
                   }
-                  sleep(Duration::from_secs(31)).await
                 }
               }));
             }
