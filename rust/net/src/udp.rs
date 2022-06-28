@@ -12,7 +12,7 @@ pub fn udp(addr: SocketAddr, token: [u8; 32]) {
       let mut buf = [0; MTU];
       if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf)) {
         dbg!(src);
-        if n >= 4 && n <= MTU {
+        if (4..=MTU).contains(&n) {
           let id = u32::from_le_bytes(buf[..4].try_into().unwrap());
           if id == 0 {
             if n == 36 {

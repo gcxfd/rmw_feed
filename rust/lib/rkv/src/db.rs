@@ -39,7 +39,7 @@ pub fn get_or_create<Ref: AsRef<[u8]>>(
   }
 }
 
-impl<'a, Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
+impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   #[allow(invalid_value)]
   pub fn new(path: impl Into<PathBuf>) -> Self {
     let mut db = Kv {
