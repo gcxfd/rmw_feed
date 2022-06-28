@@ -17,6 +17,7 @@ pub fn udp(addr: SocketAddr, token: [u8; 32]) {
                 }
               }
             }
+            // 奇数是请求 偶数是响应 ; 请求 x 响应 x+1
             dbg!((n, src, &buf[..n]));
           }
         }
