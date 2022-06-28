@@ -1,9 +1,10 @@
+use crate::{var::MTU, ws::ws};
 use anyhow::Result;
 use api::Cmd;
 use async_std::{
   channel::{unbounded, Receiver},
   net::TcpListener,
-  task::block_on,
+  task::{block_on, sleep},
 };
 use config::Config;
 use log::info;
@@ -11,9 +12,8 @@ use run::Run;
 use std::{
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
   sync::Arc,
+  time::Duration,
 };
-
-use crate::ws::ws;
 
 pub fn run() -> Result<()> {
   //dbg!(b80::decode(s));
@@ -44,7 +44,18 @@ pub fn run() -> Result<()> {
     }
 
     info!("udp://{}", &addr);
-    let udp = UdpSocket::bind(addr)?;
+
+    run.spawn(async move {
+      loop {
+        if let Ok(udp) = err::ok!(async_std::net::UdpSocket::bind(addr).await) {
+          let mut buf = [0; MTU];
+          loop {
+            if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf).await) {}
+          }
+        }
+        sleep(Duration::from_secs(1)).await;
+      }
+    });
   }
 
   // web socket
