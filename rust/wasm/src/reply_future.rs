@@ -53,7 +53,6 @@ impl Future for ReplyFuture {
   fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
     let state = &self.state;
     let done = unsafe { read_volatile(&state.done as _) };
-    dbg!(done);
     if done {
       let msg = unsafe { read_volatile(&state.msg as *const ManuallyDrop<Reply>) };
       Poll::Ready(ManuallyDrop::into_inner(msg))
@@ -63,45 +62,3 @@ impl Future for ReplyFuture {
     }
   }
 }
-
-/*
-async fn recv() -> Option<Box<[u8]>> {
-  let future = ReplyFuture::new();
-  let mut state = future.state.clone();
-  spawn(move || loop {
-    if let Some(waker) = state.waker.take() {
-      #[allow(unused_mut)]
-      let mut state = unsafe { Arc::get_mut_unchecked(&mut state) };
-      unsafe {
-        write_volatile(
-          &mut state.msg as *mut ManuallyDrop<Reply>,
-          ManuallyDrop::new(Some(Box::new([1, 2, 3]))),
-        );
-        write_volatile(&mut state.done as _, true);
-      }
-      waker.wake();
-      break;
-    } else {
-      sleep(Duration::from_millis(1));
-    }
-  });
-  /*
-  let state2 = future.state.clone();
-  spawn(move || {
-      sleep(Duration::from_secs(2));
-      dbg!("wake again");
-      state2.waker.wake();
-  });
-  */
-  future.await
-}
-
-fn main() {
-  loop {
-    println!("begin");
-    let msg = block_on(recv());
-    dbg!(msg);
-    println!("end");
-  }
-}
-*/

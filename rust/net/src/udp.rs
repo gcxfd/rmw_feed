@@ -11,6 +11,7 @@ pub fn udp(addr: SocketAddr, token: [u8; 32]) {
     if let Ok(udp) = err::ok!(UdpSocket::bind(addr)) {
       let mut buf = [0; MTU];
       if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf)) {
+        dbg!(src);
         if n <= MTU {
           if n >= 4 {
             let id = u32::from_le_bytes(buf[..4].try_into().unwrap());
