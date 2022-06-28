@@ -1,7 +1,7 @@
 #![feature(async_closure)]
 
 mod api;
-mod recv;
+mod cmd;
 mod run;
 mod var;
 mod ws;

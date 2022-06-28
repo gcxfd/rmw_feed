@@ -1,8 +1,8 @@
-use crate::{recv::recv, var::MTU, ws::ws};
+use crate::{cmd::cmd, var::MTU, ws::ws};
 use anyhow::Result;
 use api::Cmd;
 use async_std::{
-  channel::{unbounded, Receiver},
+  channel::unbounded,
   net::TcpListener,
   task::{block_on, sleep},
 };
@@ -79,6 +79,6 @@ pub fn run() -> Result<()> {
     });
   }
 
-  block_on(recv(recver));
+  block_on(cmd(recver));
   Ok(())
 }
