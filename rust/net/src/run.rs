@@ -1,4 +1,4 @@
-use crate::{cmd::cmd, var::MTU, ws::ws};
+use crate::{cmd::cmd, recv::recv, var::MTU, ws::ws};
 use anyhow::Result;
 use api::Cmd;
 use async_std::{
@@ -45,12 +45,17 @@ pub fn run() -> Result<()> {
 
     info!("udp://{}", &addr);
 
+    let sender = sender.clone();
     run.spawn(async move {
       loop {
         if let Ok(udp) = err::ok!(async_std::net::UdpSocket::bind(addr).await) {
           let mut buf = [0; MTU];
           loop {
-            if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf).await) {}
+            if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf).await) {
+              if n <= MTU {
+                recv(&buf[..n], src, &sender)
+              }
+            }
           }
         }
         sleep(Duration::from_secs(1)).await;

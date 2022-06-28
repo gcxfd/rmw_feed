@@ -2,6 +2,7 @@
 
 mod api;
 mod cmd;
+mod recv;
 mod run;
 mod var;
 mod ws;
