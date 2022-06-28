@@ -2,16 +2,16 @@ use std::sync::atomic::{AtomicU32, Ordering::Relaxed};
 use std::sync::Arc;
 
 #[derive(Debug, Clone)]
-pub struct Id {
+pub struct Ider {
   id: Arc<AtomicU32>,
 }
 
-unsafe impl Send for Id {}
-unsafe impl Sync for Id {}
+unsafe impl Send for Ider {}
+unsafe impl Sync for Ider {}
 
-impl Id {
+impl Ider {
   pub fn new() -> Self {
-    Id {
+    Ider {
       id: Arc::new(AtomicU32::new(2)),
     }
   }
