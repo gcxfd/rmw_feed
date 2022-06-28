@@ -18,7 +18,7 @@ export default WS = ws(
           ++RETRY
         connect(WS)
         return
-      RETRY*50
+      RETRY*99
     )
     return
 )
