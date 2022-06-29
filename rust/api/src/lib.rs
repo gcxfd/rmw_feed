@@ -1,7 +1,7 @@
 use speedy::{Readable, Writable};
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable, Clone)]
-#[repr(u8)]
+#[repr(u32)]
 #[speedy(tag_type=u32)]
 pub enum Cmd {
   Stop,
