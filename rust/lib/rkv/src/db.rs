@@ -55,10 +55,14 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   pub fn tx(&self) -> Transaction<OptimisticTransactionDB> {
     self.db.transaction()
   }
-  pub fn with_tx(&self, run: impl Fn(&Transaction<OptimisticTransactionDB>) -> Result<()>) {
-    let tx = self.tx();
-    if err::ok!(run(&tx)).is_ok() {
-      err::log!(tx.commit());
+  pub fn with_tx<T>(&self, run: impl Fn(&Transaction<OptimisticTransactionDB>) -> Result<T>) -> T {
+    loop {
+      let tx = self.tx();
+      if let Ok(r) = err::ok!(run(&tx)) {
+        if err::ok!(tx.commit()).is_ok() {
+          return r;
+        }
+      }
     }
   }
 }
