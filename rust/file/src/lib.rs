@@ -4,5 +4,5 @@ use roaring::treemap::RoaringTreemap;
 
 pub struct File {
   fs: File,
-  buf: BTreeMap<u32, (,Box<[u8])>>,
+  buf: BTreeMap<u32, (RoaringTreemap,Box<[u8])>>,
 }
