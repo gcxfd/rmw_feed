@@ -11,6 +11,7 @@ members = [
   "wasm",
   "err",
   "kv",
+  "file",
   "lib/rkv",
   "lib/util",
   "lib/b80"
