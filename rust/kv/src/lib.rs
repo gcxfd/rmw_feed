@@ -31,6 +31,8 @@ pub struct Db {
   pub kv: Kv<Cf, CF_N>,
 }
 
+pub const LOGIN: &'static str = "login";
+
 impl Db {
   pub fn room_new<'a>(&self, name: impl AsRef<&'a str>) {
     let id = self.room_id.fetch_add(1, Relaxed).to_be_bytes();
@@ -58,7 +60,7 @@ impl Db {
       tx.put_cf(&cf.user_pk_id, pk, id)?;
       tx.put_cf(&cf.user_id_sk, id, sk)?;
       tx.put_cf(&cf.user_id_name, id, name.as_ref())?;
-      tx.put("login", id)?;
+      tx.put(LOGIN, id)?;
       Ok(())
     });
   }
