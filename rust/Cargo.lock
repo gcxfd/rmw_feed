@@ -493,6 +493,9 @@ dependencies = [
 [[package]]
 name = "file"
 version = "0.1.0"
+dependencies = [
+ "async-std",
+]
 
 [[package]]
 name = "fnv"
