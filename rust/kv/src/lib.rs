@@ -49,22 +49,16 @@ impl Db {
 
     macro_rules! id {
       ($key:expr) => {{
-        let id;
-        loop {
-          let tx = kv.tx();
-          let key_str = stringify!($key);
-          if let Ok(val) = err::ok!(tx.get_cf(&cf.id, key_str)) {
-            if let Some(val) = val {
-              id = u64::from_le_bytes((&val[..8]).try_into().unwrap());
-            } else {
-              id = 0;
-              err::log!(tx.put_cf(&cf.id, key_str, id.to_le_bytes()));
-              err::log!(tx.commit());
-            }
-            break;
-          }
-        }
-        AtomicU64::new(id)
+        let key_str = stringify!($key);
+        AtomicU64::new(kv.with_tx(|tx| {
+          Ok(if let Some(id) = tx.get_cf(&cf.id, key_str)? {
+            u64::from_le_bytes((&id[..8]).try_into()?)
+          } else {
+            let id = 0u64;
+            tx.put_cf(&cf.id, key_str, id.to_le_bytes())?;
+            id
+          })
+        }))
       }};
     }
 
