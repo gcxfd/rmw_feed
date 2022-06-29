@@ -1,6 +1,7 @@
 use async_std::fs::File;
+use std::collections::BTreeMap;
 
 pub struct File {
-  begin: u64,
   fs: File,
+  buf: BTreeMap<u32, Box<[u8]>>,
 }
