@@ -1,16 +1,15 @@
 use speedy::{LittleEndian, Readable, Writable};
-use std::sync::Arc;
 use util::kv::Kv;
 
-pub struct Config<KV: Kv> {
-  pub kv: Arc<KV>,
+pub struct Config<'a, KV: Kv> {
+  pub kv: &'a KV,
 }
 
-impl<KV: Kv> Config<KV> {
-  pub fn new(kv: Arc<KV>) -> Self {
+impl<'a, KV: Kv> Config<'a, KV> {
+  pub fn new(kv: &'a KV) -> Self {
     Self { kv }
   }
-  pub fn get<'a, T: Readable<'a, LittleEndian> + Writable<LittleEndian>>(
+  pub fn get<'b, T: Readable<'b, LittleEndian> + Writable<LittleEndian>>(
     &self,
     key: impl AsRef<[u8]>,
     init: fn() -> T,

@@ -8,7 +8,6 @@ use run::Run;
 use std::{
   collections::BTreeSet,
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
-  sync::Arc,
   thread::spawn,
 };
 
@@ -23,8 +22,8 @@ pub fn run() -> Result<()> {
 
   let (sender, recver) = unbounded();
 
-  let kv = Arc::new(kv::open(dir::root().join("kv")));
-  let config = Config::new(kv);
+  let db = kv::open(dir::root().join("kv"));
+  let config = Config::new(&db.kv);
 
   config::macro_get!(config);
 
