@@ -2,6 +2,6 @@
 macro_rules! count {
   ($name:ident) => { 1 };
   ($first:ident, $($rest:ident),*) => {
-    1 + count!($($rest),*)
+    1 + util::count!($($rest),*)
   }
 }

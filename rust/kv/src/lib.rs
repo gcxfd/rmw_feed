@@ -3,8 +3,9 @@ use std::path::PathBuf;
 
 pub use rkv::get_or_create;
 
-column_family!(room);
+column_family!(id, room);
 
 pub fn open(path: PathBuf) -> Kv<Cf, CF_N> {
-  Kv::new(path)
+  let kv = Kv::new(path);
+  kv
 }
