@@ -750,6 +750,9 @@ dependencies = [
 name = "kv"
 version = "0.1.0"
 dependencies = [
+ "err",
+ "log",
+ "paste",
  "rkv",
  "rocksdb",
  "util",

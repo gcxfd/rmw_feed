@@ -2,7 +2,7 @@ use crate::cf;
 use anyhow::Result;
 use rocksdb::{
   BlockBasedOptions, Cache, DBCompactionStyle, DBCompressionType, OptimisticTransactionDB, Options,
-  SingleThreaded, DB,
+  SingleThreaded, Transaction, DB,
 };
 use std::{collections::BTreeSet, path::PathBuf};
 
@@ -51,6 +51,9 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
     let ptr: *const OptimisticTransactionDB = &db.db;
     db.cf = Cf::new(unsafe { &*ptr });
     db
+  }
+  pub fn tx(&self) -> Transaction<OptimisticTransactionDB> {
+    self.db.transaction()
   }
 }
 
