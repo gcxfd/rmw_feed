@@ -37,8 +37,9 @@ impl Db {
     let pair = Keypair::generate(&mut OsRng {});
     let pk = pair.public.as_bytes();
     let sk = pair.secret.as_bytes();
-    let cf = &self.kv.cf;
-    self.kv.with_tx(|tx| {
+    let kv = &self.kv;
+    let cf = &kv.cf;
+    kv.with_tx(|tx| {
       tx.put_cf(&cf.room_pk_id, pk, id)?;
       tx.put_cf(&cf.room_id_sk, id, sk)?;
       tx.put_cf(&cf.room_id_name, id, name.as_ref())?;
@@ -51,8 +52,9 @@ impl Db {
     let pair = Keypair::generate(&mut OsRng {});
     let pk = pair.public.as_bytes();
     let sk = pair.secret.as_bytes();
-    let cf = &self.kv.cf;
-    self.kv.with_tx(|tx| {
+    let kv = &self.kv;
+    let cf = &kv.cf;
+    kv.with_tx(|tx| {
       tx.put_cf(&cf.user_pk_id, pk, id)?;
       tx.put_cf(&cf.user_id_sk, id, sk)?;
       tx.put_cf(&cf.user_id_name, id, name.as_ref())?;
