@@ -1,11 +1,13 @@
 use speedy::{Readable, Writable};
 
-#[derive(PartialEq, Eq, Debug, Readable, Writable, Clone, Copy)]
+#[derive(PartialEq, Eq, Debug, Readable, Writable, Clone)]
 #[repr(u8)]
-#[speedy(tag_type=u8)]
+#[speedy(tag_type=u32)]
 pub enum Cmd {
   Stop,
-  Conf,
+  UserNew(String),
+  UserName,
+  RoomNew(String),
 }
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable)]
