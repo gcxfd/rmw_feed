@@ -32,6 +32,20 @@ pub struct Db {
 }
 
 impl Db {
+  pub fn room_new<'a>(&self, name: impl AsRef<&'a str>) {
+    let id = self.room_id.fetch_add(1, Relaxed).to_be_bytes();
+    let pair = Keypair::generate(&mut OsRng {});
+    let pk = pair.public.as_bytes();
+    let sk = pair.secret.as_bytes();
+    let cf = &self.kv.cf;
+    self.kv.with_tx(|tx| {
+      tx.put_cf(&cf.room_pk_id, pk, id)?;
+      tx.put_cf(&cf.room_id_sk, id, sk)?;
+      tx.put_cf(&cf.room_id_name, id, name.as_ref())?;
+      Ok(())
+    });
+  }
+
   pub fn user_new<'a>(&self, name: impl AsRef<&'a str>) {
     let id = self.user_id.fetch_add(1, Relaxed).to_be_bytes();
     let pair = Keypair::generate(&mut OsRng {});
@@ -42,7 +56,6 @@ impl Db {
       tx.put_cf(&cf.user_pk_id, pk, id)?;
       tx.put_cf(&cf.user_id_sk, id, sk)?;
       tx.put_cf(&cf.user_id_name, id, name.as_ref())?;
-
       Ok(())
     });
   }
