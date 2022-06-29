@@ -2,7 +2,6 @@ use ed25519_dalek_blake3::Keypair;
 use rand::rngs::OsRng;
 use rkv::{column_family, Kv};
 use std::{
-  os::unix::prelude::OsStrExt,
   path::PathBuf,
   sync::{
     atomic::{AtomicU64, Ordering::Relaxed},
@@ -38,9 +37,14 @@ impl Db {
     let pair = Keypair::generate(&mut OsRng {});
     let pk = pair.public.as_bytes();
     let sk = pair.secret.as_bytes();
-    let tx = self.kv.tx();
+    let cf = &self.kv.cf;
+    self.kv.with_tx(|tx| {
+      tx.put_cf(&cf.user_pk_id, pk, id)?;
+      tx.put_cf(&cf.user_id_sk, id, sk)?;
+      tx.put_cf(&cf.user_id_name, id, name.as_ref())?;
 
-    err::log!(tx.commit())
+      Ok(())
+    });
   }
 
   pub fn new(path: PathBuf) -> Self {
