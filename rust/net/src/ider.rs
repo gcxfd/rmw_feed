@@ -20,7 +20,7 @@ impl Ider {
     loop {
       let r = self.id.fetch_add(1, Relaxed);
       if r != 0 {
-        return r.wrapping_pow(2).to_le_bytes();
+        return r.wrapping_mul(2).to_le_bytes();
       }
     }
   }
