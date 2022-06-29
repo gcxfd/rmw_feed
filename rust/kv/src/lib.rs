@@ -33,12 +33,23 @@ pub struct Db {
 
 pub const LOGIN: &'static str = "login";
 
+pub fn pk_sk() -> ([u8; 32], [u8; 32]) {
+  let pair = Keypair::generate(&mut OsRng {});
+  let pk = pair.public.as_bytes();
+  let sk = pair.secret.as_bytes();
+  (*pk, *sk)
+}
+
+macro_rules! id {
+  ($self:ident, $name:ident) => {
+    $self.$name.fetch_add(1, Relaxed).to_be_bytes()
+  };
+}
+
 impl Db {
   pub fn room_new<'a>(&self, name: impl AsRef<&'a str>) {
-    let id = self.room_id.fetch_add(1, Relaxed).to_be_bytes();
-    let pair = Keypair::generate(&mut OsRng {});
-    let pk = pair.public.as_bytes();
-    let sk = pair.secret.as_bytes();
+    let id = id!(self, room_id);
+    let (pk, sk) = pk_sk();
     let kv = &self.kv;
     let cf = &kv.cf;
     kv.with_tx(|tx| {
@@ -50,10 +61,8 @@ impl Db {
   }
 
   pub fn user_new<'a>(&self, name: impl AsRef<&'a str>) {
-    let id = self.user_id.fetch_add(1, Relaxed).to_be_bytes();
-    let pair = Keypair::generate(&mut OsRng {});
-    let pk = pair.public.as_bytes();
-    let sk = pair.secret.as_bytes();
+    let id = id!(self, user_id);
+    let (pk, sk) = pk_sk();
     let kv = &self.kv;
     let cf = &kv.cf;
     kv.with_tx(|tx| {
@@ -69,7 +78,7 @@ impl Db {
     let kv: Kv<Cf, CF_N> = Kv::new(path);
     let cf = &kv.cf;
 
-    macro_rules! id {
+    macro_rules! init_id {
       ($key:expr) => {{
         let key_str = stringify!($key);
         AtomicU64::new(kv.with_tx(|tx| {
@@ -85,8 +94,8 @@ impl Db {
     }
 
     Self {
-      user_id: id!(user),
-      room_id: id!(room),
+      user_id: init_id!(user),
+      room_id: init_id!(room),
       kv,
     }
   }
