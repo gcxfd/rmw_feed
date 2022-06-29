@@ -8,6 +8,7 @@ use std::{
     Arc,
   },
 };
+use util::kv::Kv as _Kv;
 
 pub use rkv::get_or_create;
 
@@ -31,7 +32,7 @@ pub struct Db {
   pub kv: Kv<Cf, CF_N>,
 }
 
-pub const LOGIN: &'static str = "login";
+pub const LOGIN: &'static [u8] = b"login";
 
 pub fn pk_sk() -> ([u8; 32], [u8; 32]) {
   let pair = Keypair::generate(&mut OsRng {});
@@ -58,6 +59,17 @@ impl Db {
       tx.put_cf(&cf.room_id_name, id, name.as_ref())?;
       Ok(())
     });
+  }
+
+  pub fn user_name(&self) -> Option<String> {
+    let kv = &self.kv;
+    let cf = &kv.cf;
+    if let Some(id) = kv.get(LOGIN) {
+      if let Ok(Some(name)) = err::ok!(kv.db.get_cf(&cf.user_id_name, id)) {
+        return Some(unsafe { String::from_utf8_unchecked(name) });
+      }
+    }
+    None
   }
 
   pub fn user_new<'a>(&self, name: impl AsRef<&'a str>) {
