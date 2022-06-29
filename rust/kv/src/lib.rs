@@ -58,6 +58,7 @@ impl Db {
       tx.put_cf(&cf.user_pk_id, pk, id)?;
       tx.put_cf(&cf.user_id_sk, id, sk)?;
       tx.put_cf(&cf.user_id_name, id, name.as_ref())?;
+      tx.put("login", id)?;
       Ok(())
     });
   }
