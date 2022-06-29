@@ -1,12 +1,29 @@
+use ed25519_dalek_blake3::Keypair;
+use rand::rngs::OsRng;
 use rkv::{column_family, Kv};
 use std::{
+  os::unix::prelude::OsStrExt,
   path::PathBuf,
-  sync::{atomic::AtomicU64, Arc},
+  sync::{
+    atomic::{AtomicU64, Ordering::Relaxed},
+    Arc,
+  },
 };
 
 pub use rkv::get_or_create;
 
-column_family!(id, user_pk_id, user_id_name, room_pk_id, room_id_name);
+column_family!(
+  // 自增主键
+  id,
+  // 用户
+  user_pk_id,
+  user_id_sk,
+  user_id_name,
+  // 房间
+  room_pk_id,
+  room_id_sk,
+  room_id_name
+);
 
 #[derive(Debug)]
 pub struct Db {
@@ -16,7 +33,15 @@ pub struct Db {
 }
 
 impl Db {
-  pub fn user_new(&self) {}
+  pub fn user_new<'a>(&self, name: impl AsRef<&'a str>) {
+    let id = self.user_id.fetch_add(1, Relaxed).to_be_bytes();
+    let pair = Keypair::generate(&mut OsRng {});
+    let pk = pair.public.as_bytes();
+    let sk = pair.secret.as_bytes();
+    let tx = self.kv.tx();
+
+    err::log!(tx.commit())
+  }
 
   pub fn new(path: PathBuf) -> Self {
     let kv: Kv<Cf, CF_N> = Kv::new(path);
