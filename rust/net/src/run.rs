@@ -69,6 +69,6 @@ pub fn run() -> Result<()> {
     });
   }
 
-  block_on(cmd(recver, addr_set, token));
+  block_on(cmd(recver, addr_set, token, db));
   Ok(())
 }

@@ -9,10 +9,16 @@ use smallvec::{smallvec, SmallVec};
 use std::{
   collections::BTreeSet,
   net::{Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6},
+  sync::Arc,
   time::Duration,
 };
 
-pub async fn cmd(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
+pub async fn cmd(
+  recver: Receiver<Cmd>,
+  addr_set: BTreeSet<SocketAddr>,
+  token: [u8; 32],
+  db: Arc<kv::Db>,
+) {
   while let Ok(msg) = recver.recv().await {
     match msg {
       Cmd::Stop => {
