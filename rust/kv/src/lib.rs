@@ -11,6 +11,7 @@ column_family!(id, user, room);
 #[derive(Debug)]
 pub struct Db {
   pub user_id: AtomicU64,
+  pub room_id: AtomicU64,
   pub kv: Kv<Cf, CF_N>,
 }
 
@@ -42,6 +43,7 @@ impl Db {
 
     Self {
       user_id: id!(user),
+      room_id: id!(room),
       kv,
     }
   }
