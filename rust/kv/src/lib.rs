@@ -6,7 +6,7 @@ use std::{
 
 pub use rkv::get_or_create;
 
-column_family!(id, user, room);
+column_family!(id, user_pk_id, user_id_name, room_pk_id, room_id_name);
 
 #[derive(Debug)]
 pub struct Db {
@@ -16,6 +16,8 @@ pub struct Db {
 }
 
 impl Db {
+  pub fn user_new(&self) {}
+
   pub fn new(path: PathBuf) -> Self {
     let kv: Kv<Cf, CF_N> = Kv::new(path);
     let cf = &kv.cf;
