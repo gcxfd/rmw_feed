@@ -11,21 +11,16 @@ unsafe impl Sync for Ider {}
 
 impl Ider {
   pub fn new() -> Self {
-    let mut id: u32 = rand::random();
-    if id % 2 > 0 {
-      id = id.wrapping_add(1);
-    }
-
     Ider {
-      id: Arc::new(AtomicU32::new(id)),
+      id: Arc::new(AtomicU32::new(rand::random())),
     }
   }
 
   pub fn get(&self) -> [u8; 4] {
     loop {
-      let r = self.id.fetch_add(2, Relaxed);
+      let r = self.id.fetch_add(1, Relaxed);
       if r != 0 {
-        return r.to_le_bytes();
+        return r.wrapping_pow(2).to_le_bytes();
       }
     }
   }
