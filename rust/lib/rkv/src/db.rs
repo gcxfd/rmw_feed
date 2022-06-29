@@ -1,8 +1,8 @@
 use crate::cf;
 use anyhow::Result;
 use rocksdb::{
-  BlockBasedOptions, Cache, DBCompactionStyle, DBCompressionType, DBPinnableSlice,
-  OptimisticTransactionDB, Options, SingleThreaded, DB,
+  BlockBasedOptions, Cache, DBCompactionStyle, DBCompressionType, OptimisticTransactionDB, Options,
+  SingleThreaded, DB,
 };
 use std::{collections::BTreeSet, path::PathBuf};
 
@@ -29,13 +29,15 @@ pub fn get_or_create<Ref: AsRef<[u8]>>(
   db: &OptimisticTransactionDB,
   key: impl AsRef<[u8]>,
   create: impl Fn() -> Ref,
-) -> DBPinnableSlice<'_> {
+) -> Vec<u8> {
   let key = key.as_ref();
   loop {
-    if let Ok(Some(val)) = err::ok!(db.get_pinned(key)) {
+    let tx = db.transaction();
+    if let Ok(Some(val)) = err::ok!(tx.get(key)) {
       return val;
     }
-    err::log!(db.put(key, create()));
+    err::log!(tx.put(key, create()));
+    err::log!(tx.commit());
   }
 }
 
