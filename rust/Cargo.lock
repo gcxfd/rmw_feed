@@ -65,7 +65,7 @@ dependencies = [
  "concurrent-queue",
  "futures-lite",
  "libc",
- "log",
+ "log 0.4.17",
  "once_cell",
  "parking",
  "polling",
@@ -119,7 +119,7 @@ dependencies = [
  "futures-lite",
  "gloo-timers",
  "kv-log-macro",
- "log",
+ "log 0.4.17",
  "memchr",
  "once_cell",
  "pin-project-lite",
@@ -143,7 +143,7 @@ dependencies = [
  "async-std",
  "futures-io",
  "futures-util",
- "log",
+ "log 0.4.17",
  "pin-project-lite",
  "tungstenite",
 ]
@@ -161,7 +161,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fdb8867f378f33f78a811a8eb9bf108ad99430d7aad43315dd9319c827ef6247"
 dependencies = [
  "http",
- "log",
+ "log 0.4.17",
  "url",
  "wildmatch",
 ]
@@ -365,7 +365,7 @@ name = "config"
 version = "0.1.0"
 dependencies = [
  "err",
- "log",
+ "log 0.4.17",
  "speedy",
  "util",
 ]
@@ -385,6 +385,15 @@ name = "const-str"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df8163493958fbde1a711acabf41fa50dd346c12df50af2427556c39689ec58b"
+
+[[package]]
+name = "conv"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78ff10625fd0ac447827aa30ea8b861fead473bb60aeb73af6c1c58caf0d1299"
+dependencies = [
+ "custom_derive",
+]
 
 [[package]]
 name = "cpufeatures"
@@ -424,6 +433,12 @@ dependencies = [
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "custom_derive"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef8ae57c4978a2acd8b869ce6b9ca1dfe817bff704c220209fdef2c0b75a01b9"
 
 [[package]]
 name = "digest"
@@ -467,6 +482,15 @@ name = "err"
 version = "0.1.0"
 
 [[package]]
+name = "error-chain"
+version = "0.12.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2d2f06b9cac1506ece98fe3231e3cc9c4410ec3d5b1f24ae1c8946f0742cdefc"
+dependencies = [
+ "version_check",
+]
+
+[[package]]
 name = "event-listener"
 version = "2.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -487,7 +511,7 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3bdd7b0849075e79ee9a1836df22c717d1eba30451796fdc631b04565dd11e2a"
 dependencies = [
- "log",
+ "log 0.4.17",
 ]
 
 [[package]]
@@ -693,7 +717,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c4e7ee8b51e541486d7040883fe1f00e2a9954bcc24fd155b7e4f03ed4b93dd"
 dependencies = [
  "attohttpc",
- "log",
+ "log 0.4.17",
  "rand",
  "url",
  "xmltree",
@@ -747,7 +771,7 @@ version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0de8b303297635ad57c9f5059fd9cee7a47f8e8daa09df0fcd07dd39fb22977f"
 dependencies = [
- "log",
+ "log 0.4.17",
 ]
 
 [[package]]
@@ -814,6 +838,15 @@ dependencies = [
 
 [[package]]
 name = "log"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e19e8d5c34a3e0e2223db8e060f9e8264aeeb5c5fc64a4ee9965c062211c024b"
+dependencies = [
+ "log 0.4.17",
+]
+
+[[package]]
+name = "log"
 version = "0.4.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "abb12e687cfb44aa40f41fc3978ef76448f9b6038cad6aef4259d3c095a2382e"
@@ -829,7 +862,7 @@ dependencies = [
  "chrono",
  "colored",
  "fern",
- "log",
+ "log 0.4.17",
 ]
 
 [[package]]
@@ -871,7 +904,7 @@ dependencies = [
  "err",
  "futures",
  "kv",
- "log",
+ "log 0.4.17",
  "logger",
  "parking_lot",
  "paste",
@@ -891,6 +924,20 @@ checksum = "a8903e5a29a317527874d0402f867152a3d21c908bb0b933e416c65e301d4c36"
 dependencies = [
  "memchr",
  "minimal-lexical",
+]
+
+[[package]]
+name = "ntp"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "06b0d2de4a2cd60c3ac85c98a1fc23668bc97bef2b10b706bccd88efb229497d"
+dependencies = [
+ "byteorder",
+ "conv",
+ "custom_derive",
+ "error-chain",
+ "log 0.3.9",
+ "time 0.1.44",
 ]
 
 [[package]]
@@ -1001,7 +1048,7 @@ checksum = "685404d509889fade3e86fe3a5803bca2ec09b0c0778d5ada6ec8bf7a8de5259"
 dependencies = [
  "cfg-if 1.0.0",
  "libc",
- "log",
+ "log 0.4.17",
  "wepoll-ffi",
  "winapi",
 ]
@@ -1102,7 +1149,7 @@ dependencies = [
  "anyhow",
  "err",
  "librocksdb-sys",
- "log",
+ "log 0.4.17",
  "num_cpus",
  "paste",
  "rocksdb",
@@ -1258,6 +1305,9 @@ dependencies = [
 [[package]]
 name = "time"
 version = "0.1.0"
+dependencies = [
+ "ntp",
+]
 
 [[package]]
 name = "time"
@@ -1296,7 +1346,7 @@ dependencies = [
  "bytes",
  "http",
  "httparse",
- "log",
+ "log 0.4.17",
  "rand",
  "sha-1",
  "thiserror",
@@ -1337,7 +1387,7 @@ version = "0.1.0"
 dependencies = [
  "async-std",
  "igd",
- "log",
+ "log 0.4.17",
 ]
 
 [[package]]
@@ -1437,7 +1487,7 @@ checksum = "5491a68ab4500fa6b4d726bd67408630c3dbe9c4fe7bda16d5c82a1fd8c7340a"
 dependencies = [
  "bumpalo",
  "lazy_static",
- "log",
+ "log 0.4.17",
  "proc-macro2",
  "quote",
  "syn",
