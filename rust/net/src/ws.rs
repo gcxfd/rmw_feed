@@ -1,29 +1,28 @@
-use crate::api::api;
+use crate::api::Api;
 use anyhow::Result;
 use api::{Cmd, Reply, Q};
-use async_std::{channel::Sender, net::TcpStream};
+use async_std::net::TcpStream;
 use futures::{
   future::{select, Either},
   SinkExt, StreamExt,
 };
-use kv::Db;
 use log::info;
 use speedy::{Readable, Writable};
-use std::{sync::Arc, time::Duration};
+use std::time::Duration;
 use tungstenite::Message;
 
 const TIMEOUT: usize = 7;
 
-pub async fn ws(stream: TcpStream, sender: Sender<Cmd>, db: Arc<Db>) -> Result<()> {
+pub async fn ws(stream: TcpStream, api: Api) -> Result<()> {
   let addr = stream.peer_addr()?;
 
   let ws_stream = async_tungstenite::accept_async(stream).await?;
 
   info!("ws <- {}", addr);
 
-  let (mut ws_sender, mut ws_receiver) = ws_stream.split();
+  let (mut sender, mut recver) = ws_stream.split();
   let mut interval = async_std::stream::interval(Duration::from_secs(TIMEOUT as _));
-  let mut msg_fut = ws_receiver.next();
+  let mut msg_fut = recver.next();
   let mut tick_fut = interval.next();
 
   // 7秒没心跳就算关闭
@@ -48,13 +47,13 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>, db: Arc<Db>) -> Result<(
                         }
                         .dump())
                         {
-                          err::log!(ws_sender.send(Message::Binary(r.to_vec())).await);
+                          err::log!(sender.send(Message::Binary(r.to_vec())).await);
                         }
                       }};
                     }
 
                     let stop = cmd == Cmd::Stop;
-                    send!(match api(cmd, &sender).await {
+                    send!(match api.cmd(cmd).await {
                       Ok(reply) => reply,
                       Err(err) => Reply::Err(format!("{}", err)),
                     });
@@ -71,7 +70,7 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>, db: Arc<Db>) -> Result<(
               }
             }
             tick_fut = tick_fut_continue; // Continue waiting for tick.
-            msg_fut = ws_receiver.next(); // Receive next WebSocket message.
+            msg_fut = recver.next(); // Receive next WebSocket message.
           }
           None => break, // WebSocket stream terminated.
         }
@@ -82,7 +81,7 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>, db: Arc<Db>) -> Result<(
           break;
         }
         if alive == 1 {
-          err::log!(ws_sender.send(Message::Ping(Vec::new())).await);
+          err::log!(sender.send(Message::Ping(Vec::new())).await);
         }
         alive -= 1;
         msg_fut = msg_fut_continue; // Continue receiving the WebSocket message.
