@@ -23,5 +23,6 @@ impl W {
   pub fn user_new(&mut self, name: String) -> Promise {
     self.req(Cmd::UserNew(name))
   }
+
   // >
 }

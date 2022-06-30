@@ -37,8 +37,9 @@ modify = (fp, gen)=>
     console.log fp,'no',end
     return
 
-  while cmd.charAt(--end_pos).trim()
-    null
+  loop
+    if cmd.charAt(--end_pos).trim() != ''
+      break
 
   write fp, cmd[..begin_pos] + gen(cmd[begin_pos+1..end_pos]) + cmd[end_pos+1..]
 
@@ -154,7 +155,7 @@ export default main = =>
             else
               args = ''
             x[0]+args
-        ).join(',\n  ')+',\n'
+        ).join(',\n  ')+','
     )
     modify(
       'api/src/reply.rs'
