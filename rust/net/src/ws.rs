@@ -2,19 +2,19 @@ use crate::api::api;
 use anyhow::Result;
 use api::{Cmd, Reply, Q};
 use async_std::{channel::Sender, net::TcpStream};
-use speedy::{Readable, Writable};
-
 use futures::{
   future::{select, Either},
   SinkExt, StreamExt,
 };
+use kv::Db;
 use log::info;
-
-use std::time::Duration;
+use speedy::{Readable, Writable};
+use std::{sync::Arc, time::Duration};
 use tungstenite::Message;
+
 const TIMEOUT: usize = 7;
 
-pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
+pub async fn ws(stream: TcpStream, sender: Sender<Cmd>, db: Arc<Db>) -> Result<()> {
   let addr = stream.peer_addr()?;
 
   let ws_stream = async_tungstenite::accept_async(stream).await?;
@@ -53,16 +53,14 @@ pub async fn ws(stream: TcpStream, sender: Sender<Cmd>) -> Result<()> {
                       }};
                     }
 
-                    match cmd {
-                      Cmd::Stop => {
-                        send!(Reply::None);
-                        err::log!(sender.send(cmd).await);
-                        return Ok(());
-                      }
-                      _ => send!(match api(cmd).await {
-                        Ok(reply) => reply,
-                        Err(err) => Reply::Err(format!("{}", err)),
-                      }),
+                    let stop = cmd == Cmd::Stop;
+                    send!(match api(cmd, &sender).await {
+                      Ok(reply) => reply,
+                      Err(err) => Reply::Err(format!("{}", err)),
+                    });
+
+                    if stop {
+                      return Ok(());
                     }
                   }
                 }

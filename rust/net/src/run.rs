@@ -54,13 +54,15 @@ pub fn run() -> Result<()> {
 
     info!("ws://{}", ws_addr);
     let mut ws_run = run.clone();
+    let db = db.clone();
 
     run.spawn(async move {
       if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {
         while let Ok((stream, _)) = listener.accept().await {
           let sender = sender.clone();
+          let db = db.clone();
           ws_run.spawn(async move {
-            err::log!(ws(stream, sender).await);
+            err::log!(ws(stream, sender, db).await);
           });
         }
       } else {
