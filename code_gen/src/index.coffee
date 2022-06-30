@@ -30,6 +30,9 @@ modify = (fp, start, end, gen)=>
   end_pos = cmd.indexOf(end,begin_pos)
   write fp, cmd[..begin_pos] + gen(cmd[begin_pos+1...end_pos]) + cmd[end_pos..]
 
+enum_name = (i)=>
+  i.replace(/[<,>]/g,'')
+
 
 export default main = =>
   api = await read 'net/src/api/cmd.rs'
@@ -61,6 +64,21 @@ export default main = =>
       api_cmd.push [cmd, args, rt]
 
   await Promise.all [
+    modify(
+      'wasm/src/reply.rs'
+      'Err(err.into()),'
+      '}'
+      (txt)=>
+        exist = new Set()
+        for i in api_cmd
+          i = i[2]
+          if i
+            i = enum_name i
+            if not exist.has(i)
+              exist.add i
+              txt += "\n  Reply::#{i}(r) => Ok(r.into())"
+        txt
+    )
     modify(
       'api/src/cmd.rs'
       'Stop,'
@@ -103,7 +121,7 @@ export default main = =>
         for i in api_cmd
           i = i[2]
           if i
-            i = i.replace(/[<,>]/g,'')+'('+i+')'
+            i = enum_name(i)+'('+i+')'
             if not exist.has(i)
               rt_set.add i
 
@@ -114,7 +132,6 @@ export default main = =>
         cmd
     )
   ]
-  # Reply::OptionString(r) => Ok(r.into()),
   return
 
 if process.argv[1] == decodeURI (new URL(import.meta.url)).pathname
