@@ -1,3 +1,5 @@
+mod cmd;
+
 use anyhow::Result;
 use api::{Cmd, Reply};
 use async_std::channel::Sender;
@@ -23,14 +25,14 @@ impl Api {
         Reply::None
       }
       Cmd::RoomNew(name) => {
-        self.db.room_new(name);
+        self.room_new(name);
         Reply::None
       }
       Cmd::UserNew(name) => {
-        self.db.user_new(name);
+        self.user_new(name);
         Reply::None
       }
-      Cmd::UserName => Reply::OptionString(self.db.user_name()),
+      Cmd::UserName => Reply::OptionString(self.user_name()),
     })
   }
 }

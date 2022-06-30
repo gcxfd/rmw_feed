@@ -1,34 +1,21 @@
-use crate::{util::pk_sk, Db};
-use rkv::column_family;
+use crate::api::Api;
 use std::sync::atomic::Ordering::Relaxed;
-use util::kv::Kv as _Kv;
-
-column_family!(
-  // 自增主键
-  id,
-  // 用户
-  user_pk_id,
-  user_id_sk,
-  user_id_name,
-  // 房间
-  room_pk_id,
-  room_id_sk,
-  room_id_name
-);
+use util::{pk_sk, Kv};
 
 macro_rules! id {
-  ($self:ident, $name:ident) => {
-    $self.$name.fetch_add(1, Relaxed).to_be_bytes()
+  ($db:ident, $name:ident) => {
+    $db.$name.fetch_add(1, Relaxed).to_be_bytes()
   };
 }
 
 pub const LOGIN: &[u8] = b"login";
 
-impl Db {
+impl Api {
   pub fn room_new(&self, name: impl AsRef<str>) {
-    let id = id!(self, room_id);
+    let db = &self.db;
+    let id = id!(db, room_id);
     let (pk, sk) = pk_sk();
-    let kv = &self.kv;
+    let kv = &db.kv;
     let cf = &kv.cf;
     kv.with_tx(|tx| {
       tx.put_cf(&cf.room_pk_id, pk, id)?;
@@ -39,7 +26,8 @@ impl Db {
   }
 
   pub fn user_name(&self) -> Option<String> {
-    let kv = &self.kv;
+    let db = &self.db;
+    let kv = &db.kv;
     let cf = &kv.cf;
     if let Some(id) = kv.get(LOGIN) {
       if let Ok(Some(name)) = err::ok!(kv.db.get_cf(&cf.user_id_name, id)) {
@@ -50,9 +38,10 @@ impl Db {
   }
 
   pub fn user_new(&self, name: impl AsRef<str>) {
-    let id = id!(self, user_id);
+    let db = &self.db;
+    let id = id!(db, user_id);
     let (pk, sk) = pk_sk();
-    let kv = &self.kv;
+    let kv = &db.kv;
     let cf = &kv.cf;
     kv.with_tx(|tx| {
       tx.put_cf(&cf.user_pk_id, pk, id)?;

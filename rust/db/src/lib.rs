@@ -1,7 +1,6 @@
-mod api;
-mod util;
+mod cf;
 
-pub use api::{Cf, CF_N};
+pub use cf::{Cf, CF_N};
 use rkv::Kv;
 use std::{path::PathBuf, sync::atomic::AtomicU64};
 

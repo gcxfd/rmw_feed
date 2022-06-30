@@ -474,11 +474,9 @@ dependencies = [
 name = "db"
 version = "0.1.0"
 dependencies = [
- "ed25519-dalek-blake3",
  "err",
  "log",
  "paste",
- "rand",
  "rkv",
  "rocksdb",
  "util",
@@ -977,6 +975,7 @@ dependencies = [
  "speedy",
  "tungstenite",
  "upnp",
+ "util",
 ]
 
 [[package]]
@@ -1498,6 +1497,10 @@ checksum = "09cc8ee72d2a9becf2f2febe0205bbed8fc6615b7cb429ad062dc7b7ddd036a9"
 [[package]]
 name = "util"
 version = "0.1.0"
+dependencies = [
+ "ed25519-dalek-blake3",
+ "rand",
+]
 
 [[package]]
 name = "value-bag"
@@ -1782,9 +1785,9 @@ dependencies = [
 
 [[package]]
 name = "zeroize"
-version = "1.5.5"
+version = "1.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94693807d016b2f2d2e14420eb3bfcca689311ff775dcf113d74ea624b7cdf07"
+checksum = "20b578acffd8516a6c3f2a1bdefc1ec37e547bb4e0fb8b6b01a4cafc886b4442"
 dependencies = [
  "zeroize_derive",
 ]
