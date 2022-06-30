@@ -15,7 +15,16 @@ UTF8 = 'utf8'
 export default main = =>
   api = await readFile join(RUST,'db/src/api.rs'), UTF8
   for fn from extract_li api, "pub fn ","{"
-    console.log fn
+    pos = fn.indexOf('(')
+    if pos > 0
+      name = fn[...pos]
+      has_return = fn.lastIndexOf('->')
+      if has_return > 0
+        rt = fn[has_return+2..]
+      args = fn[pos+1...fn.lastIndexOf(')')].split(",")
+      args.shift()
+      args = args.map((i)=>i.split(":").map((x)=>x.trim()))
+      console.log name, args,rt
 
   #for await line from fsline
   #  line = line.trim()
