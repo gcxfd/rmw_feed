@@ -26,7 +26,7 @@ write = (fp, txt)=>
 
 
 export default main = =>
-  api = await read 'db/src/api.rs'
+  api = await read 'net/src/api/cmd.rs'
 
   api_cmd = []
 
