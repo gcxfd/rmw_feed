@@ -42,7 +42,8 @@ export default main = =>
       name = fn[...pos]
       has_return = fn.lastIndexOf('->')
       if has_return > 0
-        rt = fn[has_return+2..]
+        rt = fn[has_return+2..].trim()
+
       args = fn[pos+1...fn.lastIndexOf(')')].split(",")
       args.shift()
       args = args.map((i)=>i.split(":").map((x)=>x.trim()))
@@ -57,8 +58,7 @@ export default main = =>
         args='('+t.join(',')+')'
       else
         args = ''
-      api_cmd.push [cmd, args]
-
+      api_cmd.push [cmd, args, rt]
 
   await modify(
     'api/src/cmd.rs'
@@ -88,12 +88,12 @@ export default main = =>
       ).join(',\n  ')+',\n'
   )
 
+  rt_set = new Set()
 
-  #for await line from fsline
-  #  line = line.trim()
-  #  t = []
-  #  if line.startsWith("pub fn ")
-  #    t.push line
+  for i in api_cmd
+    i = i[2]
+    if i
+      console.log i
 
   return
 
