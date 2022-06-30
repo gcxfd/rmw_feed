@@ -5,4 +5,4 @@
 pub mod cf;
 pub mod db;
 pub use cf::{Cf, ColumnFamily};
-pub use db::{get_or_create, Kv};
+pub use db::Kv;

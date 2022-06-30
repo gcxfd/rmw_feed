@@ -25,22 +25,6 @@ impl<Cf: cf::Cf<N>, const N: usize> util::kv::Kv for Kv<Cf, N> {
   }
 }
 
-pub fn get_or_create<Ref: AsRef<[u8]>>(
-  db: &OptimisticTransactionDB,
-  key: impl AsRef<[u8]>,
-  create: impl Fn() -> Ref,
-) -> Vec<u8> {
-  let key = key.as_ref();
-  loop {
-    let tx = db.transaction();
-    if let Ok(Some(val)) = err::ok!(tx.get(key)) {
-      return val;
-    }
-    err::log!(tx.put(key, create()));
-    err::log!(tx.commit());
-  }
-}
-
 impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   #[allow(invalid_value)]
   pub fn new(path: impl Into<PathBuf>) -> Self {
@@ -63,6 +47,7 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
           return r;
         }
       }
+      std::thread::sleep(std::time::Duration::from_secs(1))
     }
   }
 }

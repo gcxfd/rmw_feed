@@ -4,8 +4,6 @@ pub use cf::{Cf, CF_N};
 use rkv::Kv;
 use std::{path::PathBuf, sync::atomic::AtomicU64};
 
-pub use rkv::get_or_create;
-
 #[derive(Debug)]
 pub struct Db {
   pub user_id: AtomicU64,
