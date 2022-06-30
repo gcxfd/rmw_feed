@@ -50,6 +50,7 @@ export default main = =>
         rt = undefined
 
       args = fn[pos+1...fn.lastIndexOf(')',fn.lastIndexOf('->'))].split(",")
+      console.log args
       args.shift()
       args = args.map((i)=>i.split(":").map((x)=>x.trim())).filter Boolean
 
@@ -90,6 +91,7 @@ export default main = =>
           li.push(
             """\n  pub fn #{func}(#{args}) -> Promise {\n    self.req(Cmd::#{name}#{args_pass})\n  }\n"""
           )
+        li.sort()
         li.join('')
     )
     modify(
