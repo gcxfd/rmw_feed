@@ -7,5 +7,5 @@ pub enum Cmd {
   Stop,
   UserNew(String),
   UserName,
-  RoomNew(String),
+  RoomNew(String)
 }

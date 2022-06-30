@@ -24,6 +24,12 @@ write = (fp, txt)=>
   writeFile join(RUST,fp), txt
 
 
+modify = (fp, start, end, gen)=>
+  cmd = await read fp
+  begin_pos = cmd.indexOf(start)+start.length
+  end_pos = cmd.indexOf(end,begin_pos)
+  write fp, cmd[..begin_pos] + gen(cmd[begin_pos...end_pos]) + cmd[end_pos..]
+
 
 export default main = =>
   api = await read 'net/src/api/cmd.rs'
@@ -54,38 +60,34 @@ export default main = =>
       api_cmd.push [cmd, args]
 
 
-  src = 'api/src/cmd.rs'
-  cmd = await read src
+  await modify(
+    'api/src/cmd.rs'
+    'Stop,'
+    '}'
+    (cmd)=>
+      exist = cmd.split(',').map(
+        (i)=>
+          i.split('(',1)[0].trim()
+      ).filter(Boolean)
 
-  stop = 'Stop,'
-
-  begin_pos = cmd.indexOf(stop)+stop.length
-  end_pos = cmd.indexOf('}',begin_pos)
-
-
-  exist = cmd[begin_pos...end_pos].split(',').map(
-    (i)=>
-      i.split('(',1)[0].trim()
-  ).filter(Boolean)
-
-  len = exist.length
-  cmd_pos = {}
-  for [key] from api_cmd
-    pos = exist.indexOf(key)
-    if pos < 0
-      pos = len
-    cmd_pos[key]=pos
+      len = exist.length
+      cmd_pos = {}
+      for [key] from api_cmd
+        pos = exist.indexOf(key)
+        if pos < 0
+          pos = len
+        cmd_pos[key]=pos
 
 
-  api_cmd = '  '+api_cmd.sort(
-    (a,b)=>
-      cmd_pos[a[0]] - cmd_pos[b[0]]
-  ).map(
-    (x)=>
-      x[0]+x[1]
-  ).join(',\n  ')+'\n'
+      '  '+api_cmd.sort(
+        (a,b)=>
+          cmd_pos[a[0]] - cmd_pos[b[0]]
+      ).map(
+        (x)=>
+          x[0]+x[1]
+      ).join(',\n  ')+'\n'
+  )
 
-  await write src, cmd[..begin_pos] + api_cmd + cmd[end_pos..]
 
   #for await line from fsline
   #  line = line.trim()
