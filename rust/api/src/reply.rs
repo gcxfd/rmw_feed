@@ -4,5 +4,5 @@ use speedy::{Readable, Writable};
 pub enum Reply {
   Err(String),
   None,
-  OptionString(Option<String>)
+  OptionString(Option<String>),
 }
