@@ -1,6 +1,7 @@
 #![feature(get_mut_unchecked)]
 #![feature(new_uninit)]
 
+mod reply;
 mod reply_future;
 mod w;
 
@@ -91,13 +92,7 @@ impl Ws {
         }
       };
     };
-    future_to_promise(async move {
-      match future.await {
-        Reply::None => Ok(JsValue::undefined()),
-        Reply::OptionString(r) => Ok(r.into()),
-        Reply::Err(err) => Err(err.into()),
-      }
-    })
+    future_to_promise(async move { reply::reply(future.await) })
   }
 }
 
