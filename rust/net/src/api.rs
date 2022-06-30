@@ -16,21 +16,21 @@ impl Api {
   pub async fn cmd(&self, cmd: api::Cmd) -> Result<Reply> {
     let sender = &self.sender;
     dbg!(&cmd);
+
     Ok(match cmd {
       Cmd::Stop => {
         err::log!(sender.send(cmd).await);
         Reply::None
       }
-      _ => db_cmd(&self.db, cmd),
+      Cmd::RoomNew(name) => {
+        self.db.room_new(name);
+        Reply::None
+      }
+      Cmd::UserNew(name) => {
+        self.db.user_new(name);
+        Reply::None
+      }
+      Cmd::UserName => Reply::OptionString(self.db.user_name()),
     })
   }
-}
-
-fn db_cmd(db: &Db, cmd: Cmd) -> Reply {
-  match cmd {
-    Cmd::UserNew(name) => db.user_new(name),
-    Cmd::UserName => return Reply::OptionString(db.user_name()),
-    _ => {}
-  }
-  Reply::None
 }
