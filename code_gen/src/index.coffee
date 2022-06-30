@@ -69,14 +69,15 @@ export default main = =>
       'Err(err.into()),'
       '}'
       (txt)=>
-        exist = new Set()
+        li = txt.split("(").map((i)=>i.split('::',2)[1]).filter(Boolean)
+        exist = new Set(li)
         for i in api_cmd
           i = i[2]
           if i
             i = enum_name i
             if not exist.has(i)
               exist.add i
-              txt += "\n  Reply::#{i}(r) => Ok(r.into())"
+              txt += "  Reply::#{i}(r) => Ok(r.into()),\n  "
         txt
     )
     modify(
