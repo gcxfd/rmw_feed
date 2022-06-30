@@ -2,6 +2,7 @@
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
 export function w_stop(a: number): number;
+export function w_user_new(a: number, b: number, c: number): number;
 export function __wbg_w_free(a: number): void;
 export function ws(a: number, b: number, c: number, d: number): number;
 export function connect(a: number): void;

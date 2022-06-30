@@ -8,4 +8,7 @@ impl W {
   pub fn stop(&mut self) -> Promise {
     self.req(Cmd::Stop)
   }
+  pub fn user_new(&mut self, name: String) -> Promise {
+    self.req(Cmd::UserNew(name))
+  }
 }
