@@ -6,8 +6,7 @@ use speedy::{Readable, Writable};
 pub enum Cmd {
   Stop,
   UserNew(String),
-  UserName,
-  RoomNew(String),
+  UserName(String),
 }
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable)]

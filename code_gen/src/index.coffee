@@ -3,7 +3,7 @@
 #import fsline from '@rmw/fsline'
 import thisdir from '@rmw/thisdir'
 import {resolve,join,dirname} from 'path'
-import {readFile} from 'fs/promises'
+import {readFile,writeFile} from 'fs/promises'
 import {extract_li} from './extract'
 import {upperFirst, camelCase} from 'lodash-es'
 
@@ -17,9 +17,16 @@ CLS_MAP = {
   'impl AsRef<str>':'String'
 }
 
+read = (fp)=>
+  readFile join(RUST,fp), UTF8
+
+write = (fp, txt)=>
+  writeFile join(RUST,fp), txt
+
+
 
 export default main = =>
-  api = await readFile join(RUST,'db/src/api.rs'), UTF8
+  api = await read 'db/src/api.rs'
 
   api_cmd = []
 
@@ -41,12 +48,44 @@ export default main = =>
           t.push(CLS_MAP[cls] or cls)
 
       if t.length
-        cmd+='('+t.join(',')+')'
+        args='('+t.join(',')+')'
+      else
+        args = ''
+      api_cmd.push [cmd, args]
 
-      api_cmd.push cmd
 
-  api_cmd.join(',\n')
-  console.log api_cmd
+  src = 'api/src/cmd.rs'
+  cmd = await read src
+
+  stop = 'Stop,'
+
+  begin_pos = cmd.indexOf(stop)+stop.length
+  end_pos = cmd.indexOf('}',begin_pos)
+
+
+  exist = cmd[begin_pos...end_pos].split(',').map(
+    (i)=>
+      i.split('(',1)[0].trim()
+  ).filter(Boolean)
+
+  len = exist.length
+  cmd_pos = {}
+  for [key] from api_cmd
+    pos = exist.indexOf(key)
+    if pos < 0
+      pos = len
+    cmd_pos[key]=pos
+
+
+  api_cmd = '  '+api_cmd.sort(
+    (a,b)=>
+      cmd_pos[a[0]] - cmd_pos[b[0]]
+  ).map(
+    (x)=>
+      x[0]+x[1]
+  ).join(',\n  ')+'\n'
+
+  await write src, cmd[..begin_pos] + api_cmd + cmd[end_pos..]
 
   #for await line from fsline
   #  line = line.trim()
