@@ -1,10 +1,12 @@
+
 <script lang="coffee">
 #import '~/styl/init.styl'
-import ws from '~/coffee/ws.coffee'
 import logo from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
+import ws from '~/coffee/ws.coffee'
 
-window.ws = ws
+user_name = ws.user_name()
+#:$ user = await ws.user_name()
 
 我 = 3333
 x = 4
@@ -29,6 +31,12 @@ click = =>
 
 <template lang="pug">
 main
+  +await('user_name')
+    h1 loading
+    +then('name')
+      h1 {name}
+    +catch('err')
+      h2 err
   #map
   img(alt="logo" src="{ logo }")
   button(on:click="{ click }")
