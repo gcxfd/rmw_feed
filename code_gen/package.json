@@ -30,11 +30,11 @@
     "@rmw/console": "^0.0.20",
     "@rmw/md-include": "^0.4.8",
     "coffeescript": "^2.7.0",
+    "lodash-es": "^4.17.21",
     "nodemon": "^2.0.18"
   },
   "dependencies": {
     "@rmw/fsline": "^0.0.1",
-    "@rmw/thisdir": "^0.0.2",
-    "lodash": "^4.17.21"
+    "@rmw/thisdir": "^0.0.2"
   }
 }

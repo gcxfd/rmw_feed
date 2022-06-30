@@ -10,13 +10,12 @@ specifiers:
   '@rmw/md-include': ^0.4.8
   '@rmw/thisdir': ^0.0.2
   coffeescript: ^2.7.0
-  lodash: ^4.17.21
+  lodash-es: ^4.17.21
   nodemon: ^2.0.18
 
 dependencies:
   '@rmw/fsline': 0.0.1
   '@rmw/thisdir': 0.0.2
-  lodash: 4.17.21
 
 devDependencies:
   '@babel/cli': 7.18.6_@babel+core@7.18.6
@@ -26,6 +25,7 @@ devDependencies:
   '@rmw/console': 0.0.20
   '@rmw/md-include': 0.4.8
   coffeescript: 2.7.0
+  lodash-es: 4.17.21
   nodemon: 2.0.18
 
 packages:
@@ -1002,9 +1002,9 @@ packages:
       path-exists: 3.0.0
     dev: true
 
-  /lodash/4.17.21:
-    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: false
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: true
 
   /lowercase-keys/1.0.1:
     resolution: {integrity: sha512-G2Lj61tXDnVFFOi8VZds+SoQjtQC3dgokKdDG2mTm1tx4m50NUHBOZSBwQQHyy0V12A0JTG4icfZQH+xPyh8VA==}

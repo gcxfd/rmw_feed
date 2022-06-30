@@ -25,14 +25,6 @@ macro_rules! id {
 pub const LOGIN: &[u8] = b"login";
 
 impl Db {
-  pub fn test_room_new(
-    &self,
-    name1: impl AsRef<str>,
-    name23: impl AsRef<str>,
-    name: impl AsRef<str>,
-    name2: impl AsRef<str>,
-  ) {
-  }
   pub fn room_new(&self, name: impl AsRef<str>) {
     let id = id!(self, room_id);
     let (pk, sk) = pk_sk();
