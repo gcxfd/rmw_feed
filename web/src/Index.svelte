@@ -31,7 +31,7 @@ click = =>
 
 <template lang="pug">
 main
-  +await('user_name')
+  +await user_name
     h1 loading
     +then('name')
       h1 {name}
