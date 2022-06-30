@@ -43,15 +43,26 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
     &self,
     run: impl Fn(&Transaction<OptimisticTransactionDB>) -> Result<T>,
   ) -> Result<T> {
-    let tx = self.tx();
-    match err::ok!(run(&tx)) {
-      Ok(r) => {
-        tx.commit()?;
-        return Ok(r);
-      }
-      Err(err) => {
-        err::log!(tx.rollback());
-        return Err(err);
+    let mut retry: u8 = 0;
+    loop {
+      retry += 1;
+      let tx = self.tx();
+      match err::ok!(run(&tx)) {
+        Ok(r) => {
+          let cr = tx.commit();
+          match cr {
+            Ok(_) => return Ok(r),
+            Err(err) => {
+              if retry > 3 {
+                return Err(err.into());
+              }
+            }
+          }
+        }
+        Err(err) => {
+          err::log!(tx.rollback());
+          return Err(err);
+        }
       }
     }
   }
