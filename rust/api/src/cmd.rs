@@ -7,12 +7,12 @@ pub enum Cmd {
   Stop,
   UserNew(String),
   UserName,
-  RoomNew(String)
+  RoomNew(String),
 }
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable)]
 pub enum Reply {
-  OptionString(Option<String>),
   Err(String),
   None,
+  OptionString(Option<String>),
 }
