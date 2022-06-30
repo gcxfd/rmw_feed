@@ -1,9 +1,6 @@
 use crate::{util::pk_sk, Db};
-use rkv::{column_family, Kv};
-use std::{
-  path::PathBuf,
-  sync::atomic::{AtomicU64, Ordering::Relaxed},
-};
+use rkv::column_family;
+use std::sync::atomic::Ordering::Relaxed;
 use util::kv::Kv as _Kv;
 
 column_family!(

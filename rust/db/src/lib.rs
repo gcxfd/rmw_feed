@@ -3,10 +3,7 @@ mod util;
 
 pub use api::{Cf, CF_N};
 use rkv::Kv;
-use std::{
-  path::PathBuf,
-  sync::atomic::{AtomicU64, Ordering::Relaxed},
-};
+use std::{path::PathBuf, sync::atomic::AtomicU64};
 
 pub use rkv::get_or_create;
 
