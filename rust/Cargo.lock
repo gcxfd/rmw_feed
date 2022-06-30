@@ -471,6 +471,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "db"
+version = "0.1.0"
+dependencies = [
+ "ed25519-dalek-blake3",
+ "err",
+ "log",
+ "paste",
+ "rand",
+ "rkv",
+ "rocksdb",
+ "util",
+]
+
+[[package]]
 name = "digest"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -824,20 +838,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "kv"
-version = "0.1.0"
-dependencies = [
- "ed25519-dalek-blake3",
- "err",
- "log",
- "paste",
- "rand",
- "rkv",
- "rocksdb",
- "util",
-]
-
-[[package]]
 name = "kv-log-macro"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -963,10 +963,10 @@ dependencies = [
  "b80",
  "config",
  "const-str",
+ "db",
  "dir",
  "err",
  "futures",
- "kv",
  "log",
  "logger",
  "parking_lot",

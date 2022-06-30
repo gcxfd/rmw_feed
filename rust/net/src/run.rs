@@ -25,7 +25,7 @@ pub fn run() -> Result<()> {
   let (sender, recver) = unbounded();
 
   let db = Db::new(dir::root().join("db"));
-  let config = Config::new(&db.db);
+  let config = Config::new(&db.kv);
 
   config::macro_get!(config);
 
