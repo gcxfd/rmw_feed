@@ -8,12 +8,12 @@ use futures::{
 };
 use log::info;
 use speedy::{Readable, Writable};
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 use tungstenite::Message;
 
 const TIMEOUT: usize = 7;
 
-pub async fn ws(stream: TcpStream, api: Api) -> Result<()> {
+pub async fn ws(stream: TcpStream, api: Arc<Api>) -> Result<()> {
   let addr = stream.peer_addr()?;
 
   let ws_stream = async_tungstenite::accept_async(stream).await?;

@@ -2,16 +2,15 @@ use anyhow::Result;
 use api::{Cmd, Reply};
 use async_std::channel::Sender;
 use kv::Db;
-use std::sync::Arc;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Api {
   sender: Sender<Cmd>,
-  db: Arc<Db>,
+  db: Db,
 }
 
 impl Api {
-  pub fn new(sender: Sender<Cmd>, db: Arc<Db>) -> Self {
+  pub fn new(sender: Sender<Cmd>, db: Db) -> Self {
     Self { sender, db }
   }
   pub async fn cmd(&self, cmd: api::Cmd) -> Result<Reply> {

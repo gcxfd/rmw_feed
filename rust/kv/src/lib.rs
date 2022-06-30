@@ -3,10 +3,7 @@ use rand::rngs::OsRng;
 use rkv::{column_family, Kv};
 use std::{
   path::PathBuf,
-  sync::{
-    atomic::{AtomicU64, Ordering::Relaxed},
-    Arc,
-  },
+  sync::atomic::{AtomicU64, Ordering::Relaxed},
 };
 use util::kv::Kv as _Kv;
 
@@ -111,8 +108,4 @@ impl Db {
       kv,
     }
   }
-}
-
-pub fn open(path: PathBuf) -> Arc<Db> {
-  Arc::new(Db::new(path))
 }

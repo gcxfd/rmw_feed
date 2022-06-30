@@ -3,11 +3,13 @@ use anyhow::Result;
 use api::Cmd;
 use async_std::{channel::unbounded, net::TcpListener, task::block_on};
 use config::Config;
+use kv::Db;
 use log::info;
 use run::Run;
 use std::{
   collections::BTreeSet,
   net::{Ipv4Addr, SocketAddrV4, UdpSocket},
+  sync::Arc,
   thread::spawn,
 };
 
@@ -22,7 +24,7 @@ pub fn run() -> Result<()> {
 
   let (sender, recver) = unbounded();
 
-  let db = kv::open(dir::root().join("kv"));
+  let db = Db::new(dir::root().join("kv"));
   let config = Config::new(&db.kv);
 
   config::macro_get!(config);
@@ -51,10 +53,10 @@ pub fn run() -> Result<()> {
   // web socket
   {
     let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
-    let api = Api::new(sender, db);
 
     info!("ws://{}", ws_addr);
     let mut ws_run = run.clone();
+    let api = Arc::new(Api::new(sender, db));
 
     run.spawn(async move {
       if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {
