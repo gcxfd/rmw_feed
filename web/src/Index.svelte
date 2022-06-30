@@ -33,15 +33,17 @@ click = =>
 main
   +await user_name
     h1 loading
-    +then('name')
+    +then name
       h1 {name}
-    +catch('err')
+    +catch err
       h2 err
   #map
   img(alt="logo" src="{ logo }")
   button(on:click="{ click }")
-    +if('x%2') if x%2
-      +else else
+    +if x%2
+      | if x%2
+      +else
+        h3 else
   h2 x {x} y {y} z {z}
   Counter
 </template>
