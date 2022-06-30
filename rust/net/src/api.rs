@@ -29,6 +29,7 @@ impl Api {
 fn db_cmd(db: &Db, cmd: Cmd) -> Reply {
   match cmd {
     Cmd::UserNew(name) => db.user_new(name),
+    Cmd::UserName => return Reply::OptionString(db.user_name()),
     _ => {}
   }
   Reply::None

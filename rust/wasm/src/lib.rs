@@ -94,6 +94,7 @@ impl Ws {
     future_to_promise(async move {
       match future.await {
         Reply::None => Ok(JsValue::undefined()),
+        Reply::OptionString(r) => Ok(r.into()),
         Reply::Err(err) => Err(err.into()),
       }
     })

@@ -12,6 +12,7 @@ pub enum Cmd {
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable)]
 pub enum Reply {
+  OptionString(Option<String>),
   Err(String),
   None,
 }
