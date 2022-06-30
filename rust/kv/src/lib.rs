@@ -29,7 +29,7 @@ pub struct Db {
   pub kv: Kv<Cf, CF_N>,
 }
 
-pub const LOGIN: &'static [u8] = b"login";
+pub const LOGIN: &[u8] = b"login";
 
 pub fn pk_sk() -> ([u8; 32], [u8; 32]) {
   let pair = Keypair::generate(&mut OsRng {});
