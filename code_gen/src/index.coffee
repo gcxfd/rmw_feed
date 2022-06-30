@@ -61,17 +61,28 @@ export default main = =>
       api_cmd.push [cmd, args, rt, name]
 
   await Promise.all [
-    ###
     modify(
       'net/src/api/mod.rs'
       '// code_gen'
       '})'
       (txt)=>
+        space = '      '
         li = []
-        #for
-        li.join('')
+        for [cmd, args, rt, name] from api_cmd
+          args_pass = args.map((i)=>i[0]).join(', ')
+          if args.length
+            args_tuple = "(#{args_pass})"
+          else
+            args_tuple = ''
+          txt = "Cmd::#{cmd}#{args_tuple} => "
+          call = "self.#{name}(#{args_pass})?"
+          if rt
+            txt += "Reply::#{enum_name(rt)}(#{call}),"
+          else
+            txt+= "{\n#{space}  #{call};\n#{space}  Reply::Undefined\n#{space}}"
+          li.push txt
+        space+li.join('\n'+space)+'\n    '
     )
-    ###
 
     modify(
       'wasm/src/w.rs'
