@@ -24,7 +24,7 @@ impl Api {
         err::log!(sender.send(cmd).await);
         Reply::Undefined
       }
-      // code_gen
+      // code_gen <
       Cmd::RoomNew(name) => {
         self.room_new(name)?;
         Reply::Undefined
@@ -33,7 +33,7 @@ impl Api {
       Cmd::UserNew(name) => {
         self.user_new(name)?;
         Reply::Undefined
-      }
+      } // >
     })
   }
 }

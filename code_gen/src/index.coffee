@@ -24,7 +24,9 @@ write = (fp, txt)=>
   writeFile join(RUST,fp), txt
 
 
-modify = (fp, start, end, gen)=>
+modify = (fp, gen)=>
+  start = '// code_gen <'
+  end = '// >'
   cmd = await read fp
   begin_pos = cmd.indexOf(start)+start.length
   end_pos = cmd.indexOf(end,begin_pos)
@@ -63,8 +65,6 @@ export default main = =>
   await Promise.all [
     modify(
       'net/src/api/mod.rs'
-      '// code_gen'
-      '})'
       (txt)=>
         space = '      '
         li = []
@@ -86,8 +86,6 @@ export default main = =>
 
     modify(
       'wasm/src/w.rs'
-      'impl W {'
-      '\n}'
       (txt)=>
         li = []
 
@@ -106,8 +104,6 @@ export default main = =>
     )
     modify(
       'wasm/src/reply.rs'
-      'Err(err.into()),'
-      '}'
       (txt)=>
         li = txt.split("(").map((i)=>i.split('::',2)[1]).filter(Boolean)
         exist = new Set(li)
@@ -122,8 +118,6 @@ export default main = =>
     )
     modify(
       'api/src/cmd.rs'
-      'Stop,'
-      '}'
       (cmd)=>
         exist = cmd.split(',').map(
           (i)=>
