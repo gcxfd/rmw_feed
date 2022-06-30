@@ -148,8 +148,6 @@ export default main = =>
     )
     modify(
       'api/src/reply.rs'
-      'Undefined,'
-      '}'
       (cmd)=>
         exist = new Set(cmd.split(',').map(
           (i)=>

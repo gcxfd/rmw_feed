@@ -4,5 +4,7 @@ use speedy::{Readable, Writable};
 pub enum Reply {
   Err(String),
   Undefined,
+  // code_gen <
   OptionString(Option<String>),
+  // >
 }
