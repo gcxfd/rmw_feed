@@ -85,7 +85,7 @@ export default main = =>
       ).map(
         (x)=>
           x[0]+x[1]
-      ).join(',\n  ')+'\n'
+      ).join(',\n  ')+',\n'
   )
 
 
