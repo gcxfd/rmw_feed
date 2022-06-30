@@ -21,7 +21,15 @@ impl Api {
         err::log!(sender.send(cmd).await);
         Reply::None
       }
-      _ => Reply::None,
+      _ => db_cmd(&self.db, cmd),
     })
   }
+}
+
+fn db_cmd(db: &Db, cmd: Cmd) -> Reply {
+  match cmd {
+    Cmd::UserNew(name) => db.user_new(name),
+    _ => {}
+  }
+  Reply::None
 }
