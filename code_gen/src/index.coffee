@@ -29,8 +29,18 @@ modify = (fp, gen)=>
   end = '// >'
   cmd = await read fp
   begin_pos = cmd.indexOf(start)+start.length
+  if begin_pos < 0
+    console.log fp,'no',start
+    return
   end_pos = cmd.indexOf(end,begin_pos)
-  write fp, cmd[..begin_pos] + gen(cmd[begin_pos+1...end_pos]) + cmd[end_pos..]
+  if end_pos < 0
+    console.log fp,'no',end
+    return
+
+  while cmd.charAt(--end_pos).trim()
+    null
+
+  write fp, cmd[..begin_pos] + gen(cmd[begin_pos+1..end_pos]) + cmd[end_pos+1..]
 
 enum_name = (i)=>
   i.replace(/[<,>]/g,'')
@@ -81,7 +91,7 @@ export default main = =>
           else
             txt+= "{\n#{space}  #{call};\n#{space}  Reply::Undefined\n#{space}}"
           li.push txt
-        space+li.join('\n'+space)+'\n    '
+        space+li.join('\n'+space)
     )
 
     modify(
