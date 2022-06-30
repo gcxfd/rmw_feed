@@ -2,6 +2,8 @@
 #![feature(new_uninit)]
 
 mod reply_future;
+mod w;
+
 use crate::reply_future::ReplyFuture;
 use api::{Cmd, Reply, A, Q};
 use js_sys::{Function, Promise};
@@ -51,7 +53,12 @@ impl Ws {
 
   fn set(&mut self, ws: WebSocket) {
     for (id, (cmd, _)) in &self.next {
-      if let Ok(msg) = (Q { id: *id, cmd: *cmd }).dump() {
+      if let Ok(msg) = (Q {
+        id: *id,
+        cmd: cmd.clone(),
+      })
+      .dump()
+      {
         let _ = ws.send_with_u8_array(&msg);
       }
     }
@@ -72,7 +79,7 @@ impl Ws {
 
   fn req(&mut self, id: u32, cmd: Cmd) -> Promise {
     let future = ReplyFuture::new();
-    self.next.insert(id, (cmd, future.clone()));
+    self.next.insert(id, (cmd.clone(), future.clone()));
     if let Some(ws) = &self.ws {
       match (Q { id, cmd }).dump() {
         Ok(msg) => match ws.send_with_u8_array(&msg) {
@@ -184,12 +191,5 @@ pub fn connect(w: &W) {
       let _ = on.call0(&this);
       websocket.borrow_mut().set(ws.clone());
     }});
-  }
-}
-
-#[wasm_bindgen]
-impl W {
-  pub fn stop(&mut self) -> Promise {
-    self.req(Cmd::Stop)
   }
 }
