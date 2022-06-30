@@ -26,9 +26,9 @@ write = (fp, txt)=>
 
 modify = (fp, start, end, gen)=>
   cmd = await read fp
-  begin_pos = cmd.indexOf(start)+start.length+1
+  begin_pos = cmd.indexOf(start)+start.length
   end_pos = cmd.indexOf(end,begin_pos)
-  write fp, cmd[..begin_pos] + gen(cmd[begin_pos...end_pos]) + cmd[end_pos..]
+  write fp, cmd[..begin_pos] + gen(cmd[begin_pos+1...end_pos]) + cmd[end_pos..]
 
 
 export default main = =>
@@ -79,7 +79,7 @@ export default main = =>
         cmd_pos[key]=pos
 
 
-      '\n  '+api_cmd.sort(
+      '  '+api_cmd.sort(
         (a,b)=>
           cmd_pos[a[0]] - cmd_pos[b[0]]
       ).map(
@@ -109,7 +109,7 @@ export default main = =>
 
       rt_set = [...rt_set]
       if rt_set.length
-        cmd += '\n  '+rt_set.join(',\n  ')+'\n'
+        cmd += '  '+rt_set.join(',\n  ')+',\n'
 
       cmd
   )
