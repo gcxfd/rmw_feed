@@ -56,9 +56,28 @@ export default main = =>
         i[1] = CLS_MAP[cls] or cls
 
       cmd = upperFirst(camelCase(name))
-      api_cmd.push [cmd, args, rt]
+      api_cmd.push [cmd, args, rt, name]
 
   await Promise.all [
+    modify(
+      'wasm/src/w.rs'
+      'impl W {'
+      '\n}'
+      (txt)=>
+        li = []
+
+        for [name, args, _, func] from api_cmd
+          args_pass = args.map((i)=>i[0]).join(', ')
+          if args.length
+            args_pass = "(#{args_pass})"
+          args = args.map((x)=>x.join(': '))
+          args.unshift('&mut self')
+          args = args.join(', ')
+          li.push(
+            """\n  pub fn #{func}(#{args}) -> Promise {\n    self.req(Cmd::#{name}#{args_pass})\n  }\n"""
+          )
+        li.join('')
+    )
     modify(
       'wasm/src/reply.rs'
       'Err(err.into()),'

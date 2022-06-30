@@ -19,22 +19,33 @@ export function connect(w: W): void;
 export class W {
   free(): void;
 /**
+* @param {string} name
 * @returns {Promise<any>}
 */
-  stop(): Promise<any>;
+  room_new(name: string): Promise<any>;
+/**
+* @returns {Promise<any>}
+*/
+  user_name(): Promise<any>;
 /**
 * @param {string} name
 * @returns {Promise<any>}
 */
   user_new(name: string): Promise<any>;
+/**
+* @returns {Promise<any>}
+*/
+  stop(): Promise<any>;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly w_stop: (a: number) => number;
+  readonly w_room_new: (a: number, b: number, c: number) => number;
+  readonly w_user_name: (a: number) => number;
   readonly w_user_new: (a: number, b: number, c: number) => number;
+  readonly w_stop: (a: number) => number;
   readonly __wbg_w_free: (a: number) => void;
   readonly ws: (a: number, b: number, c: number, d: number) => number;
   readonly connect: (a: number) => void;

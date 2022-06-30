@@ -234,7 +234,7 @@ function getArrayU8FromWasm0(ptr, len) {
 }
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
-function __wbg_adapter_65(arg0, arg1, arg2, arg3) {
+function __wbg_adapter_67(arg0, arg1, arg2, arg3) {
     wasm.closure85_externref_shim(arg0, arg1, arg2, arg3);
 }
 
@@ -262,10 +262,20 @@ export class W {
         wasm.__wbg_w_free(ptr);
     }
     /**
+    * @param {string} name
     * @returns {Promise<any>}
     */
-    stop() {
-        const ret = wasm.w_stop(this.ptr);
+    room_new(name) {
+        const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.w_room_new(this.ptr, ptr0, len0);
+        return ret;
+    }
+    /**
+    * @returns {Promise<any>}
+    */
+    user_name() {
+        const ret = wasm.w_user_name(this.ptr);
         return ret;
     }
     /**
@@ -276,6 +286,13 @@ export class W {
         const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.w_user_new(this.ptr, ptr0, len0);
+        return ret;
+    }
+    /**
+    * @returns {Promise<any>}
+    */
+    stop() {
+        const ret = wasm.w_stop(this.ptr);
         return ret;
     }
 }
@@ -398,7 +415,7 @@ function getImports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_65(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_67(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -458,7 +475,7 @@ function getImports() {
         const ret = makeMutClosure(arg0, arg1, 3, __wbg_adapter_18);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper269 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper271 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 68, __wbg_adapter_25);
         return ret;
     };
