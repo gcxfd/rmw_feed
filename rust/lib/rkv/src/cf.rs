@@ -26,7 +26,7 @@ macro_rules! column_family {
       $( pub $name:rkv::ColumnFamily ),*
     }
 
-    const CF_N:usize = util::count!($($name),+);
+    pub const CF_N:usize = util::count!($($name),+);
     impl rkv::Cf<CF_N> for Cf {
       fn li() -> [String;CF_N] {
         [$(stringify!($name).into()),*]

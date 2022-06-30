@@ -1,3 +1,6 @@
+mod api;
+
+pub use api::{Cf, CF_N};
 use ed25519_dalek_blake3::Keypair;
 use rand::rngs::OsRng;
 use rkv::{column_family, Kv};
@@ -8,19 +11,6 @@ use std::{
 use util::kv::Kv as _Kv;
 
 pub use rkv::get_or_create;
-
-column_family!(
-  // 自增主键
-  id,
-  // 用户
-  user_pk_id,
-  user_id_sk,
-  user_id_name,
-  // 房间
-  room_pk_id,
-  room_id_sk,
-  room_id_name
-);
 
 #[derive(Debug)]
 pub struct Db {
