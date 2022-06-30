@@ -59,6 +59,17 @@ export default main = =>
       api_cmd.push [cmd, args, rt, name]
 
   await Promise.all [
+
+    modify(
+      'net/src/api/mod.rs'
+      '// code_gen'
+      '})'
+      (txt)=>
+        li = []
+        #for
+        li.join('')
+    )
+
     modify(
       'wasm/src/w.rs'
       'impl W {'
@@ -128,7 +139,7 @@ export default main = =>
     )
     modify(
       'api/src/reply.rs'
-      'None,'
+      'Undefined,'
       '}'
       (cmd)=>
         exist = new Set(cmd.split(',').map(

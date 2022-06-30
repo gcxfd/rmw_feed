@@ -39,15 +39,20 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   pub fn tx(&self) -> Transaction<OptimisticTransactionDB> {
     self.db.transaction()
   }
-  pub fn with_tx<T>(&self, run: impl Fn(&Transaction<OptimisticTransactionDB>) -> Result<T>) -> T {
-    loop {
-      let tx = self.tx();
-      if let Ok(r) = err::ok!(run(&tx)) {
-        if err::ok!(tx.commit()).is_ok() {
-          return r;
-        }
+  pub fn with_tx<T>(
+    &self,
+    run: impl Fn(&Transaction<OptimisticTransactionDB>) -> Result<T>,
+  ) -> Result<T> {
+    let tx = self.tx();
+    match err::ok!(run(&tx)) {
+      Ok(r) => {
+        tx.commit()?;
+        return Ok(r);
       }
-      std::thread::sleep(std::time::Duration::from_secs(1))
+      Err(err) => {
+        err::log!(tx.rollback());
+        return Err(err);
+      }
     }
   }
 }

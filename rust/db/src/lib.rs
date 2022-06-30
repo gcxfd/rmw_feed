@@ -19,15 +19,18 @@ impl Db {
     macro_rules! init_id {
       ($key:expr) => {{
         let key_str = stringify!($key);
-        AtomicU64::new(kv.with_tx(|tx| {
-          Ok(if let Some(id) = tx.get_cf(&cf.id, key_str)? {
-            u64::from_le_bytes((&id[..8]).try_into()?)
-          } else {
-            let id = 0u64;
-            tx.put_cf(&cf.id, key_str, id.to_le_bytes())?;
-            id
+        AtomicU64::new(
+          kv.with_tx(|tx| {
+            Ok(if let Some(id) = tx.get_cf(&cf.id, key_str)? {
+              u64::from_le_bytes((&id[..8]).try_into()?)
+            } else {
+              let id = 0u64;
+              tx.put_cf(&cf.id, key_str, id.to_le_bytes())?;
+              id
+            })
           })
-        }))
+          .unwrap(),
+        )
       }};
     }
 

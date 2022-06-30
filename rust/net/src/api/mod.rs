@@ -22,17 +22,18 @@ impl Api {
     Ok(match cmd {
       Cmd::Stop => {
         err::log!(sender.send(cmd).await);
-        Reply::None
+        Reply::Undefined
       }
+      // code_gen
       Cmd::RoomNew(name) => {
-        self.room_new(name);
-        Reply::None
+        self.room_new(name)?;
+        Reply::Undefined
       }
       Cmd::UserNew(name) => {
-        self.user_new(name);
-        Reply::None
+        self.user_new(name)?;
+        Reply::Undefined
       }
-      Cmd::UserName => Reply::OptionString(self.user_name()),
+      Cmd::UserName => Reply::OptionString(self.user_name()?.into()),
     })
   }
 }

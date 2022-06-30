@@ -1,4 +1,5 @@
 use crate::api::Api;
+use anyhow::Result;
 use std::sync::atomic::Ordering::Relaxed;
 use util::{pk_sk, Kv};
 
@@ -11,7 +12,7 @@ macro_rules! id {
 pub const LOGIN: &[u8] = b"login";
 
 impl Api {
-  pub fn room_new(&self, name: impl AsRef<str>) {
+  pub fn room_new(&self, name: impl AsRef<str>) -> Result<()> {
     let db = &self.db;
     let id = id!(db, room_id);
     let (pk, sk) = pk_sk();
@@ -22,22 +23,23 @@ impl Api {
       tx.put_cf(&cf.room_id_sk, id, sk)?;
       tx.put_cf(&cf.room_id_name, id, name.as_ref())?;
       Ok(())
-    });
+    })?;
+    Ok(())
   }
 
-  pub fn user_name(&self) -> Option<String> {
+  pub fn user_name(&self) -> Result<Option<String>> {
     let db = &self.db;
     let kv = &db.kv;
     let cf = &kv.cf;
     if let Some(id) = kv.get(LOGIN) {
-      if let Ok(Some(name)) = err::ok!(kv.db.get_cf(&cf.user_id_name, id)) {
-        return Some(unsafe { String::from_utf8_unchecked(name) });
+      if let Some(name) = err::ok!(kv.db.get_cf(&cf.user_id_name, id))? {
+        return Ok(Some(unsafe { String::from_utf8_unchecked(name) }));
       }
     }
-    None
+    Ok(None)
   }
 
-  pub fn user_new(&self, name: impl AsRef<str>) {
+  pub fn user_new(&self, name: impl AsRef<str>) -> Result<()> {
     let db = &self.db;
     let id = id!(db, user_id);
     let (pk, sk) = pk_sk();
@@ -49,6 +51,7 @@ impl Api {
       tx.put_cf(&cf.user_id_name, id, name.as_ref())?;
       tx.put(LOGIN, id)?;
       Ok(())
-    });
+    })?;
+    Ok(())
   }
 }
