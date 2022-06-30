@@ -6,7 +6,7 @@ mod reply_future;
 mod w;
 
 use crate::reply_future::ReplyFuture;
-use api::{Cmd, Reply, A, Q};
+use api::{Cmd, A, Q};
 use js_sys::{Function, Promise};
 use paste::paste;
 use speedy::{Readable, Writable};

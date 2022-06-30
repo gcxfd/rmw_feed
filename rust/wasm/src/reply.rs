@@ -1,4 +1,4 @@
-use api::{Cmd, Reply, A, Q};
+use api::Reply;
 use wasm_bindgen::prelude::*;
 
 pub fn reply(r: Reply) -> Result<JsValue, JsValue> {
