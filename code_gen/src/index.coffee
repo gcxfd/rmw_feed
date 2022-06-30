@@ -60,60 +60,61 @@ export default main = =>
         args = ''
       api_cmd.push [cmd, args, rt]
 
-  await modify(
-    'api/src/cmd.rs'
-    'Stop,'
-    '}'
-    (cmd)=>
-      exist = cmd.split(',').map(
-        (i)=>
-          i.split('(',1)[0].trim()
-      ).filter(Boolean)
+  await Promise.all [
+    modify(
+      'api/src/cmd.rs'
+      'Stop,'
+      '}'
+      (cmd)=>
+        exist = cmd.split(',').map(
+          (i)=>
+            i.split('(',1)[0].trim()
+        ).filter(Boolean)
 
-      len = exist.length
-      cmd_pos = {}
-      for [key] from api_cmd
-        pos = exist.indexOf(key)
-        if pos < 0
-          pos = len
-        cmd_pos[key]=pos
+        len = exist.length
+        cmd_pos = {}
+        for [key] from api_cmd
+          pos = exist.indexOf(key)
+          if pos < 0
+            pos = len
+          cmd_pos[key]=pos
 
 
-      '  '+api_cmd.sort(
-        (a,b)=>
-          cmd_pos[a[0]] - cmd_pos[b[0]]
-      ).map(
-        (x)=>
-          x[0]+x[1]
-      ).join(',\n  ')+',\n'
-  )
+        '  '+api_cmd.sort(
+          (a,b)=>
+            cmd_pos[a[0]] - cmd_pos[b[0]]
+        ).map(
+          (x)=>
+            x[0]+x[1]
+        ).join(',\n  ')+',\n'
+    )
+    modify(
+      'api/src/reply.rs'
+      'None,'
+      '}'
+      (cmd)=>
+        exist = new Set(cmd.split(',').map(
+          (i)=>
+            i.trim()
+        ).filter(Boolean))
+        rt_set = new Set()
 
-  await modify(
-    'api/src/reply.rs'
-    'None,'
-    '}'
-    (cmd)=>
-      exist = new Set(cmd.split(',').map(
-        (i)=>
-          i.trim()
-      ).filter(Boolean))
-      rt_set = new Set()
+        li = []
+        for i in api_cmd
+          i = i[2]
+          if i
+            i = i.replace(/[<,>]/g,'')+'('+i+')'
+            if not exist.has(i)
+              rt_set.add i
 
-      li = []
-      for i in api_cmd
-        i = i[2]
-        if i
-          i = i.replace(/[<,>]/g,'')+'('+i+')'
-          if not exist.has(i)
-            rt_set.add i
+        rt_set = [...rt_set]
+        if rt_set.length
+          cmd += '  '+rt_set.join(',\n  ')+',\n'
 
-      rt_set = [...rt_set]
-      if rt_set.length
-        cmd += '  '+rt_set.join(',\n  ')+',\n'
-
-      cmd
-  )
-
+        cmd
+    )
+  ]
+  # Reply::OptionString(r) => Ok(r.into()),
   return
 
 if process.argv[1] == decodeURI (new URL(import.meta.url)).pathname
