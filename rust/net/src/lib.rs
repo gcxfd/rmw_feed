@@ -2,9 +2,9 @@
 #![feature(drain_filter)]
 
 mod api;
-mod cmd;
 mod ider;
 mod run;
+mod stop;
 mod udp;
 mod var;
 mod ws;

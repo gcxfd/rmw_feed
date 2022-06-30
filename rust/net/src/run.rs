@@ -1,4 +1,4 @@
-use crate::{api::Api, cmd::cmd, ws::ws};
+use crate::{api::Api, stop::stop, ws::ws};
 use anyhow::Result;
 use api::Cmd;
 use async_std::{channel::unbounded, net::TcpListener, task::block_on};
@@ -70,6 +70,6 @@ pub fn run() -> Result<()> {
     });
   }
 
-  block_on(cmd(recver, addr_set, token));
+  block_on(stop(recver, addr_set, token));
   Ok(())
 }
