@@ -1,7 +1,7 @@
 use anyhow::Result;
 use api::{Cmd, Reply};
 use async_std::channel::Sender;
-use kv::Db;
+use db::Db;
 
 #[derive(Debug)]
 pub struct Api {

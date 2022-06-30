@@ -3,7 +3,7 @@ use anyhow::Result;
 use api::Cmd;
 use async_std::{channel::unbounded, net::TcpListener, task::block_on};
 use config::Config;
-use kv::Db;
+use db::Db;
 use log::info;
 use run::Run;
 use std::{
@@ -24,8 +24,8 @@ pub fn run() -> Result<()> {
 
   let (sender, recver) = unbounded();
 
-  let db = Db::new(dir::root().join("kv"));
-  let config = Config::new(&db.kv);
+  let db = Db::new(dir::root().join("db"));
+  let config = Config::new(&db.db);
 
   config::macro_get!(config);
 

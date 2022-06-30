@@ -10,7 +10,7 @@ members = [
   "run",
   "wasm",
   "err",
-  "kv",
+  "db",
   "lib/rkv",
   "lib/util",
   "lib/b80"
