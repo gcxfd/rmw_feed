@@ -108,10 +108,10 @@ export default main = =>
           args.unshift('&mut self')
           args = args.join(', ')
           li.push(
-            """\n  pub fn #{func}(#{args}) -> Promise {\n    self.req(Cmd::#{name}#{args_pass})\n  }\n"""
+            """\n  pub fn #{func}(#{args}) -> Promise {\n    self.req(Cmd::#{name}#{args_pass})\n  }"""
           )
         li.sort()
-        li.join('')
+        li.join('\n')
     )
     modify(
       'wasm/src/reply.rs'
