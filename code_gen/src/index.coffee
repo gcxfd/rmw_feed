@@ -49,18 +49,13 @@ export default main = =>
 
       args = fn[pos+1...fn.lastIndexOf(')')].split(",")
       args.shift()
-      args = args.map((i)=>i.split(":").map((x)=>x.trim()))
+      args = args.map((i)=>i.split(":").map((x)=>x.trim())).filter Boolean
+
+      for i from args
+        cls = i[1]
+        i[1] = CLS_MAP[cls] or cls
 
       cmd = upperFirst(camelCase(name))
-      t = []
-      for [name,cls] from args
-        if name && cls
-          t.push(CLS_MAP[cls] or cls)
-
-      if t.length
-        args='('+t.join(',')+')'
-      else
-        args = ''
       api_cmd.push [cmd, args, rt]
 
   await Promise.all [
@@ -104,7 +99,12 @@ export default main = =>
             cmd_pos[a[0]] - cmd_pos[b[0]]
         ).map(
           (x)=>
-            x[0]+x[1]
+            t = x[1]
+            if t.length
+              args='('+t.map((x)=>'\n    '+x[1]+', //'+x[0]+'\n').join('')+'  )'
+            else
+              args = ''
+            x[0]+args
         ).join(',\n  ')+',\n'
     )
     modify(

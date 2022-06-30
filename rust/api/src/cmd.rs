@@ -5,7 +5,11 @@ use speedy::{Readable, Writable};
 #[speedy(tag_type=u16)]
 pub enum Cmd {
   Stop,
-  UserNew(String),
   UserName,
-  RoomNew(String),
+  RoomNew(
+    String, //name
+  ),
+  UserNew(
+    String, //name
+  ),
 }
