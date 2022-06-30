@@ -65,7 +65,7 @@ pub fn run() -> Result<()> {
           });
         }
       } else {
-        err::log!(sender.send(Cmd::Stop).await);
+        err::log!(api.cmd(Cmd::Stop).await);
       }
     });
   }
