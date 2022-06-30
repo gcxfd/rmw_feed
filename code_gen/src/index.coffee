@@ -88,12 +88,27 @@ export default main = =>
       ).join(',\n  ')+',\n'
   )
 
-  rt_set = new Set()
+  await modify(
+    'api/src/reply.rs'
+    'None,'
+    '}'
+    (cmd)=>
+      exist = new Set(cmd.split(',').map(
+        (i)=>
+          i.trim()
+      ).filter(Boolean))
+      rt_set = new Set()
 
-  for i in api_cmd
-    i = i[2]
-    if i
-      console.log i
+      li = []
+      for i in api_cmd
+        i = i[2]
+        if i
+          i = i.replace(/[<,>]/g,'')+'('+i+')'
+          if not exist.has(i)
+            rt_set.add i
+
+      cmd
+  )
 
   return
 
