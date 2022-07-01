@@ -52,26 +52,27 @@ export default main = =>
 
   api_cmd = []
 
-  for fn from extract_li api, "pub fn ","{"
-    pos = fn.indexOf('(')
-    if pos > 0
-      name = fn[...pos]
-      has_return = fn.lastIndexOf('->')
-      rt = fn[has_return+2..].trim()
-      rt = rt[7...-1]
-      if rt == '()'
-        rt = undefined
+  for prefix in ['pub fn','pub async fn']
+    for fn from extract_li api, prefix+' ',"{"
+      pos = fn.indexOf('(')
+      if pos > 0
+        name = fn[...pos]
+        has_return = fn.lastIndexOf('->')
+        rt = fn[has_return+2..].trim()
+        rt = rt[7...-1]
+        if rt == '()'
+          rt = undefined
 
-      args = fn[pos+1...fn.lastIndexOf(')',fn.lastIndexOf('->'))].split(",")
-      args.shift()
-      args = args.map((i)=>i.split(":").map((x)=>x.trim())).filter Boolean
+        args = fn[pos+1...fn.lastIndexOf(')',fn.lastIndexOf('->'))].split(",")
+        args.shift()
+        args = args.map((i)=>i.split(":").map((x)=>x.trim())).filter Boolean
 
-      for i from args
-        cls = i[1]
-        i[1] = CLS_MAP[cls] or cls
+        for i from args
+          cls = i[1]
+          i[1] = CLS_MAP[cls] or cls
 
-      cmd = upperFirst(camelCase(name))
-      api_cmd.push [cmd, args, rt, name]
+        cmd = upperFirst(camelCase(name))
+        api_cmd.push [cmd, args, rt, name]
 
   await Promise.all [
     modify(

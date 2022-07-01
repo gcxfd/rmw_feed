@@ -16,6 +16,10 @@ impl W {
     self.req(Cmd::RoomNew(name))
   }
 
+  pub fn stop(&mut self) -> Promise {
+    self.req(Cmd::Stop)
+  }
+
   pub fn user_name(&mut self) -> Promise {
     self.req(Cmd::UserName)
   }
