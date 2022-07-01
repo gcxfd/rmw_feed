@@ -1,7 +1,7 @@
 use crate::{api::Api, stop::stop, ws};
 use anyhow::Result;
 
-use async_std::channel::{unbounded, Receiver};
+use async_std::channel::unbounded;
 use config::Config;
 use db::Db;
 use log::info;
