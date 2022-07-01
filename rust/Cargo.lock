@@ -987,7 +987,6 @@ name = "net"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "api",
  "async-std",
  "b80",
  "config",

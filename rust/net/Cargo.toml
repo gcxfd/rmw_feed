@@ -13,7 +13,6 @@ config = { path = "../config" }
 run = { path = "../run" }
 dir = { path = "../dir" }
 err = { path = "../err" }
-api = { path = "../api" }
 util = { path = "../lib/util" }
 db = { path = "../db" }
 upnp = { path = "../upnp", optional = true }
