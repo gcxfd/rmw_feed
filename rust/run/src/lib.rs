@@ -53,10 +53,11 @@ impl Run {
     let _ = self.stop.recv().await;
     loop {
       let ing = &self.inner.ing;
-      if ing.is_empty() {
+      let len = ing.len();
+      if len == 0 {
         break;
       }
-      let mut li = Vec::with_capacity(ing.len());
+      let mut li = Vec::with_capacity(len);
 
       for id in ing.iter().map(|i| *i.key()).collect::<Vec<_>>() {
         if let Some(i) = ing.remove(&id) {
