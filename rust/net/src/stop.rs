@@ -11,12 +11,7 @@ use std::{
   time::Duration,
 };
 
-pub async fn stop(recver: Receiver<()>, addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
-  let _ = recver.recv().await;
-  cmd_stop(addr_set, token).await;
-}
-
-pub async fn cmd_stop(addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
+pub async fn stop(addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
   let mut task_li: SmallVec<[JoinHandle<()>; 2]> = smallvec![];
   let (mut v4, mut v6): (Vec<_>, Vec<_>) = addr_set
     .into_iter()

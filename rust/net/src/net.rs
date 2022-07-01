@@ -8,7 +8,6 @@ use async_std::{
 use config::Config;
 use db::Db;
 use log::info;
-use parking_lot::Mutex;
 use run::Run;
 use std::{
   collections::BTreeSet,
@@ -20,19 +19,19 @@ use std::{
 struct Net {
   run: Run,
   bind: BTreeSet<SocketAddr>,
-  stop: Arc<Mutex<()>>,
+  stop: Receiver<()>,
 }
 
-pub fn net() -> Result<()> {
+pub async fn net() -> Result<()> {
   #[cfg(feature = "log")]
   {
     logger::init()
       .level_for("rmw", log::LevelFilter::Trace)
       .apply()?;
   }
-  let mut run = Run::default();
 
   let (sender, recver) = unbounded();
+  let mut run = Run::new(recver);
 
   let db = Db::new(dir::root().join("db"));
   let config = Config::new(&db.kv);
@@ -63,6 +62,7 @@ pub fn net() -> Result<()> {
   let api = Arc::new(Api::new(sender, db));
   ws::run(&mut run, api);
 
-  block_on(stop(recver, bind, token));
+  run.join().await;
+  stop(bind, token).await;
   Ok(())
 }

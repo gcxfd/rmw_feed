@@ -1,19 +1,29 @@
-use async_std::task::{spawn, JoinHandle};
+use async_std::{
+  channel::Receiver,
+  task::{spawn, JoinHandle},
+};
 use parking_lot::Mutex;
 use std::{collections::BTreeMap, future::Future, sync::Arc};
 
 #[derive(Debug, Default)]
-struct RunInner {
+struct Inner {
   id: usize,
   ing: BTreeMap<usize, JoinHandle<()>>,
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct Run {
-  inner: Arc<Mutex<RunInner>>,
+  inner: Arc<Mutex<Inner>>,
+  stop: Receiver<()>,
 }
 
 impl Run {
+  pub fn new(stop: Receiver<()>) -> Self {
+    Self {
+      stop,
+      inner: Arc::new(Mutex::new(Inner::default())),
+    }
+  }
   pub fn spawn<F: Future<Output = ()> + Send + 'static>(&mut self, future: F) {
     let mut inner = self.inner.lock();
     let id = inner.id.wrapping_add(1);
@@ -28,10 +38,9 @@ impl Run {
       }),
     );
   }
-}
 
-impl Drop for Run {
-  fn drop(&mut self) {
+  pub async fn join(&self) {
+    let _ = self.stop.recv().await;
     let mut inner = self.inner.lock();
     let ing = &mut inner.ing;
     loop {
