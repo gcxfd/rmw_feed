@@ -5,6 +5,7 @@ members = [
   "rmw",
   "config",
   "dir",
+  "ws",
   "upnp",
   "net",
   "run",
