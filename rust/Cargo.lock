@@ -408,9 +408,9 @@ dependencies = [
 
 [[package]]
 name = "const-str"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df8163493958fbde1a711acabf41fa50dd346c12df50af2427556c39689ec58b"
+checksum = "889be173d46b1c645ba9149388847f0076973229e6e48092493ad8524aa332a6"
 
 [[package]]
 name = "constant_time_eq"
@@ -1788,9 +1788,12 @@ dependencies = [
  "async-std",
  "async-tungstenite",
  "config",
+ "const-str",
  "err",
+ "futures",
  "log",
  "net",
+ "run",
  "speedy",
  "tungstenite",
 ]

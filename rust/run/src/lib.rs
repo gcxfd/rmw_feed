@@ -34,7 +34,7 @@ impl Run {
       }),
     }
   }
-  pub fn spawn<F: Future<Output = ()> + Send + 'static>(&mut self, future: F) -> usize {
+  pub fn spawn<F: Future<Output = ()> + Send + 'static>(&self, future: F) -> usize {
     let inner = &self.inner;
     let id = inner.id.fetch_add(1, Relaxed);
     let ing = &inner.ing;

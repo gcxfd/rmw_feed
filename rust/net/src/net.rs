@@ -29,7 +29,7 @@ pub fn net() -> Result<Net> {
   }
 
   let (sender, recver) = unbounded();
-  let mut run = Run::new(recver);
+  let run = Run::new(recver);
 
   let db = Db::new(dir::root().join("db"));
   let config = Config::new(&db.kv);

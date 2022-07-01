@@ -3,7 +3,7 @@ mod tcp;
 use api::Cmd;
 use async_std::net::TcpListener;
 use config::Config;
-use net::api::Api;
+use net::Api;
 
 use log::info;
 use run::Run;
@@ -12,14 +12,14 @@ use std::{
   sync::Arc,
 };
 
-pub fn run(run: &mut Run, api: Arc<Api>) {
+pub fn run(run: &Run, api: Arc<Api>) {
   let config = Config::new(&api.db.kv);
   config::macro_get!(config);
   // web socket
   let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
 
   info!("ws://{}", ws_addr);
-  let mut ws_run = run.clone();
+  let ws_run = run.clone();
 
   run.spawn(async move {
     if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {

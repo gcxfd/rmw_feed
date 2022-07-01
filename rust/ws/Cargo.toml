@@ -12,6 +12,9 @@ log = "0.4.17"
 err = { path = "../err" }
 net = { path = "../net" }
 api = { path = "../api" }
+run = { path = "../run" }
 config = { path = "../config" }
 anyhow = "1.0.58"
 speedy = { path = "../lib/speedy", features = ["box"] }
+futures = "0.3.21"
+const-str = "0.4.2"
