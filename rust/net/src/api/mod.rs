@@ -32,10 +32,7 @@ impl Api {
       Cmd::UserNew(name) => {
         self.user_new(name)?;
         Reply::Undefined
-      }
-      
-      
-       // >
+      } // >
     })
   }
 }
