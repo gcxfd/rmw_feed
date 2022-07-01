@@ -8,6 +8,7 @@ use async_std::{
 use config::Config;
 use db::Db;
 use log::info;
+use parking_lot::Mutex;
 use run::Run;
 use std::{
   collections::BTreeSet,
@@ -19,7 +20,7 @@ use std::{
 struct Net {
   run: Run,
   bind: BTreeSet<SocketAddr>,
-  stop: Receiver<()>,
+  stop: Arc<Mutex<()>>,
 }
 
 pub fn net() -> Result<()> {
