@@ -81,7 +81,7 @@ export default main = =>
 
   await Promise.all [
     modify(
-      'net/src/api/mod.rs'
+      'ws/src/cmd.rs'
       (txt)=>
         space = '      '
         li = []
@@ -92,7 +92,7 @@ export default main = =>
           else
             args_tuple = ''
           txt = "Cmd::#{cmd}#{args_tuple} => "
-          call = "self.#{name}(#{args_pass})#{if async.has(cmd) then '.await' else ''}?"
+          call = "api.#{name}(#{args_pass})#{if async.has(cmd) then '.await' else ''}?"
           if rt
             txt += "Reply::#{enum_name(rt)}(#{call}),"
           else
