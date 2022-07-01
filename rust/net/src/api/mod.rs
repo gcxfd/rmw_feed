@@ -2,7 +2,7 @@ mod cmd;
 
 use anyhow::Result;
 use api::{Cmd, Reply};
-use async_std::channel::Sender;
+use async_std::{channel::Sender, task::spawn};
 use db::Db;
 
 #[derive(Debug)]
@@ -20,7 +20,12 @@ impl Api {
 
     Ok(match cmd {
       Cmd::Stop => {
-        err::log!(self.stop.send(()).await);
+        let stop = self.stop.clone();
+        spawn(async move {
+          dbg!("send");
+          err::log!(stop.send(()).await);
+          dbg!("sended");
+        });
         Reply::Undefined
       }
       // code_gen <

@@ -2,18 +2,26 @@ use async_std::{
   channel::Receiver,
   task::{spawn, JoinHandle},
 };
+use dashmap::DashMap;
 use parking_lot::Mutex;
-use std::{collections::BTreeMap, future::Future, sync::Arc};
+use std::{
+  collections::BTreeMap,
+  future::Future,
+  sync::{
+    atomic::{AtomicUsize, Ordering::Relaxed},
+    Arc,
+  },
+};
 
 #[derive(Debug, Default)]
 struct Inner {
-  id: usize,
-  ing: BTreeMap<usize, JoinHandle<()>>,
+  ing: DashMap<usize, JoinHandle<()>>,
+  id: AtomicUsize,
 }
 
 #[derive(Debug, Clone)]
 pub struct Run {
-  inner: Arc<Mutex<Inner>>,
+  inner: Arc<Inner>,
   stop: Receiver<()>,
 }
 
@@ -21,38 +29,47 @@ impl Run {
   pub fn new(stop: Receiver<()>) -> Self {
     Self {
       stop,
-      inner: Arc::new(Mutex::new(Inner::default())),
+      inner: Arc::new(Inner {
+        id: AtomicUsize::new(0),
+        ing: DashMap::new(),
+      }),
     }
   }
-  pub fn spawn<F: Future<Output = ()> + Send + 'static>(&mut self, future: F) {
-    let mut inner = self.inner.lock();
-    let id = inner.id.wrapping_add(1);
-    inner.id = id;
-    let ing = &mut inner.ing;
+  pub fn spawn<F: Future<Output = ()> + Send + 'static>(&mut self, future: F) -> usize {
+    let inner = &self.inner;
+    let id = inner.id.fetch_add(1, Relaxed);
+    let ing = &inner.ing;
     let run = self.inner.clone();
     ing.insert(
       id,
       spawn(async move {
         future.await;
-        run.lock().ing.remove(&id);
+        run.ing.remove(&id);
       }),
     );
+    id
   }
 
-  pub async fn join(&self) {
+  pub async fn join(&mut self) {
     let _ = self.stop.recv().await;
-    let mut inner = self.inner.lock();
-    let ing = &mut inner.ing;
     loop {
-      let len = ing.len();
-      if len == 0 {
-        break;
-      }
-      for id in ing.iter().map(|(k, _)| *k).collect::<Vec<usize>>() {
-        if let Some(i) = ing.remove(&id) {
-          spawn(i.cancel());
+      let mut li = Vec::new();
+      {
+        let ing = &self.inner.ing;
+        if ing.is_empty() {
+          break;
+        }
+
+        for id in ing.iter().map(|i| *i.key()).collect::<Vec<_>>() {
+          if let Some(i) = ing.remove(&id) {
+            li.push(spawn(async move {
+              i.1.cancel().await;
+              id
+            }));
+          }
         }
       }
+      futures::future::join_all(li).await;
     }
   }
 }

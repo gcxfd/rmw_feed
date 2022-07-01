@@ -53,12 +53,14 @@ pub async fn ws(stream: TcpStream, api: Arc<Api>) -> Result<()> {
                     }
 
                     let stop = cmd == Cmd::Stop;
+
                     send!(match api.cmd(cmd).await {
                       Ok(reply) => reply,
                       Err(err) => Reply::Err(format!("{}", err)),
                     });
 
                     if stop {
+                      dbg!("ws stop");
                       return Ok(());
                     }
                   }
