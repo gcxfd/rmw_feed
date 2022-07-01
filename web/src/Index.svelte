@@ -8,13 +8,15 @@ import ws from '~/coffee/ws.coffee'
 window.ws = ws
 user_name = ws.user_name()
 
-我 = 3333
 x = 4
-console.log {我}
-:$ y = x + z
 
 :$
-  z = 我 + x - 2
+  z = 1 + x
+
+:$ y = 2 + z
+
+:$ enable = y%2
+
 
 :out
   for i from [1,2,3]
@@ -40,21 +42,24 @@ main
           h1 {name}
     +catch err
       h2 err
-  #map
-    img(:src alt="logo")
   button(@click=click)
     +if x%2
       | if x%2
       +else
         h3 else
-  h2 x {x} y {y} z {z}
+  h2(class:red=enable) x {x} y {y} z {z}
   Counter
+  #map
+    img(:src alt="logo")
 </template>
 
 <style lang="stylus">
 #map
   width 100%
   height 300px
+
+.red
+  color #f00
 
 button
   width 8rem
