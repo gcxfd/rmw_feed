@@ -4,6 +4,7 @@
 import logo from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
 import ws from '~/coffee/ws.coffee'
+
 window.ws = ws
 user_name = ws.user_name()
 #:$ user = await ws.user_name()
@@ -34,7 +35,12 @@ main
   +await user_name
     h1 loading
     +then name
-      h1 {name}
+      +if name == undefined
+        form
+          input(placeholder="请输入姓名")
+          button(type="submit") 创建用户
+        +else
+          h1 {name}
     +catch err
       h2 err
   #map
