@@ -52,20 +52,18 @@ impl Run {
   pub async fn join(&mut self) {
     let _ = self.stop.recv().await;
     loop {
-      let mut li = Vec::new();
-      {
-        let ing = &self.inner.ing;
-        if ing.is_empty() {
-          break;
-        }
+      let ing = &self.inner.ing;
+      if ing.is_empty() {
+        break;
+      }
+      let mut li = Vec::with_capacity(ing.len());
 
-        for id in ing.iter().map(|i| *i.key()).collect::<Vec<_>>() {
-          if let Some(i) = ing.remove(&id) {
-            li.push(spawn(async move {
-              i.1.cancel().await;
-              id
-            }));
-          }
+      for id in ing.iter().map(|i| *i.key()).collect::<Vec<_>>() {
+        if let Some(i) = ing.remove(&id) {
+          li.push(spawn(async move {
+            i.1.cancel().await;
+            id
+          }));
         }
       }
       futures::future::join_all(li).await;
