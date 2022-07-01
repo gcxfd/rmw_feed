@@ -8,7 +8,7 @@ use log::info;
 use run::Run;
 use std::{collections::BTreeSet, net::UdpSocket, sync::Arc, thread::spawn};
 
-pub fn run() -> Result<()> {
+pub fn net() -> Result<()> {
   #[cfg(feature = "log")]
   {
     logger::init()

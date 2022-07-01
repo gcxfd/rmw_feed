@@ -1,3 +1,3 @@
 fn main() {
-  net::run().unwrap();
+  net::net().unwrap();
 }
