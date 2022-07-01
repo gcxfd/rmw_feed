@@ -21,11 +21,7 @@ impl Api {
     Ok(match cmd {
       Cmd::Stop => {
         let stop = self.stop.clone();
-        spawn(async move {
-          dbg!("send");
-          err::log!(stop.send(()).await);
-          dbg!("sended");
-        });
+        err::log!(stop.send(()).await);
         Reply::Undefined
       }
       // code_gen <
