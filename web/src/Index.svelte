@@ -4,7 +4,7 @@
 import logo from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
 import ws from '~/coffee/ws.coffee'
-
+window.ws = ws
 user_name = ws.user_name()
 #:$ user = await ws.user_name()
 
