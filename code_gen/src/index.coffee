@@ -83,7 +83,7 @@ export default main = =>
     modify(
       'ws/src/cmd.rs'
       (txt)=>
-        space = '      '
+        space = '    '
         li = []
         for [cmd, args, rt, name] from api_cmd
           args_pass = args.map((i)=>i[0]).join(', ')
