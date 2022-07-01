@@ -7,21 +7,20 @@ use db::Db;
 
 #[derive(Debug)]
 pub struct Api {
-  pub sender: Sender<Cmd>,
+  pub stop: Sender<()>,
   pub db: Db,
 }
 
 impl Api {
-  pub fn new(sender: Sender<Cmd>, db: Db) -> Self {
-    Self { sender, db }
+  pub fn new(stop: Sender<()>, db: Db) -> Self {
+    Self { stop, db }
   }
   pub async fn cmd(&self, cmd: api::Cmd) -> Result<Reply> {
-    let sender = &self.sender;
     dbg!(&cmd);
 
     Ok(match cmd {
       Cmd::Stop => {
-        err::log!(sender.send(cmd).await);
+        err::log!(self.stop.send(()).await);
         Reply::Undefined
       }
       // code_gen <

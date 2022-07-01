@@ -1,12 +1,26 @@
 use crate::{api::Api, stop::stop, ws};
 use anyhow::Result;
 
-use async_std::{channel::unbounded, task::block_on};
+use async_std::{
+  channel::{unbounded, Receiver},
+  task::block_on,
+};
 use config::Config;
 use db::Db;
 use log::info;
 use run::Run;
-use std::{collections::BTreeSet, net::UdpSocket, sync::Arc, thread::spawn};
+use std::{
+  collections::BTreeSet,
+  net::{SocketAddr, UdpSocket},
+  sync::Arc,
+  thread::spawn,
+};
+
+struct Net {
+  run: Run,
+  bind: BTreeSet<SocketAddr>,
+  stop: Receiver<()>,
+}
 
 pub fn net() -> Result<()> {
   #[cfg(feature = "log")]
@@ -24,7 +38,7 @@ pub fn net() -> Result<()> {
 
   config::macro_get!(config);
 
-  let mut addr_set = BTreeSet::new();
+  let mut bind = BTreeSet::new();
 
   let token = get!(token, rand::random::<[u8; 32]>());
 
@@ -34,7 +48,7 @@ pub fn net() -> Result<()> {
       UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
     );
 
-    addr_set.insert(addr);
+    bind.insert(addr);
 
     if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
       run.spawn(upnp::upnp_daemon("rmw", addr.port()));
@@ -48,6 +62,6 @@ pub fn net() -> Result<()> {
   let api = Arc::new(Api::new(sender, db));
   ws::run(&mut run, api);
 
-  block_on(stop(recver, addr_set, token));
+  block_on(stop(recver, bind, token));
   Ok(())
 }

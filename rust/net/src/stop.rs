@@ -12,13 +12,9 @@ use std::{
   time::Duration,
 };
 
-pub async fn stop(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
-  while let Ok(msg) = recver.recv().await {
-    if msg == Cmd::Stop {
-      cmd_stop(addr_set, token).await;
-      break;
-    }
-  }
+pub async fn stop(recver: Receiver<()>, addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
+  let _ = recver.recv().await;
+  cmd_stop(addr_set, token).await;
 }
 
 pub async fn cmd_stop(addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
