@@ -15,7 +15,7 @@ x = 4
 
 :$ y = 2 + z
 
-:$ enable = y%2
+:$ enable = x%2
 
 
 :out
