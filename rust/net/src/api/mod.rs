@@ -2,7 +2,7 @@ mod cmd;
 
 use anyhow::Result;
 use api::{Cmd, Reply};
-use async_std::{channel::Sender, task::spawn};
+use async_std::channel::Sender;
 use db::Db;
 
 #[derive(Debug)]

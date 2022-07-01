@@ -60,7 +60,6 @@ pub async fn ws(stream: TcpStream, api: Arc<Api>) -> Result<()> {
                     });
 
                     if stop {
-                      dbg!("ws stop");
                       return Ok(());
                     }
                   }
