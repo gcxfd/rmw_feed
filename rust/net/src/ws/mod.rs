@@ -12,7 +12,6 @@ use std::{
   net::{Ipv4Addr, SocketAddrV4},
   sync::Arc,
 };
-use util::Kv;
 
 pub fn run(run: &mut Run, api: Arc<Api>) {
   let config = Config::new(&api.db.kv);
