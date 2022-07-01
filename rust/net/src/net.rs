@@ -13,14 +13,14 @@ use std::{
   thread::spawn,
 };
 
-struct Net {
+pub struct Net {
   bind: BTreeSet<SocketAddr>,
   token: [u8; 32],
-  run: Run,
-  api: Arc<Api>,
+  pub run: Run,
+  pub api: Arc<Api>,
 }
 
-pub async fn net() -> Result<Net> {
+pub fn net() -> Result<Net> {
   #[cfg(feature = "log")]
   {
     logger::init()
