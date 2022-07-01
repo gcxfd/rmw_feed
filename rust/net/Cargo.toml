@@ -24,9 +24,6 @@ async-std = { version = "1.12.0", features = ["unstable"] }
 anyhow = "1.0.58"
 log = { version = "0.4.17", optional = true }
 futures = "0.3.21"
-async-tungstenite = { version = "0.17.2", features = ["async-std-runtime"] }
-parking_lot = "0.12.1"
-tungstenite = "0.17.2"
 paste = "1.0.7"
 smallvec = "1.9.0"
 rand = "0.8.5"

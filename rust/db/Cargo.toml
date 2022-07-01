@@ -12,5 +12,4 @@ rocksdb = { path = "../lib/rust-rocksdb", features = [
   "zstd",
   "lz4"
 ], default-features = false }
-paste = "1.0.7"
 log = "0.4.17"

@@ -503,7 +503,6 @@ version = "0.1.0"
 dependencies = [
  "err",
  "log",
- "paste",
  "rkv",
  "rocksdb",
  "util",
@@ -990,7 +989,6 @@ dependencies = [
  "anyhow",
  "api",
  "async-std",
- "async-tungstenite",
  "b80",
  "config",
  "db",
@@ -1005,7 +1003,6 @@ dependencies = [
  "run",
  "smallvec",
  "speedy",
- "tungstenite",
  "upnp",
  "util",
 ]
@@ -1240,7 +1237,6 @@ dependencies = [
  "librocksdb-sys",
  "log",
  "num_cpus",
- "paste",
  "rocksdb",
  "util",
 ]
