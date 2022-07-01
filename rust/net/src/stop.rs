@@ -14,22 +14,18 @@ use std::{
 
 pub async fn stop(recver: Receiver<Cmd>, addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
   while let Ok(msg) = recver.recv().await {
-    match msg {
-      Cmd::Stop => {
-        cmd_stop(addr_set, token).await;
-        break;
-      }
-      _ => {}
+    if msg == Cmd::Stop {
+      cmd_stop(addr_set, token).await;
+      break;
     }
   }
 }
 
 pub async fn cmd_stop(addr_set: BTreeSet<SocketAddr>, token: [u8; 32]) {
   let mut task_li: SmallVec<[JoinHandle<()>; 2]> = smallvec![];
-  let (mut v4, mut v6): (Vec<_>, Vec<_>) = addr_set.into_iter().partition(|addr| match addr {
-    SocketAddr::V4(_) => true,
-    _ => false,
-  });
+  let (mut v4, mut v6): (Vec<_>, Vec<_>) = addr_set
+    .into_iter()
+    .partition(|addr| matches!(addr, SocketAddr::V4(_)));
 
   macro_rules! stop {
     ($li:ident, $ip:ident, $bind:expr) => {

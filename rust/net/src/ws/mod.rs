@@ -1,18 +1,16 @@
 mod tcp;
 
-use crate::{api::Api, stop::stop};
-use anyhow::Result;
+use crate::api::Api;
+
 use api::Cmd;
-use async_std::{channel::unbounded, net::TcpListener, task::block_on};
+use async_std::net::TcpListener;
 use config::Config;
-use db::Db;
+
 use log::info;
 use run::Run;
 use std::{
-  collections::BTreeSet,
-  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
+  net::{Ipv4Addr, SocketAddrV4},
   sync::Arc,
-  thread::spawn,
 };
 use util::Kv;
 

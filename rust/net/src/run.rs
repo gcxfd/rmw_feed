@@ -1,17 +1,12 @@
 use crate::{api::Api, stop::stop, ws};
 use anyhow::Result;
-use api::Cmd;
-use async_std::{channel::unbounded, net::TcpListener, task::block_on};
+
+use async_std::{channel::unbounded, task::block_on};
 use config::Config;
 use db::Db;
 use log::info;
 use run::Run;
-use std::{
-  collections::BTreeSet,
-  net::{Ipv4Addr, SocketAddrV4, UdpSocket},
-  sync::Arc,
-  thread::spawn,
-};
+use std::{collections::BTreeSet, net::UdpSocket, sync::Arc, thread::spawn};
 
 pub fn run() -> Result<()> {
   #[cfg(feature = "log")]
