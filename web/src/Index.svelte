@@ -43,8 +43,8 @@ main
     +catch err
       h2 err
   #map
-  img(alt="logo" src="{ logo }")
-  button(on:click="{ click }")
+    img(alt="logo" src="{ logo }")
+  button(@click=click)
     +if x%2
       | if x%2
       +else

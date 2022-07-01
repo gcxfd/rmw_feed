@@ -4,7 +4,7 @@ specifiers:
   '@prettier/plugin-pug': ^2.1.1
   '@rmw/coffee-label-patch': ^0.0.15
   '@rmw/rollup-plugin-coffee': ^0.1.21
-  '@rmw/svelte-preprocess': 4.10.9
+  '@rmw/svelte-preprocess': 4.10.12
   '@rmw/thisdir': ^0.0.2
   '@rmw/walk': ^0.0.7
   '@sveltejs/vite-plugin-svelte': ^1.0.0-next.49
@@ -30,7 +30,7 @@ devDependencies:
   '@prettier/plugin-pug': 2.1.1_prettier@2.7.1
   '@rmw/coffee-label-patch': 0.0.15
   '@rmw/rollup-plugin-coffee': 0.1.21
-  '@rmw/svelte-preprocess': 4.10.9_beb3ebmiqk2p2wvpbc7oegv2kq
+  '@rmw/svelte-preprocess': 4.10.12_beb3ebmiqk2p2wvpbc7oegv2kq
   '@rmw/thisdir': 0.0.2
   '@rmw/walk': 0.0.7
   '@sveltejs/vite-plugin-svelte': 1.0.0-next.49_svelte@3.48.0+vite@2.9.13
@@ -272,8 +272,8 @@ packages:
     resolution: {integrity: sha512-X1lxHpGs4iUtKn9Gyx+bzG3lWXWaFZ8XrxcSA7ajhVTB+tuAjPg0jSDByaad5qXw/u7VD/qTUeRXx66HRk8WNg==}
     dev: true
 
-  /@rmw/svelte-preprocess/4.10.9_beb3ebmiqk2p2wvpbc7oegv2kq:
-    resolution: {integrity: sha512-XnBcUblYVzCfAIq26MDiNTQJZ1DRWrLSrfKorGaj3YFCjAa7dTtkIrAsv6728z9O5ok+b9oVTQ5LR09cW+V7yg==}
+  /@rmw/svelte-preprocess/4.10.12_beb3ebmiqk2p2wvpbc7oegv2kq:
+    resolution: {integrity: sha512-YFjt6zVuIbChoY0yQDou6gEhnqprieWEVepO8qr7O2s/2dMVQES7bPgjDvJ8DY+xwi91vEHa6gHbraMwOgR6vg==}
     engines: {node: '>= 9.11.2'}
     requiresBuild: true
     peerDependencies:
