@@ -1,4 +1,3 @@
-use api::Cmd;
 use async_std::{
   channel::Receiver,
   net::UdpSocket,
