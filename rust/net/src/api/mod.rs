@@ -7,8 +7,8 @@ use db::Db;
 
 #[derive(Debug)]
 pub struct Api {
-  sender: Sender<Cmd>,
-  db: Db,
+  pub sender: Sender<Cmd>,
+  pub db: Db,
 }
 
 impl Api {

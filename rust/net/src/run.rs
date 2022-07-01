@@ -1,4 +1,4 @@
-use crate::{api::Api, stop::stop, ws::ws};
+use crate::{api::Api, stop::stop, ws};
 use anyhow::Result;
 use api::Cmd;
 use async_std::{channel::unbounded, net::TcpListener, task::block_on};
@@ -50,27 +50,8 @@ pub fn run() -> Result<()> {
     spawn(move || crate::udp::udp(addr, token));
   }
 
-  // web socket
-  {
-    let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
-
-    info!("ws://{}", ws_addr);
-    let mut ws_run = run.clone();
-    let api = Arc::new(Api::new(sender, db));
-
-    run.spawn(async move {
-      if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {
-        while let Ok((stream, _)) = listener.accept().await {
-          let api = api.clone();
-          ws_run.spawn(async move {
-            err::log!(ws(stream, api).await);
-          });
-        }
-      } else {
-        err::log!(api.cmd(Cmd::Stop).await);
-      }
-    });
-  }
+  let api = Arc::new(Api::new(sender, db));
+  ws::run(&mut run, api);
 
   block_on(stop(recver, addr_set, token));
   Ok(())
