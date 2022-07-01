@@ -274,6 +274,13 @@ export class W {
     /**
     * @returns {Promise<any>}
     */
+    stop() {
+        const ret = wasm.w_stop(this.ptr);
+        return ret;
+    }
+    /**
+    * @returns {Promise<any>}
+    */
     user_name() {
         const ret = wasm.w_user_name(this.ptr);
         return ret;
@@ -286,13 +293,6 @@ export class W {
         const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.w_user_new(this.ptr, ptr0, len0);
-        return ret;
-    }
-    /**
-    * @returns {Promise<any>}
-    */
-    stop() {
-        const ret = wasm.w_stop(this.ptr);
         return ret;
     }
 }
