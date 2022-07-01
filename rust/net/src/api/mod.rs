@@ -1,6 +1,5 @@
 mod cmd;
 
-use anyhow::Result;
 use async_std::channel::Sender;
 use db::Db;
 

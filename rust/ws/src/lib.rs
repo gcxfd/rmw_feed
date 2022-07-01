@@ -1,7 +1,9 @@
+mod cmd;
 mod tcp;
 
 use api::Cmd;
 use async_std::net::TcpListener;
+use cmd::cmd;
 use config::config;
 use net::Api;
 
@@ -30,7 +32,7 @@ pub fn run(run: &Run, api: &Arc<Api>) {
         });
       }
     } else {
-      err::log!(api.cmd(Cmd::Stop).await);
+      err::log!(cmd(&api, Cmd::Stop).await);
     }
   });
 }
