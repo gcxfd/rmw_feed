@@ -2,7 +2,7 @@ mod tcp;
 
 use api::Cmd;
 use async_std::net::TcpListener;
-use config::Config;
+use config::config;
 use net::Api;
 
 use log::info;
@@ -13,12 +13,11 @@ use std::{
 };
 
 pub fn run(run: &Run, api: &Arc<Api>) {
-  let config = Config::new(&api.db.kv);
-  config::macro_get!(config);
+  config!(api.db.kv);
   // web socket
   let ws_addr = get!(ws, SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 4910));
-
   info!("ws://{}", ws_addr);
+
   let ws_run = run.clone();
   let api = api.clone();
 

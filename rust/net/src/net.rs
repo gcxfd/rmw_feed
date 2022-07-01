@@ -2,7 +2,7 @@ use crate::{api::Api, stop::stop};
 use anyhow::Result;
 
 use async_std::channel::unbounded;
-use config::Config;
+use config::config;
 use db::Db;
 use log::info;
 use run::Run;
@@ -32,9 +32,8 @@ pub fn net() -> Result<Net> {
   let run = Run::new(recver);
 
   let db = Db::new(dir::root().join("db"));
-  let config = Config::new(&db.kv);
 
-  config::macro_get!(config);
+  config!(db.kv);
 
   let mut bind = BTreeSet::new();
 

@@ -49,6 +49,14 @@ macro_rules! get {
 }
 
 #[macro_export]
+macro_rules! config {
+  ($kv:expr) => {
+    let config = config::Config::new(&$kv);
+    config::macro_get!(config);
+  };
+}
+
+#[macro_export]
 macro_rules! macro_get {
   ($config:expr) => {
     macro_rules! get {
