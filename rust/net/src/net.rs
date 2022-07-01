@@ -1,4 +1,4 @@
-use crate::{api::Api, stop::stop, ws};
+use crate::{api::Api, stop::stop};
 use anyhow::Result;
 
 use async_std::channel::unbounded;
