@@ -1,5 +1,4 @@
 use async_std::{
-  channel::Receiver,
   net::UdpSocket,
   task::{sleep, spawn, JoinHandle},
 };

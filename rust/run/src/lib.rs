@@ -3,9 +3,8 @@ use async_std::{
   task::{spawn, JoinHandle},
 };
 use dashmap::DashMap;
-use parking_lot::Mutex;
+
 use std::{
-  collections::BTreeMap,
   future::Future,
   sync::{
     atomic::{AtomicUsize, Ordering::Relaxed},

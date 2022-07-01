@@ -3,7 +3,6 @@ use anyhow::Result;
 
 use async_std::{
   channel::{unbounded, Receiver},
-  task::block_on,
 };
 use config::Config;
 use db::Db;
