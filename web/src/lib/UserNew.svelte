@@ -1,11 +1,11 @@
 <script lang="coffee">
 import { onMount } from 'svelte'
 
-:$ input
++ input
 
-:$ name = ''
+name = ''
 
-:$ submit = =>
+submit = =>
   input.focus()
   console.log name
   return

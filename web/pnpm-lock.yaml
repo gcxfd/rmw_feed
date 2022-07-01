@@ -2,9 +2,9 @@ lockfileVersion: 5.4
 
 specifiers:
   '@prettier/plugin-pug': ^2.1.1
-  '@rmw/coffee-label-patch': ^0.0.15
+  '@rmw/coffee-label-patch': ^0.0.16
   '@rmw/rollup-plugin-coffee': ^0.1.21
-  '@rmw/svelte-preprocess': 4.10.12
+  '@rmw/svelte-preprocess': 4.10.13
   '@rmw/thisdir': ^0.0.2
   '@rmw/walk': ^0.0.7
   '@sveltejs/vite-plugin-svelte': ^1.0.0-next.49
@@ -28,9 +28,9 @@ specifiers:
 
 devDependencies:
   '@prettier/plugin-pug': 2.1.1_prettier@2.7.1
-  '@rmw/coffee-label-patch': 0.0.15
+  '@rmw/coffee-label-patch': 0.0.16
   '@rmw/rollup-plugin-coffee': 0.1.21
-  '@rmw/svelte-preprocess': 4.10.12_beb3ebmiqk2p2wvpbc7oegv2kq
+  '@rmw/svelte-preprocess': 4.10.13_dor2gbj65pyja6p27bnt4ibawu
   '@rmw/thisdir': 0.0.2
   '@rmw/walk': 0.0.7
   '@sveltejs/vite-plugin-svelte': 1.0.0-next.49_svelte@3.48.0+vite@2.9.13
@@ -264,21 +264,21 @@ packages:
       pug-lexer: 5.0.1
     dev: true
 
-  /@rmw/coffee-label-patch/0.0.15:
-    resolution: {integrity: sha512-XctHXxB25s3Rhg427A09S+MQxTqHn63wR0XuxNZN4CfQ8MaC2erkw3bFMLsPKaaehk2am6hR/XcZIlxf9mwzjA==}
+  /@rmw/coffee-label-patch/0.0.16:
+    resolution: {integrity: sha512-HVi+ycVQudoC/txaxDrOXmRzIYb5WInmHTZkJYRJslmS/AqPxQ+d+Zy8kpT5Pdf3vQ0bWRG45Cw+uheeQHZHqg==}
     dev: true
 
   /@rmw/rollup-plugin-coffee/0.1.21:
     resolution: {integrity: sha512-X1lxHpGs4iUtKn9Gyx+bzG3lWXWaFZ8XrxcSA7ajhVTB+tuAjPg0jSDByaad5qXw/u7VD/qTUeRXx66HRk8WNg==}
     dev: true
 
-  /@rmw/svelte-preprocess/4.10.12_beb3ebmiqk2p2wvpbc7oegv2kq:
-    resolution: {integrity: sha512-YFjt6zVuIbChoY0yQDou6gEhnqprieWEVepO8qr7O2s/2dMVQES7bPgjDvJ8DY+xwi91vEHa6gHbraMwOgR6vg==}
+  /@rmw/svelte-preprocess/4.10.13_dor2gbj65pyja6p27bnt4ibawu:
+    resolution: {integrity: sha512-dtA9Qw1+XROQ7ge+e5ERf/t63nXgDO2946G83lfOeIwfWr3cilnWAp0SxxGiTLmivLftBHPVVEeF/ZJEjUTA1w==}
     engines: {node: '>= 9.11.2'}
     requiresBuild: true
     peerDependencies:
       '@babel/core': ^7.18.6
-      '@rmw/coffee-label-patch': ^0.0.15
+      '@rmw/coffee-label-patch': ^0.0.16
       coffeescript: ^2.7.0
       less: ^3.11.3 || ^4.0.0
       node-sass: '*'
@@ -314,7 +314,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@rmw/coffee-label-patch': 0.0.15
+      '@rmw/coffee-label-patch': 0.0.16
       '@types/pug': 2.0.6
       '@types/sass': 1.43.1
       coffeescript: 2.7.0

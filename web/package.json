@@ -7,9 +7,9 @@
   },
   "devDependencies": {
     "@prettier/plugin-pug": "^2.1.1",
-    "@rmw/coffee-label-patch": "^0.0.15",
+    "@rmw/coffee-label-patch": "^0.0.16",
     "@rmw/rollup-plugin-coffee": "^0.1.21",
-    "@rmw/svelte-preprocess": "4.10.12",
+    "@rmw/svelte-preprocess": "4.10.13",
     "@rmw/thisdir": "^0.0.2",
     "@rmw/walk": "^0.0.7",
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",

@@ -1,14 +1,12 @@
 <script lang="coffee">
 #import '~/styl/init.styl'
-import logo from ':/svg/logo.svg'
+import src from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
 import UserNew from './lib/UserNew.svelte'
 import ws from '~/coffee/ws.coffee'
 
 window.ws = ws
 user_name = ws.user_name()
-
-
 
 我 = 3333
 x = 4
@@ -43,7 +41,7 @@ main
     +catch err
       h2 err
   #map
-    img(alt="logo" src=:logo)
+    img(:src alt="logo")
   button(@click=click)
     +if x%2
       | if x%2
