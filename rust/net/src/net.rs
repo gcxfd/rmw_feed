@@ -14,12 +14,13 @@ use std::{
 };
 
 struct Net {
-  run: Run,
   bind: BTreeSet<SocketAddr>,
-  stop: Receiver<()>,
+  token: [u8; 32],
+  run: Run,
+  api: Arc<Api>,
 }
 
-pub async fn net() -> Result<()> {
+pub async fn net() -> Result<Net> {
   #[cfg(feature = "log")]
   {
     logger::init()
@@ -57,9 +58,19 @@ pub async fn net() -> Result<()> {
   }
 
   let api = Arc::new(Api::new(sender, db));
-  ws::run(&mut run, api);
+  ws::run(&mut run, api.clone());
 
-  run.join().await;
-  stop(bind, token).await;
-  Ok(())
+  Ok(Net {
+    token,
+    bind,
+    api,
+    run,
+  })
+}
+
+impl Net {
+  pub async fn run(mut self) {
+    self.run.join().await;
+    stop(self.bind, self.token).await;
+  }
 }

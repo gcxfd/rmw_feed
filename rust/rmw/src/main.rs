@@ -2,5 +2,6 @@ use anyhow::Result;
 use async_std::task::block_on;
 
 fn main() -> Result<()> {
-  block_on(net::net())
+  let net = net::net().await?;
+  block_on(net.run())
 }
