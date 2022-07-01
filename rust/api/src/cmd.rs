@@ -5,13 +5,13 @@ use speedy::{Readable, Writable};
 #[speedy(tag_type=u16)]
 pub enum Cmd {
   // code_gen <
-  UserName,
+  Stop,
   RoomNew(
     String, //name
   ),
+  UserName,
   UserNew(
     String, //name
   ),
-  Stop,
   // >
 }

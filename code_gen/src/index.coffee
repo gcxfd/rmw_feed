@@ -47,32 +47,37 @@ enum_name = (i)=>
   i.replace(/[<,>]/g,'')
 
 
-export default main = =>
-  api = await read 'net/src/api/cmd.rs'
 
+fn_li = (txt, prefix)=>
   api_cmd = []
+  for fn from extract_li txt, prefix+' ',"{"
+    pos = fn.indexOf('(')
+    if pos > 0
+      name = fn[...pos]
+      has_return = fn.lastIndexOf('->')
+      rt = fn[has_return+2..].trim()
+      rt = rt[7...-1]
+      if rt == '()'
+        rt = undefined
 
-  for prefix in ['pub fn','pub async fn']
-    for fn from extract_li api, prefix+' ',"{"
-      pos = fn.indexOf('(')
-      if pos > 0
-        name = fn[...pos]
-        has_return = fn.lastIndexOf('->')
-        rt = fn[has_return+2..].trim()
-        rt = rt[7...-1]
-        if rt == '()'
-          rt = undefined
+      args = fn[pos+1...fn.lastIndexOf(')',fn.lastIndexOf('->'))].split(",")
+      args.shift()
+      args = args.map((i)=>i.split(":").map((x)=>x.trim())).filter Boolean
 
-        args = fn[pos+1...fn.lastIndexOf(')',fn.lastIndexOf('->'))].split(",")
-        args.shift()
-        args = args.map((i)=>i.split(":").map((x)=>x.trim())).filter Boolean
+      for i from args
+        cls = i[1]
+        i[1] = CLS_MAP[cls] or cls
 
-        for i from args
-          cls = i[1]
-          i[1] = CLS_MAP[cls] or cls
+      cmd = upperFirst(camelCase(name))
+      api_cmd.push [cmd, args, rt, name]
+  api_cmd
 
-        cmd = upperFirst(camelCase(name))
-        api_cmd.push [cmd, args, rt, name]
+export default main = =>
+  li = fn_li.bind(null,await read 'net/src/api/cmd.rs')
+
+  api_cmd = li 'pub async fn'
+  async = new Set(api_cmd.map (i)=>i[0])
+  api_cmd = api_cmd.concat li 'pub fn'
 
   await Promise.all [
     modify(
@@ -87,7 +92,7 @@ export default main = =>
           else
             args_tuple = ''
           txt = "Cmd::#{cmd}#{args_tuple} => "
-          call = "self.#{name}(#{args_pass})?"
+          call = "self.#{name}(#{args_pass})#{if async.has(cmd) then '.await' else ''}?"
           if rt
             txt += "Reply::#{enum_name(rt)}(#{call}),"
           else

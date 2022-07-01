@@ -20,6 +20,10 @@ impl Api {
 
     Ok(match cmd {
       // code_gen <
+      Cmd::Stop => {
+        self.stop().await?;
+        Reply::Undefined
+      }
       Cmd::RoomNew(name) => {
         self.room_new(name)?;
         Reply::Undefined
@@ -29,10 +33,9 @@ impl Api {
         self.user_new(name)?;
         Reply::Undefined
       }
-      Cmd::Stop => {
-        self.stop()?;
-        Reply::Undefined
-      } // >
+      
+      
+       // >
     })
   }
 }
