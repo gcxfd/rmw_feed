@@ -12,7 +12,7 @@ use std::{
   sync::Arc,
 };
 
-pub fn run(run: &Run, api: Arc<Api>) {
+pub fn run(run: &Run, api: &Arc<Api>) {
   let config = Config::new(&api.db.kv);
   config::macro_get!(config);
   // web socket
@@ -20,6 +20,7 @@ pub fn run(run: &Run, api: Arc<Api>) {
 
   info!("ws://{}", ws_addr);
   let ws_run = run.clone();
+  let api = api.clone();
 
   run.spawn(async move {
     if let Ok(listener) = err::ok!(TcpListener::bind(&ws_addr).await) {
