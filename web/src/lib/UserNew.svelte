@@ -18,7 +18,7 @@ onMount =>
 
 <template lang="pug">
 form(on:submit|preventDefault="{ submit }")
-  input(bind:this="{ input }" bind:value="{ name }" placeholder="请输入姓名")
+  input(bind:this=input bind:value="{ name }" placeholder="请输入姓名")
   button(type="submit") 创建用户
 </template>
 
