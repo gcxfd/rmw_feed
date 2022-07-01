@@ -1,3 +1,4 @@
+pub use const_str::replace;
 use speedy::{LittleEndian, Readable, Writable};
 use util::kv::Kv;
 
@@ -44,7 +45,7 @@ impl<'a, KV: Kv> Config<'a, KV> {
 #[macro_export]
 macro_rules! get {
   ($config:expr, $file:expr, $init:expr) => {{
-    $config.get(const_str::replace!(stringify!($file), " ", ""), || $init)
+    $config.get(config::replace!(stringify!($file), " ", ""), || $init)
   }};
 }
 
