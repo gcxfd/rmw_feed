@@ -1,13 +1,14 @@
-
 <script lang="coffee">
 #import '~/styl/init.styl'
 import logo from ':/svg/logo.svg'
 import Counter from './lib/Counter.svelte'
+import UserNew from './lib/UserNew.svelte'
 import ws from '~/coffee/ws.coffee'
 
 window.ws = ws
 user_name = ws.user_name()
-#:$ user = await ws.user_name()
+
+
 
 我 = 3333
 x = 4
@@ -36,9 +37,7 @@ main
     h1 loading
     +then name
       +if name == undefined
-        form
-          input(placeholder="请输入姓名")
-          button(type="submit") 创建用户
+        UserNew
         +else
           h1 {name}
     +catch err
