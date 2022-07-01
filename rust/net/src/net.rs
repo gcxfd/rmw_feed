@@ -58,7 +58,6 @@ pub fn net() -> Result<Net> {
   }
 
   let api = Arc::new(Api::new(sender, db));
-  ws::run(&mut run, api.clone());
 
   Ok(Net {
     token,

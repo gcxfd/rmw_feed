@@ -7,6 +7,5 @@ mod net;
 mod stop;
 mod udp;
 mod var;
-mod ws;
 
 pub use crate::net::net;
