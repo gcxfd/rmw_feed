@@ -19,12 +19,11 @@ impl Api {
     dbg!(&cmd);
 
     Ok(match cmd {
+      // code_gen <
       Cmd::Stop => {
-        let stop = self.stop.clone();
-        err::log!(stop.send(()).await);
+        self.stop().await?;
         Reply::Undefined
       }
-      // code_gen <
       Cmd::RoomNew(name) => {
         self.room_new(name)?;
         Reply::Undefined

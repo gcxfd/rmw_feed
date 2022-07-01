@@ -12,6 +12,11 @@ macro_rules! id {
 pub const LOGIN: &[u8] = b"login";
 
 impl Api {
+  pub async fn stop(&self) -> Result<()> {
+    err::log!(self.stop.send(()).await);
+    Ok(())
+  }
+
   pub fn room_new(&self, name: impl AsRef<str>) -> Result<()> {
     let db = &self.db;
     let id = id!(db, room_id);
