@@ -8,7 +8,6 @@ import ws from '~/coffee/ws.coffee'
 window.ws = ws
 user_name = ws.user_name()
 
-xxx = '33'
 
 x = 4
 
@@ -39,7 +38,7 @@ main
     h1 loading
     +then name
       +if name == undefined
-        UserNew(:xxx)
+        UserNew
         +else
           h1 {name}
     +catch err
