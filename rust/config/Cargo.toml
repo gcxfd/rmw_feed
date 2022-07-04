@@ -8,4 +8,4 @@ log = "0.4.17"
 err = { path = "../err" }
 util = { path = "../lib/util" }
 speedy = { path = "../lib/speedy", features = ["box"] }
-const-str = "0.3"
+const-str = "0.4.3"
