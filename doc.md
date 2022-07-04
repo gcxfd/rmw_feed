@@ -35,3 +35,6 @@ https://aws.amazon.com/cn/blogs/china/talking-about-network-optimization-from-th
 否则发包 = 收包速度+1
 
 如果发包速度
+
+文件大小 文件哈希
+文件哈希 文件哈希切片
