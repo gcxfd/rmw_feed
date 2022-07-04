@@ -30,9 +30,16 @@ https://aws.amazon.com/cn/blogs/china/talking-about-network-optimization-from-th
 
 收包速度 = 收包速度 * （1000-距离上一次时间）/ 1000 + 收包速度*100
 
-struct Sender {
+addr ->
+  struct Sender {
+    recv_rate: u64,
+    prev_recv_rate: u64,
+    send_rate: u64,
+    sleep: u16,
+    task: vec<reader>
+  }
 
-}
+btreemap next_time - addr
 
 每 64 个周期，记录一次收包速度
 如果收包 >= 发包，发包速度倍增 (如果间隔 >20，时间减半；否则速度加倍，时间 =10)
