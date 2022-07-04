@@ -28,8 +28,10 @@ https://aws.amazon.com/cn/blogs/china/talking-about-network-optimization-from-th
 发包速度增速 10
 收包速度 0
 
-收包速度 = (收包速度 * 63 + 收包速度) / 64
+收包速度 = 收包速度 * 63/64 + 收包速度
 
 每 64 个周期，记录一次收包速度
 如果收包 >= 发包，发包速度倍增
 否则发包 = 收包速度+1
+
+如果发包速度
