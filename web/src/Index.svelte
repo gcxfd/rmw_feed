@@ -44,7 +44,7 @@ main
           h1 {name}
     +catch err
       h2 err
-  button(@click=click)
+  button(@click)
     +if x%2
       | if x%2
       +else
