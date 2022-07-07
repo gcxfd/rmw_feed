@@ -1,3 +1,6 @@
 [submodule "rust/lib/speedy"]
 	path = rust/lib/speedy
 	url = git@github.com:rmw-lib/speedy.git
+[submodule "rust/lib/agatedb"]
+	path = rust/lib/agatedb
+	url = git@github.com:rmw-lib/agatedb.git
