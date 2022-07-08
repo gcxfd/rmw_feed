@@ -11,7 +11,6 @@ pub fn udp(addr: SocketAddr, token: [u8; 32]) {
     SocketAddr::V4(_) => mtu::UDP_IPV4,
     SocketAddr::V6(_) => mtu::UDP_IPV6,
   } as usize;
-  dbg!(mtu);
 
   loop {
     if let Ok(udp) = err::ok!(UdpSocket::bind(addr)) {
