@@ -14,6 +14,7 @@ members = [
   "db",
   "lib/rkv",
   "lib/util",
+  "lib/time",
   "lib/b80"
 ]
 

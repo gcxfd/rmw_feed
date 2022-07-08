@@ -351,7 +351,7 @@ dependencies = [
  "libc",
  "num-integer",
  "num-traits",
- "time",
+ "time 0.1.44",
  "winapi",
 ]
 
@@ -1409,6 +1409,14 @@ dependencies = [
 
 [[package]]
 name = "time"
+version = "0.1.0"
+dependencies = [
+ "async-std",
+ "coarsetime",
+]
+
+[[package]]
+name = "time"
 version = "0.1.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6db9e6914ab8b1ae1c260a4ae7a49b6c5611b40328a735b21862567685e73255"
@@ -1516,8 +1524,6 @@ checksum = "09cc8ee72d2a9becf2f2febe0205bbed8fc6615b7cb429ad062dc7b7ddd036a9"
 name = "util"
 version = "0.1.0"
 dependencies = [
- "async-std",
- "coarsetime",
  "ed25519-dalek-blake3",
  "rand",
 ]
