@@ -56,7 +56,7 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
           match cr {
             Ok(_) => return Ok(r),
             Err(err) => {
-              if retry > 3 {
+              if retry > 99 {
                 return Err(err.into());
               }
             }
