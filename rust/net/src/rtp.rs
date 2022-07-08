@@ -4,7 +4,7 @@ use std::{collections::BTreeMap, net::ToSocketAddrs};
 
 use time::r#async::sleep;
 
-const PERIOD: u64 = 20;
+const PERIOD: u64 = 16;
 
 pub struct Node {
   delay: u16,
