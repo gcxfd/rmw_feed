@@ -29,14 +29,14 @@ impl<Cf: cf::Cf<N>, const N: usize> util::kv::Kv for Kv<Cf, N> {
 
 impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   #[allow(invalid_value)]
-  pub fn new(path: impl Into<PathBuf>) -> Self {
+  pub fn open(path: impl Into<PathBuf>) -> Result<Self> {
     let mut db = Kv {
-      db: err::ok!(open(path, Cf::li())).unwrap(),
+      db: open(path, Cf::li())?,
       cf: unsafe { std::mem::MaybeUninit::uninit().assume_init() },
     };
     let ptr: *const OptimisticTransactionDB = &db.db;
     db.cf = Cf::new(unsafe { &*ptr });
-    db
+    Ok(db)
   }
 
   pub fn tx(&self) -> Transaction<OptimisticTransactionDB> {

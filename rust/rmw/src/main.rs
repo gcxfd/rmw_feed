@@ -7,8 +7,9 @@ fn main() -> Result<()> {
     .level_for("rmw", log::LevelFilter::Trace)
     .apply()
     .unwrap();
-  let net = net::Net::new();
-  ws::run(&net.run, &net.api);
-  block_on(net.run());
+  if let Ok(net) = err::ok!(net::Net::open()) {
+    ws::run(&net.run, &net.api);
+    block_on(net.run());
+  }
   Ok(())
 }

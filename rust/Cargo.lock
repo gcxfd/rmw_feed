@@ -513,6 +513,7 @@ dependencies = [
 name = "db"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "err",
  "log",
  "paste",
@@ -1250,6 +1251,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-std",
+ "err",
  "log",
  "logger",
  "net",

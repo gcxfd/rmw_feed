@@ -5,6 +5,7 @@ use std::{
   thread::spawn,
 };
 
+use anyhow::Result;
 use async_std::channel::unbounded;
 use config::config;
 use db::Db;
@@ -26,11 +27,11 @@ impl Net {
     self.stop().await;
   }
 
-  pub fn new() -> Net {
+  pub fn open() -> Result<Net> {
     let (sender, recver) = unbounded();
     let run = Run::new(recver);
 
-    let db = Db::new(dir::root().join("db"));
+    let db = Db::open(dir::root().join("db"))?;
 
     config!(db.kv);
 
@@ -57,12 +58,12 @@ impl Net {
 
     let api = Arc::new(Api::new(sender, db));
 
-    Net {
+    Ok(Net {
       token,
       bind,
       api,
       run,
-    }
+    })
   }
 
   pub async fn stop(self) {

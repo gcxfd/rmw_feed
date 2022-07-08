@@ -2,6 +2,7 @@ mod cf;
 
 use std::{path::PathBuf, sync::atomic::AtomicU64};
 
+use anyhow::Result;
 pub use cf::{Cf, CF_N};
 use paste::paste;
 use rkv::Kv;
@@ -17,8 +18,8 @@ macro_rules! db {
     }
 
     impl Db {
-      pub fn new(path: PathBuf) -> Self {
-        let kv: Kv<Cf, CF_N> = Kv::new(path);
+      pub fn open(path: PathBuf) -> Result<Self> {
+        let kv: Kv<Cf, CF_N> = Kv::open(path)?;
         let cf = &kv.cf;
 
         macro_rules! init_id {
@@ -39,12 +40,12 @@ macro_rules! db {
           }};
         }
 
-        paste! {
+        Ok(paste! {
           Self {
             $([<$table _id>]: init_id!($table),)*
             kv,
           }
-        }
+        })
       }
     }
   };
