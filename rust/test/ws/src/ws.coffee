@@ -6,3 +6,5 @@ import conn from './conn.js'
 ws = await conn wasm
 
 console.log await ws.user_name()
+
+Deno.exit()
