@@ -1,13 +1,13 @@
 use colored::Colorize;
-use log::Level::{Error, Warn};
 
 pub fn init() -> fern::Dispatch {
   fern::Dispatch::new()
-    .format(|out, message, record| {
+    .format(move |out, message, record| {
       let line = record.line().unwrap_or(0);
+      let level = record.level();
       let tip = (format_args!(
         "{} {} {} {}{}",
-        record.level(),
+        level,
         chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
         record.target(),
         record.file().unwrap_or(""),
@@ -18,16 +18,20 @@ pub fn init() -> fern::Dispatch {
         }
       ))
       .to_string();
-
-      out.finish(format_args!(
-        "{}\n{}\n",
-        match record.level() {
-          Error => tip.red(),
-          Warn => tip.yellow(),
-          _ => tip.bright_black(),
-        },
-        message,
-      ))
+      {
+        use log::Level::{Debug, Error, Info, Trace, Warn};
+        out.finish(format_args!(
+          "{}\n{}\n",
+          match level {
+            Error => tip.red(),
+            Warn => tip.yellow(),
+            Info => tip.white(),
+            Debug => tip.green(),
+            Trace => tip.bright_black(),
+          },
+          message,
+        ))
+      }
     })
     .level(log::LevelFilter::Info)
     .chain(std::io::stdout())

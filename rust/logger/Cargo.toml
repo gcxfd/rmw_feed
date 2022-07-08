@@ -7,7 +7,7 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.19"
 colored = "2.0.0"
-fern = { version = "0.6.1", features = ["colored"] }
+fern = { version = "0.6.1", features = [] }
 
 [dependencies.log]
 version = "0.4.17"
