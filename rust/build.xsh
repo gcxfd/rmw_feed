@@ -3,6 +3,8 @@
 from fire import Fire
 from os.path import dirname,abspath,exists
 import platform
+from humanize import naturalsize
+import os
 
 PWD = dirname(abspath(__file__))
 
@@ -40,4 +42,6 @@ def main(app="rmw"):
 #./sh/upx.sh
   upx --best --lzma @(out)
 
+  stat = os.stat(out)
+  print(naturalsize(stat.st_size))
   print(out)
