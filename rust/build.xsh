@@ -30,11 +30,12 @@ TARGET=f'{platform.machine()}-{system}'
 @Fire
 def main(app="rmw"):
   cargo build \
-  --release \
-  -Z build-std=std,panic_abort \
-  -Z build-std-features=panic_immediate_abort \
   -p @(app) \
-  --target @(TARGET)
+  --release \
+  --target @(TARGET) \
+  -Z build-std=std,panic_abort
+
+# -Z build-std-features=panic_immediate_abort
 
   out=f"target/{TARGET}/release/{app}"
   strip @(out)
