@@ -374,6 +374,8 @@ dependencies = [
  "api",
  "async-std",
  "async-tungstenite",
+ "err",
+ "logger",
  "speedy",
  "tungstenite",
 ]
