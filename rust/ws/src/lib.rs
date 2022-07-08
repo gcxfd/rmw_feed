@@ -31,9 +31,7 @@ pub fn run(run: &Run, api: &Arc<Api>) {
           err::log!(tcp::ws(stream, api).await);
         });
       }
-      dbg!("tcp done");
     } else {
-      dbg!("tcp err");
       err::log!(cmd(&api, Cmd::Stop).await);
     }
   });
