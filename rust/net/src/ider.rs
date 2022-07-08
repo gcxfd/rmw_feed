@@ -20,9 +20,9 @@ impl Ider {
 
   pub fn get(&self) -> [u8; 4] {
     loop {
-      let r = self.id.fetch_add(1, Relaxed);
+      let r = self.id.fetch_add(2, Relaxed);
       if r != 0 {
-        return r.wrapping_shl(1).to_le_bytes();
+        return r.to_le_bytes();
       }
     }
   }
