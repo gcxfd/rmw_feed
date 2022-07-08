@@ -38,6 +38,7 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
     db.cf = Cf::new(unsafe { &*ptr });
     db
   }
+
   pub fn tx(&self) -> Transaction<OptimisticTransactionDB> {
     self.db.transaction()
   }
