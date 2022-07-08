@@ -8,7 +8,7 @@ edition = "2021"
 rkv = { path = "../lib/rkv" }
 err = { path = "../err" }
 util = { path = "../lib/util" }
-rocksdb = { path = "../lib/rust-rocksdb", features = [
+rocksdb = { path = "../lib/rocksdb", features = [
   "zstd",
   "lz4"
 ], default-features = false }
