@@ -3,7 +3,7 @@ use async_std::task::block_on;
 
 fn main() -> Result<()> {
   logger::init()
-    .level(log::LevelFilter::Info)
+    //.level(log::LevelFilter::Info)
     .level_for("rmw", log::LevelFilter::Trace)
     .apply()
     .unwrap();
