@@ -1,6 +1,4 @@
 .DS_Store
 
-rust/lib/rust-rocksdb
-
 node_modules/
 target/
