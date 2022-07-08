@@ -1,18 +1,18 @@
 mod cmd;
 mod tcp;
 
-use api::Cmd;
-use async_std::net::TcpListener;
-use cmd::cmd;
-use config::config;
-use net::Api;
-
-use log::info;
-use run::Run;
 use std::{
   net::{Ipv4Addr, SocketAddrV4},
   sync::Arc,
 };
+
+use api::Cmd;
+use async_std::net::TcpListener;
+use cmd::cmd;
+use config::config;
+use log::info;
+use net::Api;
+use run::Run;
 
 pub fn run(run: &Run, api: &Arc<Api>) {
   config!(api.db.kv);

@@ -1,7 +1,8 @@
-use crate::W;
 use api::Cmd;
 use js_sys::Promise;
 use wasm_bindgen::prelude::*;
+
+use crate::W;
 
 // code_gen 自动生成
 #[wasm_bindgen]

@@ -1,9 +1,11 @@
+use std::{
+  net::{IpAddr, Ipv4Addr, SocketAddrV4, TcpStream},
+  time::Duration,
+};
+
 use async_std::task::sleep;
-use igd::search_gateway;
-use igd::AddPortError::PortInUse;
+use igd::{search_gateway, AddPortError::PortInUse};
 use log::info;
-use std::net::{IpAddr, Ipv4Addr, SocketAddrV4, TcpStream};
-use std::time::Duration;
 
 const SLEEP_SECONDS: u32 = 60;
 

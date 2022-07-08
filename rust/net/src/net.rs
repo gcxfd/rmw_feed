@@ -1,15 +1,17 @@
-use crate::api::Api;
-use async_std::channel::unbounded;
-use config::config;
-use db::Db;
-use log::info;
-use run::Run;
 use std::{
   collections::BTreeSet,
   net::{SocketAddr, UdpSocket},
   sync::Arc,
   thread::spawn,
 };
+
+use async_std::channel::unbounded;
+use config::config;
+use db::Db;
+use log::info;
+use run::Run;
+
+use crate::api::Api;
 
 pub struct Net {
   bind: BTreeSet<SocketAddr>,
@@ -72,16 +74,17 @@ impl Net {
   }
 
   pub async fn stop(self) {
+    use std::{
+      net::{Ipv4Addr, Ipv6Addr, SocketAddrV4, SocketAddrV6},
+      time::Duration,
+    };
+
     use async_std::{
       net::UdpSocket,
       task::{sleep, spawn, JoinHandle},
     };
     use futures::future::join_all;
     use smallvec::{smallvec, SmallVec};
-    use std::{
-      net::{Ipv4Addr, Ipv6Addr, SocketAddrV4, SocketAddrV6},
-      time::Duration,
-    };
 
     let bind = self.bind;
     let token = self.token;

@@ -1,7 +1,8 @@
+use std::sync::Arc;
+
 use anyhow::Result;
 use api::{Cmd, Reply};
 use net::Api;
-use std::sync::Arc;
 
 pub async fn cmd(api: &Arc<Api>, cmd: api::Cmd) -> Result<Reply> {
   dbg!(&cmd);

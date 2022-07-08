@@ -1,5 +1,7 @@
-use std::sync::atomic::{AtomicU32, Ordering::Relaxed};
-use std::sync::Arc;
+use std::sync::{
+  atomic::{AtomicU32, Ordering::Relaxed},
+  Arc,
+};
 
 #[derive(Debug, Clone)]
 pub struct Ider {

@@ -3,7 +3,6 @@ pub use cmd::Cmd;
 
 mod reply;
 pub use reply::Reply;
-
 use speedy::{Readable, Writable};
 
 #[derive(PartialEq, Eq, Debug, Readable, Writable)]

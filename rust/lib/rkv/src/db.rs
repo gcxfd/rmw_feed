@@ -1,10 +1,12 @@
-use crate::cf;
+use std::{collections::BTreeSet, path::PathBuf};
+
 use anyhow::Result;
 use rocksdb::{
   BlockBasedOptions, Cache, DBCompactionStyle, DBCompressionType, OptimisticTransactionDB, Options,
   SingleThreaded, Transaction, DB,
 };
-use std::{collections::BTreeSet, path::PathBuf};
+
+use crate::cf;
 
 #[derive(Debug)]
 pub struct Kv<Cf: cf::Cf<N>, const N: usize> {
@@ -39,6 +41,7 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   pub fn tx(&self) -> Transaction<OptimisticTransactionDB> {
     self.db.transaction()
   }
+
   pub fn with_tx<T>(
     &self,
     run: impl Fn(&Transaction<OptimisticTransactionDB>) -> Result<T>,

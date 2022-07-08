@@ -1,5 +1,3 @@
-use api::Reply;
-use futures::task::AtomicWaker;
 use std::{
   future::Future,
   mem::{ManuallyDrop, MaybeUninit},
@@ -8,6 +6,9 @@ use std::{
   sync::Arc,
   task::{Context, Poll},
 };
+
+use api::Reply;
+use futures::task::AtomicWaker;
 
 #[derive(Debug, Clone)]
 pub struct ReplyFuture {

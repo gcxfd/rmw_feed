@@ -1,3 +1,5 @@
+use std::{sync::Arc, time::Duration};
+
 use anyhow::Result;
 use api::{Cmd, Reply, Q};
 use async_std::net::TcpStream;
@@ -8,7 +10,6 @@ use futures::{
 use log::info;
 use net::Api;
 use speedy::{Readable, Writable};
-use std::{sync::Arc, time::Duration};
 use tungstenite::Message;
 
 const TIMEOUT: usize = 7;

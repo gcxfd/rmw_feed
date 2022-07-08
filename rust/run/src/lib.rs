@@ -1,9 +1,3 @@
-use async_std::{
-  channel::Receiver,
-  task::{spawn, JoinHandle},
-};
-use dashmap::DashMap;
-
 use std::{
   future::Future,
   sync::{
@@ -11,6 +5,12 @@ use std::{
     Arc,
   },
 };
+
+use async_std::{
+  channel::Receiver,
+  task::{spawn, JoinHandle},
+};
+use dashmap::DashMap;
 
 #[derive(Debug, Default)]
 struct Inner {

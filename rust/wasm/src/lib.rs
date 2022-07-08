@@ -5,16 +5,17 @@ mod reply;
 mod reply_future;
 mod w;
 
-use crate::reply_future::ReplyFuture;
+use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
+
 use api::{Cmd, A, Q};
 use js_sys::{Function, Promise};
 use paste::paste;
 use speedy::{Readable, Writable};
-use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
+use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::future_to_promise;
 use web_sys::{console, ErrorEvent, MessageEvent, WebSocket};
+
+use crate::reply_future::ReplyFuture;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]

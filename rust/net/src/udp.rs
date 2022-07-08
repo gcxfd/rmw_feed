@@ -1,5 +1,6 @@
-use crate::{ider::Ider, var::MTU};
 use std::net::{SocketAddr, UdpSocket};
+
+use crate::{ider::Ider, var::MTU};
 
 pub fn udp(addr: SocketAddr, token: [u8; 32]) {
   let ider = Ider::new();

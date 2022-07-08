@@ -1,7 +1,9 @@
-use crate::api::Api;
-use anyhow::Result;
 use std::sync::atomic::Ordering::Relaxed;
+
+use anyhow::Result;
 use util::{pk_sk, Kv};
+
+use crate::api::Api;
 
 macro_rules! id {
   ($db:ident, $name:ident) => {
