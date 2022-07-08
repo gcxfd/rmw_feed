@@ -22,7 +22,6 @@ pub fn init() -> fern::Dispatch {
         use log::Level::{Debug, Error, Info, Trace, Warn};
         out.finish(format_args!(
           "{}\n{}\n",
-          message,
           match level {
             Error => tip.bright_red(),
             Warn => tip.bright_yellow(),
@@ -30,6 +29,7 @@ pub fn init() -> fern::Dispatch {
             Debug => tip.green(),
             Trace => tip.bright_black(),
           },
+          message,
         ))
       }
     })
