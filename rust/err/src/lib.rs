@@ -3,7 +3,7 @@ pub use log::error;
 #[macro_export]
 macro_rules! out {
   ($err:expr) => {
-    err::error!("❌ {}", $err);
+    err::error!("\n❌ {}\n", $err);
   };
 }
 
