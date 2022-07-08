@@ -40,6 +40,8 @@ file.write_all(b"Hello, world!").await?;
 
 基于 UDP 拥塞控制-LEDBAT - 代码先锋网 : https://t.cn/A6aSyeDi
 
+libutp 源码简析 http://www.calvinneo.com/2017/12/05/libutp%E6%BA%90%E7%A0%81%E7%AE%80%E6%9E%90/
+
 [译] [论文] BBR：基于拥塞（而非丢包）的拥塞控制（ACM, 2017）
 https://arthurchiao.art/blog/bbr-paper-zh/
 
