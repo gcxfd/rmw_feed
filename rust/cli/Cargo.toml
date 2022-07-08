@@ -8,3 +8,4 @@ api = { path = "../api" }
 async-tungstenite = { version = "0.17.2", features = ["async-std-runtime"] }
 tungstenite = "0.17.2"
 async-std = { version = "1.12.0", features = ["unstable"] }
+anyhow = "1.0.58"
