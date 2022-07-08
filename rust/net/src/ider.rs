@@ -14,7 +14,7 @@ unsafe impl Sync for Ider {}
 impl Ider {
   pub fn new() -> Self {
     Ider {
-      id: Arc::new(AtomicU32::new(rand::random())),
+      id: Arc::new(AtomicU32::new(rand::random::<u32>().wrapping_mul(2))),
     }
   }
 
