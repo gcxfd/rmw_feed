@@ -1,7 +1,9 @@
 #!/usr/bin/env xonsh
 
+from fire import Fire
 from os.path import dirname,abspath,exists
 import platform
+
 PWD = dirname(abspath(__file__))
 
 cd @(PWD)
@@ -23,20 +25,19 @@ elif system == 'linux':
 
 TARGET=f'{platform.machine()}-{system}'
 
-NAME="rmw"
+@Fire
+def main(app="rmw"):
+  cargo build \
+  --release \
+  -Z build-std=std,panic_abort \
+  -Z build-std-features=panic_immediate_abort \
+  -p @(app) \
+  --target @(TARGET)
 
-
-cargo build \
---release \
--Z build-std=std,panic_abort \
--Z build-std-features=panic_immediate_abort \
--p @(NAME) \
---target @(TARGET)
-
-out=f"target/{TARGET}/release/{NAME}"
-strip @(out)
+  out=f"target/{TARGET}/release/{app}"
+  strip @(out)
 
 #./sh/upx.sh
-upx --best --lzma @(out)
+  upx --best --lzma @(out)
 
-print(out)
+  print(out)
