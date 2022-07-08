@@ -31,7 +31,7 @@ impl<Cf: cf::Cf<N>, const N: usize> Kv<Cf, N> {
   #[allow(invalid_value)]
   pub fn new(path: impl Into<PathBuf>) -> Self {
     let mut db = Kv {
-      db: open(path, Cf::li()).unwrap(),
+      db: err::ok!(open(path, Cf::li())).unwrap(),
       cf: unsafe { std::mem::MaybeUninit::uninit().assume_init() },
     };
     let ptr: *const OptimisticTransactionDB = &db.db;
