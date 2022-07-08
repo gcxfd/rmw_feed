@@ -2,6 +2,7 @@
 exclude = ['lib']
 members = [
   "api",
+  "cli",
   "rmw",
   "config",
   "dir",
