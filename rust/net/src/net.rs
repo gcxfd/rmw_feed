@@ -27,14 +27,6 @@ impl Net {
   }
 
   pub fn new() -> Net {
-    #[cfg(feature = "log")]
-    {
-      logger::init()
-        .level_for("rmw", log::LevelFilter::Trace)
-        .apply()
-        .unwrap();
-    }
-
     let (sender, recver) = unbounded();
     let run = Run::new(recver);
 

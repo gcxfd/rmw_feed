@@ -1,7 +1,9 @@
+pub use log::error;
+
 #[macro_export]
 macro_rules! out {
   ($err:expr) => {
-    log::error!("❌ {}", $err);
+    err::error!("❌ {}", $err);
   };
 }
 

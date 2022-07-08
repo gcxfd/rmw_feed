@@ -594,6 +594,9 @@ dependencies = [
 [[package]]
 name = "err"
 version = "0.1.0"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "event-listener"
@@ -1006,7 +1009,6 @@ dependencies = [
  "err",
  "futures",
  "log",
- "logger",
  "paste",
  "rand",
  "run",
@@ -1246,6 +1248,8 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-std",
+ "log",
+ "logger",
  "net",
  "ws",
 ]

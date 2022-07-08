@@ -4,9 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["upnp", "log"]
+default = ["upnp"]
 upnp = ["dep:upnp"]
-log = ["dep:logger", "dep:log"]
 
 [dependencies]
 config = { path = "../config" }
@@ -18,10 +17,9 @@ db = { path = "../db" }
 upnp = { path = "../upnp", optional = true }
 speedy = { path = "../lib/speedy", features = ["box"] }
 b80 = { path = "../lib/b80" }
-logger = { path = "../logger", optional = true }
 async-std = { version = "1.12.0", features = ["unstable"] }
 anyhow = "1.0.58"
-log = { version = "0.4.17", optional = true }
+log = { version = "0.4.17" }
 futures = "0.3.21"
 paste = "1.0.7"
 smallvec = "1.9.0"

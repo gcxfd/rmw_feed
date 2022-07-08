@@ -9,3 +9,5 @@ anyhow = "1.0.58"
 async-std = "1.12.0"
 net = { path = "../net" }
 ws = { path = "../ws" }
+logger = { path = "../logger" }
+log = "0.4.17"
