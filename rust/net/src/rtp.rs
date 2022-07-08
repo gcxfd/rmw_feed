@@ -1,6 +1,10 @@
 // rmw transport transport
 
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, net::ToSocketAddrs};
+
+use time::r#async::sleep;
+
+const PERIOD: u64 = 20;
 
 pub struct Node {
   delay: u16,
@@ -16,23 +20,24 @@ pub struct Bt<Addr: ToSocketAddrs> {
   addr: BTreeMap<Addr, Node>,
 }
 
-impl Bt {
+impl<Addr: ToSocketAddrs> Bt<Addr> {
   fn pong(&mut self) {}
 
   fn insert(&mut self, node: Node) {
-    let now = time::micros();
+    let now = time::ms();
 
-    if self.queue.has(now) {}
+    //    if self.queue.has(now) {}
   }
 
-  fn run(&mut self) {
+  pub async fn run(&mut self) {
     loop {
       let now = time::ms();
-      let to_remove = vec![];
+      let mut to_remove = vec![];
       for (time, li) in self.queue.range_mut(..=now) {
         for addr in li {}
         to_remove.push(time);
       }
+      sleep(PERIOD).await
     }
   }
 }
