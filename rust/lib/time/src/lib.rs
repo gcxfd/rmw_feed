@@ -1,12 +1,12 @@
 pub mod r#async;
 
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use coarsetime::Duration;
 
 pub fn now() -> Duration {
   coarsetime::Clock::now_since_epoch()
 }
 
-pub fn ms() -> u128 {
+pub fn ms() -> u64 {
   now().as_millis()
 }
 
@@ -19,5 +19,5 @@ pub fn sec_to_bytes() -> [u8; 8] {
 }
 
 pub fn sleep(n: u64) {
-  std::thread::sleep(Duration::from_secs(n));
+  std::thread::sleep(std::time::Duration::from_secs(n));
 }
