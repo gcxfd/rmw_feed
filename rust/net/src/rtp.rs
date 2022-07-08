@@ -20,7 +20,7 @@ impl Bt {
 
   fn run(&mut self) {
     loop {
-      let now = time::ms();
+      let now = time::microseconds();
       for (time, li) in self.queue.range_mut(..=now) {}
     }
   }

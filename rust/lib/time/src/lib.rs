@@ -6,6 +6,10 @@ pub fn now() -> Duration {
   coarsetime::Clock::now_since_epoch()
 }
 
+pub fn microseconds() -> u64 {
+  now().as_microseconds()
+}
+
 pub fn ms() -> u64 {
   now().as_millis()
 }
