@@ -3,7 +3,7 @@ pub mod r#async;
 use coarsetime::Duration;
 
 pub fn now() -> Duration {
-  coarsetime::Clock::now_since_epoch()
+  coarsetime::Clock::recent_since_epoch()
 }
 
 pub fn micros() -> u64 {
