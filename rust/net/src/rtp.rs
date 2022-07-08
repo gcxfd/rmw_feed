@@ -12,7 +12,7 @@ pub struct Bt<Addr: ToSocketAddrs> {
   ping_period: u64,
   min_delay: u16,
   max_delay: u16,
-  queue: BTreeMap<u64, Addr>,
+  queue: BTreeMap<u64, Vec<Addr>>,
   addr: BTreeMap<Addr, Node>,
 }
 
@@ -27,8 +27,12 @@ impl Bt {
 
   fn run(&mut self) {
     loop {
-      let now = time::micros();
-      for (time, li) in self.queue.range_mut(..=now) {}
+      let now = time::ms();
+      let to_remove = vec![];
+      for (time, li) in self.queue.range_mut(..=now) {
+        for addr in li {}
+        to_remove.push(time);
+      }
     }
   }
 }
