@@ -1,14 +1,25 @@
 #!/usr/bin/env coffee
 
-ws = new WebSocket("ws://127.0.0.1:4910")
 
-ws.onmessage = (msg)=>
-  console.log msg.data
-  return
+import WasmInit, {W,connect,ws} from ':/wasm/api/wasm.js'
 
-ws.onerror = (err)=>
-  return
+await WasmInit()
 
-ws.onopen = =>
-  console.log 'open'
-  return
+RETRY = 2
+
+export default WS = ws(
+  "ws://127.0.0.1:4910"
+  =>
+    RETRY = 2
+    return
+  =>
+    setTimeout(
+      =>
+        if RETRY < 99
+          ++RETRY
+        connect(WS)
+        return
+      RETRY*99
+    )
+    return
+)
