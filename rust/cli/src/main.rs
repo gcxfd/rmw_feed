@@ -8,7 +8,7 @@ fn main() -> Result<()> {
 
   let q = Q {
     id: 0,
-    cmd: Cmd::UserNew("test"),
+    cmd: Cmd::UserNew("test".to_string()),
   };
 
   socket.write_message(Message::Binary(q.dump()))?;
