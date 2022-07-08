@@ -1,9 +1,16 @@
 pub mod r#async;
 
-use coarsetime::Duration;
+use coarsetime::{Clock, Duration, Instant};
+
+pub async fn update() {
+  loop {
+    Instant::update();
+    crate::r#async::sleep(10).await;
+  }
+}
 
 pub fn now() -> Duration {
-  coarsetime::Clock::recent_since_epoch()
+  Clock::recent_since_epoch()
 }
 
 pub fn micros() -> u64 {

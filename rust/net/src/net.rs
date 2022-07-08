@@ -30,6 +30,7 @@ impl Net {
   pub fn open() -> Result<Net> {
     let (sender, recver) = unbounded();
     let run = Run::new(recver);
+    run.spawn(time::update());
 
     let db = Db::open(dir::root().join("db"))?;
 
