@@ -7,7 +7,7 @@ use time::r#async::sleep;
 const PERIOD: u64 = 16;
 
 pub struct Node {
-  delay: u16,
+  base_delay: u16,
   win: usize,
   sleep: u16,
 }
