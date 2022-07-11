@@ -11,10 +11,17 @@
 
 服务器端
   客户端地址
+    mtu
     每秒发送的有效消息数
     基准延时 (xxhash64 + 时间 + 秘钥) // http://www.calvinneo.com/2017/12/05/libutp%E6%BA%90%E7%A0%81%E7%AE%80%E6%9E%90/
-      uTP 可以维护一个两分钟内的最小延迟值 delay_base
-      uTP 拥塞控制选择了丢包率和单向缓冲时延 (one way buffer delay) 进行度量。我们注意到在链路中存在一些设备能够缓存几秒钟内通过的数据，但 uTP 希望实现 0 字节的发送缓存。在实践中 uTP 的目标延迟在 100ms，即当套接字侦测到自己发送数据包经受了 100ms 以上的延迟时，它就会调整拥塞窗口。
+      两分钟内的最小延迟值 delay_base
+      超过最小时延 100ms 以上，就会减少发送
+
     任务编号
       本地文件路径
       有待发送的部分
+
+# Mac 系统 ping 不用提权的原因
+https://blog.csdn.net/aa642531/article/details/85461294
+发现它可以使用 socket(AF_INET,SOCK_DGRAM, IPPROTP_ICMP) 这种套接字，这种套接字怎么来理解呢？
+我们平常使用最多的是 TCP 和 UDP 的协议，即 socket(AF_INET,SOCK_STREAM, 0) 和 socket(AF_INET,SOCK_DGRAM, 0) 这两种套接字。
