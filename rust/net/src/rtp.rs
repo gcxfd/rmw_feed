@@ -8,14 +8,14 @@ const PERIOD: u64 = 16;
 
 pub struct Node {
   base_delay: u16,
-  win: usize,
   sleep: u16,
+  win: usize,
 }
 
 pub struct Bt<Addr: ToSocketAddrs> {
   ping_period: u64,
-  min_delay: u16,
-  max_delay: u16,
+  min_sleep: u16,
+  max_sleep: u16,
   queue: BTreeMap<u64, Vec<Addr>>,
   addr: BTreeMap<Addr, Node>,
 }
