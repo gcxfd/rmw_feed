@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 rkv = { path = "../lib/rkv" }
-err = { path = "../err" }
+err = { version = "0.0.5", package = "rmw_err" }
 util = { path = "../lib/util" }
 rocksdb = { path = "../lib/rocksdb", features = [
   "zstd",

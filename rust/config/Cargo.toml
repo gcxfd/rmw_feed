@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 log = "0.4.17"
-err = { path = "../err" }
+err = { version = "0.0.5", package = "rmw_err" }
 util = { path = "../lib/util" }
 speedy = { path = "../lib/speedy", features = ["box"] }
 const-str = "0.4.3"

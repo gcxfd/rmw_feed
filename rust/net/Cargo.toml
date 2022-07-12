@@ -11,7 +11,7 @@ upnp = ["dep:upnp"]
 config = { path = "../config" }
 run = { path = "../run" }
 dir = { path = "../dir" }
-err = { path = "../err" }
+err = { version = "0.0.5", package = "rmw_err" }
 util = { path = "../lib/util" }
 time = { path = "../lib/time" }
 db = { path = "../db" }
