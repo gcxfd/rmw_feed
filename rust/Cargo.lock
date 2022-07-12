@@ -374,8 +374,8 @@ dependencies = [
  "api",
  "async-std",
  "async-tungstenite",
- "err",
  "logger",
+ "rmw_err",
  "speedy",
  "tungstenite",
 ]
@@ -417,8 +417,8 @@ name = "config"
 version = "0.1.0"
 dependencies = [
  "const-str",
- "err",
  "log",
+ "rmw_err",
  "speedy",
  "util",
 ]
@@ -514,10 +514,10 @@ name = "db"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "err",
  "log",
  "paste",
  "rkv",
+ "rmw_err",
  "rocksdb",
  "util",
 ]
@@ -592,13 +592,6 @@ dependencies = [
  "serde",
  "x25519-dalek",
  "zeroize",
-]
-
-[[package]]
-name = "err"
-version = "0.1.0"
-dependencies = [
- "log",
 ]
 
 [[package]]
@@ -1009,11 +1002,11 @@ dependencies = [
  "config",
  "db",
  "dir",
- "err",
  "futures",
  "log",
  "paste",
  "rand",
+ "rmw_err",
  "run",
  "smallvec",
  "speedy",
@@ -1238,10 +1231,10 @@ name = "rkv"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "err",
  "librocksdb-sys",
  "log",
  "num_cpus",
+ "rmw_err",
  "rocksdb",
  "util",
 ]
@@ -1252,11 +1245,20 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-std",
- "err",
  "log",
  "logger",
  "net",
+ "rmw_err",
  "ws",
+]
+
+[[package]]
+name = "rmw_err"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "140e33a9c3c5d799f9bbd60e99dca26cff300bcfee82aff44636690f2cb9b0db"
+dependencies = [
+ "log",
 ]
 
 [[package]]
@@ -1814,10 +1816,10 @@ dependencies = [
  "async-std",
  "async-tungstenite",
  "config",
- "err",
  "futures",
  "log",
  "net",
+ "rmw_err",
  "run",
  "speedy",
  "tungstenite",

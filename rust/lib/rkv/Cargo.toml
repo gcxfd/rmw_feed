@@ -11,7 +11,7 @@ rocksdb = { path = "../rocksdb", features = [
   "lz4"
 ], default-features = false }
 anyhow = "1.0.58"
-err = { path = "../../err" }
+err = { version = "0.0.5", package = "rmw_err" }
 util = { path = "../util" }
 num_cpus = "1.13.1"
 log = "0.4.17"
