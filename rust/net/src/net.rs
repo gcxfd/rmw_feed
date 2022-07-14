@@ -36,20 +36,26 @@ impl Net {
         UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
       );
 
-      if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
-        run.spawn(upnp::upnp_daemon("rmw", addr.port()));
+      // upnp 端口映射
+      {
+        if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
+          run.spawn(upnp::upnp_daemon("rmw", addr.port()));
+        }
       }
 
-      info!("udp://{}", &addr);
-      let mtu = match addr {
-        SocketAddr::V4(_) => get!(v4 / mtu, mtu::UDP_IPV4),
-        SocketAddr::V6(_) => get!(v6 / mtu, mtu::UDP_IPV6),
-      };
+      // udp 端口
+      {
+        info!("udp://{}", &addr);
+        let mtu = match addr {
+          SocketAddr::V4(_) => get!(v4 / mtu, mtu::UDP_IPV4),
+          SocketAddr::V6(_) => get!(v6 / mtu, mtu::UDP_IPV6),
+        };
 
-      run.spawn(async move {
-        let udp = crate::udp::Udp::new(addr, mtu);
-        udp.run().await;
-      });
+        run.spawn(async move {
+          let udp = crate::udp::Udp::new(addr, mtu);
+          udp.run().await;
+        });
+      }
     }
 
     Ok(Net {
