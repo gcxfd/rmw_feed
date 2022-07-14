@@ -58,7 +58,8 @@ impl Net {
         SocketAddr::V6(_) => get!(v6 / mtu, mtu::UDP_IPV6),
       };
 
-      spawn(move || crate::udp::udp(addr, token, mtu));
+      let udp = crate::udp::Udp::new(addr, token, mtu);
+      run.spawn(async move { udp.run().await });
     }
 
     let api = Arc::new(Api::new(sender, db));
