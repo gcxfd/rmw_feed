@@ -1,15 +1,22 @@
-use std::net::{ToSocketAddrs, UdpSocket};
+use std::{
+  net::{ToSocketAddrs, UdpSocket},
+  sync::Arc,
+};
+
+use db::Db;
 
 use crate::ider::Ider;
 
 pub struct Udp {
   udp: UdpSocket,
+  db: Arc<Db>,
   mtu: u16,
 }
 
 impl Udp {
-  pub fn new(addr: impl ToSocketAddrs, mtu: u16) -> Self {
+  pub fn new(db: Arc<Db>, addr: impl ToSocketAddrs, mtu: u16) -> Self {
     Self {
+      db,
       udp: err::ok!(std::net::UdpSocket::bind(addr)).unwrap(),
       mtu,
     }
