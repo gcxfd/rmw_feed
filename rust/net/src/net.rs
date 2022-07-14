@@ -25,7 +25,8 @@ impl Net {
     let run = Run::new();
     run.spawn(time::update());
 
-    let db = Db::open(dir::root().join("db"))?;
+    let root = dir::root();
+    let db = Db::open(root.join("db"))?;
 
     config!(db.kv);
 
@@ -45,8 +46,9 @@ impl Net {
         SocketAddr::V6(_) => get!(v6 / mtu, mtu::UDP_IPV6),
       };
 
-      let udp = crate::udp::Udp::new(addr, mtu);
       run.spawn(async move {
+        let fs = root.join("fs");
+        let udp = crate::udp::Udp::new(addr, &fs, mtu);
         udp.run().await;
       });
     }
