@@ -1,16 +1,11 @@
 use std::net::{SocketAddr, UdpSocket};
 
-use crate::{ider::Ider, var::mtu};
+use crate::ider::Ider;
 
-pub fn udp(addr: SocketAddr, token: [u8; 32]) {
+pub fn udp(addr: SocketAddr, token: [u8; 32], mtu: u16) {
   let ider = Ider::new();
 
   //  dbg!(ider.get());
-
-  let mtu = match addr {
-    SocketAddr::V4(_) => mtu::UDP_IPV4,
-    SocketAddr::V6(_) => mtu::UDP_IPV6,
-  } as usize;
 
   loop {
     if let Ok(udp) = err::ok!(UdpSocket::bind(addr)) {

@@ -12,7 +12,7 @@ use db::Db;
 use log::info;
 use run::Run;
 
-use crate::api::Api;
+use crate::{api::Api, var::mtu};
 
 pub struct Net {
   bind: BTreeSet<SocketAddr>,
@@ -53,8 +53,12 @@ impl Net {
       }
 
       info!("udp://{}", &addr);
+      let mtu = match addr {
+        SocketAddr::V4(_) => mtu::UDP_IPV4,
+        SocketAddr::V6(_) => mtu::UDP_IPV6,
+      };
 
-      spawn(move || crate::udp::udp(addr, token));
+      spawn(move || crate::udp::udp(addr, token, mtu));
     }
 
     let api = Arc::new(Api::new(sender, db));
