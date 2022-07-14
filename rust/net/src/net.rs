@@ -15,7 +15,6 @@ use run::Run;
 use crate::{api::Api, var::mtu};
 
 pub struct Net {
-  token: [u8; 32],
   pub run: Run,
   pub api: Arc<Api>,
 }
@@ -32,8 +31,6 @@ impl Net {
     let db = Db::open(dir::root().join("db"))?;
 
     config!(db.kv);
-
-    let token = get!(token, rand::random::<[u8; 32]>());
 
     if get!(run / v4, true) {
       let addr = get!(
@@ -59,6 +56,6 @@ impl Net {
 
     let api = Arc::new(Api::new(run.stop.clone(), db));
 
-    Ok(Net { token, api, run })
+    Ok(Net { api, run })
   }
 }
