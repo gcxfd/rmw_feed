@@ -14,7 +14,8 @@ pub fn udp(addr: SocketAddr, token: [u8; 32]) {
 
   loop {
     if let Ok(udp) = err::ok!(UdpSocket::bind(addr)) {
-      let mut buf = [0; 65536];
+      // 由于udp包头占8个字节，而在ip层进行封装后的ip包头占去20字节，所以这个是udp数据包的最大理论长度是2^16-1-8-20=65507
+      let mut buf = [0; 65507];
       if let Ok((n, src)) = err::ok!(udp.recv_from(&mut buf)) {
         dbg!(src);
         if n > 4 {
