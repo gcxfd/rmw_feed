@@ -11,6 +11,7 @@ use async_std::{
   task::{spawn, JoinHandle},
 };
 use dashmap::DashMap;
+use parking_lot::Mutex;
 
 #[derive(Debug, Default)]
 struct Inner {
@@ -21,13 +22,13 @@ struct Inner {
 #[derive(Debug, Clone)]
 pub struct Run {
   inner: Arc<Inner>,
-  stop: Receiver<()>,
+  pub stop: Arc<Mutex<()>>,
 }
 
 impl Run {
-  pub fn new(stop: Receiver<()>) -> Self {
+  pub fn new() -> Self {
     Self {
-      stop,
+      stop: Arc::new(Mutex::new(())),
       inner: Arc::new(Inner {
         id: AtomicUsize::new(0),
         ing: DashMap::new(),

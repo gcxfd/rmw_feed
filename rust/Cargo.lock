@@ -1361,6 +1361,7 @@ dependencies = [
  "async-std",
  "dashmap",
  "futures",
+ "parking_lot",
 ]
 
 [[package]]
