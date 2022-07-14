@@ -15,7 +15,6 @@ use run::Run;
 use crate::{api::Api, var::mtu};
 
 pub struct Net {
-  bind: BTreeSet<SocketAddr>,
   token: [u8; 32],
   pub run: Run,
   pub api: Arc<Api>,
@@ -24,7 +23,6 @@ pub struct Net {
 impl Net {
   pub async fn run(mut self) {
     self.run.join().await;
-    self.stop().await;
   }
 
   pub fn open() -> Result<Net> {
@@ -36,8 +34,6 @@ impl Net {
 
     config!(db.kv);
 
-    let mut bind = BTreeSet::new();
-
     let token = get!(token, rand::random::<[u8; 32]>());
 
     if get!(run / v4, true) {
@@ -45,8 +41,6 @@ impl Net {
         v4 / udp,
         UdpSocket::bind("0.0.0.0:0").unwrap().local_addr().unwrap()
       );
-
-      bind.insert(addr);
 
       if cfg!(feature = "upnp") && get!(v4 / upnp, true) {
         run.spawn(upnp::upnp_daemon("rmw", addr.port()));
@@ -58,78 +52,14 @@ impl Net {
         SocketAddr::V6(_) => get!(v6 / mtu, mtu::UDP_IPV6),
       };
 
-      let udp = crate::udp::Udp::new(addr, token, mtu);
-      run.spawn(async move { udp.run().await });
+      let udp = crate::udp::Udp::new(addr, mtu);
+      run.spawn(async move {
+        udp.run().await;
+      });
     }
 
     let api = Arc::new(Api::new(sender, db));
 
-    Ok(Net {
-      token,
-      bind,
-      api,
-      run,
-    })
-  }
-
-  pub async fn stop(self) {
-    use std::{
-      net::{Ipv4Addr, Ipv6Addr, SocketAddrV4, SocketAddrV6},
-      time::Duration,
-    };
-
-    use async_std::{
-      net::UdpSocket,
-      task::{sleep, spawn, JoinHandle},
-    };
-    use futures::future::join_all;
-    use smallvec::{smallvec, SmallVec};
-
-    let bind = self.bind;
-    let token = self.token;
-    let mut task_li: SmallVec<[JoinHandle<()>; 2]> = smallvec![];
-    let (mut v4, mut v6): (Vec<_>, Vec<_>) = bind
-      .into_iter()
-      .partition(|addr| matches!(addr, SocketAddr::V4(_)));
-
-    macro_rules! stop {
-      ($li:ident, $ip:ident, $bind:expr) => {
-        if !$li.is_empty() {
-          for addr in &mut $li {
-            if addr.ip() == $ip::UNSPECIFIED {
-              addr.set_ip($ip::LOCALHOST.into());
-            }
-          }
-          task_li.push(spawn(async move {
-            loop {
-              if let Ok(send) = UdpSocket::bind($bind).await {
-                for addr in &$li {
-                  err::log!(
-                    send
-                      .send_to(&[&0u32.to_le_bytes()[..], &token[..]].concat(), addr)
-                      .await
-                  );
-                }
-              }
-              sleep(Duration::from_millis(9)).await;
-              $li.drain_filter(|addr| err::ok!(std::net::UdpSocket::bind(*addr)).is_ok());
-
-              if $li.is_empty() {
-                break;
-              }
-            }
-          }));
-        }
-      };
-    }
-
-    stop!(v4, Ipv4Addr, SocketAddrV4::new(Ipv4Addr::LOCALHOST, 0));
-    stop!(
-      v6,
-      Ipv6Addr,
-      SocketAddrV6::new(Ipv6Addr::LOCALHOST, 0, 0, 0)
-    );
-
-    join_all(task_li).await;
+    Ok(Net { token, api, run })
   }
 }
