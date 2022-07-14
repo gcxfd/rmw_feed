@@ -1,12 +1,9 @@
 use std::{
-  collections::BTreeSet,
   net::{SocketAddr, UdpSocket},
   sync::Arc,
-  thread::spawn,
 };
 
 use anyhow::Result;
-use async_std::channel::unbounded;
 use config::config;
 use db::Db;
 use log::info;
