@@ -47,8 +47,7 @@ impl Net {
       };
 
       run.spawn(async move {
-        let fs = root.join("fs");
-        let udp = crate::udp::Udp::new(addr, &fs, mtu);
+        let udp = crate::udp::Udp::new(addr, mtu);
         udp.run().await;
       });
     }

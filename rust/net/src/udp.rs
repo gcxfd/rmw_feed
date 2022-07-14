@@ -1,21 +1,15 @@
 use std::net::{ToSocketAddrs, UdpSocket};
 
-use async_std::path::{Path, PathBuf};
-
 use crate::ider::Ider;
 
 pub struct Udp {
   udp: UdpSocket,
   mtu: u16,
-  root: PathBuf,
 }
 
 impl Udp {
-  pub fn new(addr: impl ToSocketAddrs, root: impl Into<PathBuf>, mtu: u16) -> Self {
-    let root = root.into();
-    let _ = std::fs::create_dir_all(&root);
+  pub fn new(addr: impl ToSocketAddrs, mtu: u16) -> Self {
     Self {
-      root,
       udp: err::ok!(std::net::UdpSocket::bind(addr)).unwrap(),
       mtu,
     }
