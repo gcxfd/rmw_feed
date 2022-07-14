@@ -51,7 +51,7 @@ impl Run {
   }
 
   pub async fn join(&mut self) {
-    let _ = self.stop.recv().await;
+    let _ = self.stop.lock();
     loop {
       let ing = &self.inner.ing;
       let len = ing.len();

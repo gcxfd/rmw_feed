@@ -26,8 +26,7 @@ impl Net {
   }
 
   pub fn open() -> Result<Net> {
-    let (sender, recver) = unbounded();
-    let run = Run::new(recver);
+    let run = Run::new();
     run.spawn(time::update());
 
     let db = Db::open(dir::root().join("db"))?;
@@ -58,7 +57,7 @@ impl Net {
       });
     }
 
-    let api = Arc::new(Api::new(sender, db));
+    let api = Arc::new(Api::new(run.stop.clone(), db));
 
     Ok(Net { token, api, run })
   }

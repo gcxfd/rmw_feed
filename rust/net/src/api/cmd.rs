@@ -15,7 +15,7 @@ pub const LOGIN: &[u8] = b"login";
 
 impl Api {
   pub async fn stop(&self) -> Result<()> {
-    err::log!(self.stop.send(()).await);
+    unsafe { self.stop.force_unlock() };
     Ok(())
   }
 

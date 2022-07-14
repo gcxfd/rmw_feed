@@ -1,16 +1,20 @@
 mod cmd;
 
+use std::sync::Arc;
+
 use async_std::channel::Sender;
 use db::Db;
+use parking_lot::Mutex;
 
 #[derive(Debug)]
 pub struct Api {
-  pub stop: Sender<()>,
+  pub stop: Arc<Mutex<()>>,
   pub db: Db,
 }
 
 impl Api {
-  pub fn new(stop: Sender<()>, db: Db) -> Self {
+  pub fn new(stop: Arc<Mutex<()>>, db: Db) -> Self {
+    std::mem::forget(stop.lock());
     Self { stop, db }
   }
 }
