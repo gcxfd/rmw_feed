@@ -661,6 +661,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "file_cache"
+version = "0.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66bc62e0c64ae5a7e7807f602c1ce15bb9bc506a23ca8c9ab03a9f94695b12d2"
+dependencies = [
+ "async-std",
+ "file_open_limit",
+ "rmw_err",
+ "stretto",
+]
+
+[[package]]
 name = "file_open_limit"
 version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1053,7 +1065,7 @@ dependencies = [
  "config",
  "db",
  "dir",
- "file_cache",
+ "file_cache 0.0.2",
  "futures",
  "log",
  "paste",
@@ -1316,6 +1328,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-std",
+ "file_cache 0.0.3",
  "log",
  "logger",
  "net",

@@ -12,3 +12,4 @@ ws = { path = "../ws" }
 err = { version = "0.0.5", package = "rmw_err" }
 logger = { path = "../logger" }
 log = "0.4.17"
+file_cache = "0.0.3"
