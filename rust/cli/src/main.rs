@@ -14,12 +14,9 @@ fn main() -> Result<()> {
 
     socket.write_message(Message::Binary(q.dump()?.into()))?;
 
-    match socket.read_message()? {
-      Binary(bin) => {
-        let a = A::load(&bin);
-        println!("Received: {:?}", a);
-      }
-      _ => {}
+    if let Ok(Binary(bin)) = socket.read_message() {
+      let a = A::load(&bin);
+      println!("Received: {:?}", a);
     }
   }
   Ok(())
