@@ -52,8 +52,9 @@ impl Net {
       });
     }
 
-    let api = Arc::new(Api::new(run.stop.clone(), db));
-
-    Ok(Net { api, run })
+    Ok(Net {
+      api: Arc::new(Api::new(run.stop.clone(), db)),
+      run,
+    })
   }
 }
