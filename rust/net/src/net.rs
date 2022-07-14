@@ -23,6 +23,7 @@ impl Net {
 
   pub fn open() -> Result<Net> {
     let run = Run::new();
+
     run.spawn(time::update());
 
     let root = dir::root();
