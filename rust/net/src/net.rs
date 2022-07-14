@@ -54,8 +54,8 @@ impl Net {
 
       info!("udp://{}", &addr);
       let mtu = match addr {
-        SocketAddr::V4(_) => mtu::UDP_IPV4,
-        SocketAddr::V6(_) => mtu::UDP_IPV6,
+        SocketAddr::V4(_) => get!(v4 / mtu, mtu::UDP_IPV4),
+        SocketAddr::V6(_) => get!(v6 / mtu, mtu::UDP_IPV6),
       };
 
       spawn(move || crate::udp::udp(addr, token, mtu));
