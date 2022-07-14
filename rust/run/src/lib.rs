@@ -6,10 +6,7 @@ use std::{
   },
 };
 
-use async_std::{
-  channel::Receiver,
-  task::{spawn, JoinHandle},
-};
+use async_std::task::{spawn, JoinHandle};
 use dashmap::DashMap;
 use parking_lot::Mutex;
 
@@ -70,5 +67,11 @@ impl Run {
       }
       futures::future::join_all(li).await;
     }
+  }
+}
+
+impl Default for Run {
+  fn default() -> Self {
+    Self::new()
   }
 }
