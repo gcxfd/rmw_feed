@@ -10,6 +10,7 @@
 
 请求
   新任务编号
+  MB RoaringBitmap
 
 ---
 
