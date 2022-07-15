@@ -1,17 +1,34 @@
 请求
-  任务编号
   META
+  任务编号
     文件路径
 
 响应
-  任务编号
-  新任务编号
-  文件大小
+  INFO
+    任务编号
+    新任务编号
+    文件大小
+
+  如果文件不存在，就响应
+  INFO
+    任务编号
 
 请求
+  GET
   新任务编号
-  MB RoaringBitmap 里面是需要的字节
+  MB u32 RoaringBitmap 里面是需要的字节
   请求到了本地，先读取 1MB，然后按需求发送
+
+响应
+  DATA
+  新任务编号
+  MB u32
+
+本地数据结构
+  缺少的 MB
+    RoaringBitmap
+  MB
+    pos Box<u8>
 
 ---
 
