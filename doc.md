@@ -10,7 +10,8 @@
 
 请求
   新任务编号
-  MB RoaringBitmap
+  MB RoaringBitmap 里面是需要的字节
+  请求到了本地，先读取 1MB，然后按需求发送
 
 ---
 
