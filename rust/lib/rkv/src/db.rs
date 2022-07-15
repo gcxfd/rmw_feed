@@ -104,9 +104,9 @@ fn open(
   */
   let dict_size = 32768;
   let max_train_bytes = dict_size * 128;
+  opt.set_manual_wal_flush(true);
   opt.set_bottommost_compression_options(-14, 32767, 0, dict_size, true);
   opt.set_bottommost_zstd_max_train_bytes(max_train_bytes, true);
-
   opt.set_enable_blob_files(true);
   opt.set_min_blob_size(4096);
   opt.set_blob_file_size(268435456);
